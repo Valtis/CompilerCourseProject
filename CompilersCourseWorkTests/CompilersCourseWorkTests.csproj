@@ -65,6 +65,7 @@
   <ItemGroup>
     <Content Include="empty.txt" />
     <Content Include="keywords.txt" />
+    <Content Include="line_and_column.txt" />
     <Content Include="valid_identifiers.txt" />
   </ItemGroup>
   <Choose>
