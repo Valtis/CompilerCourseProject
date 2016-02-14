@@ -3,7 +3,7 @@
 namespace CompilersCourseWork.Tokens.Tests
 {
     [TestClass()]
-    public class ForTokenTests
+    public class KeywordTokenTests
     {
         [TestMethod()]
         public void ToStringReturnsCorrectRepresentation()
@@ -12,11 +12,14 @@ namespace CompilersCourseWork.Tokens.Tests
             token.Line = 20;
             token.Column = 40;
 
-            Assert.AreEqual("<Keyword:20,40;for>", token.ToString()); 
+            Assert.AreEqual("<Keyword:20,40;for>", token.ToString());
+
+            var token2 = new VarToken();
+            Assert.AreEqual("<Keyword:0,0;var>", token2.ToString());
         }
 
         [TestMethod()]
-        public void TwoTokensAreEqual()
+        public void TwoSameKeywordTokensAreEqual()
         {
             var token = new ForToken();
             token.Line = 5;
@@ -28,6 +31,22 @@ namespace CompilersCourseWork.Tokens.Tests
             token2.Column = 23;
 
             Assert.AreEqual(token, token2);
+        }
+
+
+        [TestMethod()]
+        public void TwoDifferentKeywordTokensAreNotEqual()
+        {
+            var token = new ForToken();
+            token.Line = 5;
+            token.Column = 20;
+
+
+            var token2 = new VarToken();
+            token2.Line = 44;
+            token2.Column = 23;
+
+            Assert.AreNotEqual(token, token2);
         }
     }
 }

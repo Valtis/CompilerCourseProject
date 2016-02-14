@@ -1,10 +1,10 @@
 ﻿namespace CompilersCourseWork.Tokens
 {
-    public class ForToken : Keyword
+    public class EndToken : Keyword
     {
         protected override string GetKeyword()
         {
-            return "for";
+            return "end";
         }
     }
 }

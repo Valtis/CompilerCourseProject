@@ -10,13 +10,23 @@ namespace CompilersCourseWork.Lexing
     internal class IdentifierAndKeywordParser : Parser
     {
 
-        private ISet<string> keywords;
+        private IDictionary<string, Type> keywords;
 
         internal IdentifierAndKeywordParser(TextReader reader) : base(reader)
         {
-            keywords = new HashSet<string>();
+            keywords = new Dictionary<string, Type>();
 
-
+            keywords.Add("var", typeof(VarToken));
+            keywords.Add("for", typeof(ForToken));
+            keywords.Add("end", typeof(EndToken));
+            keywords.Add("in", typeof(InToken));
+            keywords.Add("do", typeof(DoToken));
+            keywords.Add("read", typeof(ReadToken));
+            keywords.Add("print", typeof(PrintToken));
+            keywords.Add("int", typeof(IntToken));
+            keywords.Add("string", typeof(StringToken));
+            keywords.Add("bool", typeof(BoolToken));
+            keywords.Add("assert", typeof(AssertToken));
         }
 
         internal override bool Parses(char character)
@@ -35,8 +45,15 @@ namespace CompilersCourseWork.Lexing
                 builder.Append(Reader.PeekCharacter().Value);
                 Reader.NextCharacter();
             }
-            
-            return Optional<Token>.Some(new IdentifierToken(builder.ToString()));
+
+            var text = builder.ToString();
+            if (keywords.Keys.Contains(text))
+            {
+                var token = (Token)Activator.CreateInstance(keywords[text]);
+                return Optional<Token>.Some(token);
+            }
+
+            return Optional<Token>.Some(new IdentifierToken(text));
         }
 
 

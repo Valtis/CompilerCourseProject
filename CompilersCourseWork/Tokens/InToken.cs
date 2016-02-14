@@ -1,10 +1,10 @@
 ﻿namespace CompilersCourseWork.Tokens
 {
-    public class ForToken : Keyword
+    public class InToken : Keyword
     {
         protected override string GetKeyword()
         {
-            return "for";
+            return "in";
         }
     }
 }

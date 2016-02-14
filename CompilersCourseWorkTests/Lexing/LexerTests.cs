@@ -32,17 +32,19 @@ namespace CompilersCourseWork.Tests
         [TestMethod()]
         public void GetTokenHandlesReservedWords()
         {
-            var lexer = new Lexer(@"..\..\valid_identifiers.txt");
+            var lexer = new Lexer(@"..\..\keywords.txt");
 
+            Assert.AreEqual(new VarToken(), lexer.GetToken().Value);
             Assert.AreEqual(new ForToken(), lexer.GetToken().Value);
-
-
-            Assert.Fail();
-          /*  Assert.AreEqual(new IdentifierToken("world"), lexer.GetToken().Value);
-            Assert.AreEqual(new IdentifierToken("this"), lexer.GetToken().Value);
-            Assert.AreEqual(new IdentifierToken("is"), lexer.GetToken().Value);
-            Assert.AreEqual(new IdentifierToken("a"), lexer.GetToken().Value);
-            Assert.AreEqual(new IdentifierToken("test"), lexer.GetToken().Value);*/
+            Assert.AreEqual(new EndToken(), lexer.GetToken().Value);
+            Assert.AreEqual(new InToken(), lexer.GetToken().Value);
+            Assert.AreEqual(new DoToken(), lexer.GetToken().Value);
+            Assert.AreEqual(new ReadToken(), lexer.GetToken().Value);
+            Assert.AreEqual(new PrintToken(), lexer.GetToken().Value);
+            Assert.AreEqual(new IntToken(), lexer.GetToken().Value);
+            Assert.AreEqual(new StringToken(), lexer.GetToken().Value);
+            Assert.AreEqual(new BoolToken(), lexer.GetToken().Value);
+            Assert.AreEqual(new AssertToken(), lexer.GetToken().Value);
         }
 
         [TestMethod()]
