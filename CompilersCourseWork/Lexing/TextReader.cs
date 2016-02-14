@@ -18,9 +18,7 @@ namespace CompilersCourseWork.Lexing
         // into a given number of spaces. array_pos tracks the position at given line, used internally
         private int column;
         private int array_pos;
-
-        private int tabs_read;
-
+        
         private int spaces_per_tab;
 
         public int Line
@@ -43,7 +41,7 @@ namespace CompilersCourseWork.Lexing
                 return column;
             }
 
-            set
+            private set
             {
                 column = value;
             }
@@ -73,9 +71,19 @@ namespace CompilersCourseWork.Lexing
 
             ++array_pos;
 
+            if (value.HasValue && value.Value == '\t')
+            {
+                Column += spaces_per_tab;
+            }
+            else
+            {
+                Column += 1;
+            }
+
             if (array_pos >= lines[Line].Length)
             {
                 array_pos = 0;
+                Column = 0;
                 ++Line;
                 if (Line >= lines.Length)
                 {

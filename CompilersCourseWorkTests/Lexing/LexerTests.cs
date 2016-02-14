@@ -48,10 +48,61 @@ namespace CompilersCourseWork.Tests
         }
 
         [TestMethod()]
-        public void GetTokenSetsLineAndColumnCorrectly()
+        public void GetTokenSetsLineAndColumnCorrectlyWith4SpacesPerTab()
         {
-            Assert.Fail();
+            var lexer = new Lexer(@"..\..\line_and_column.txt", 4);
+
+            Token token;
+
+            token = lexer.GetToken().Value;
+            Assert.AreEqual(0, token.Line);
+            Assert.AreEqual(0, token.Column);
+
+            token = lexer.GetToken().Value;
+            Assert.AreEqual(0, token.Line);
+            Assert.AreEqual(6, token.Column);
+
+            token = lexer.GetToken().Value;
+            Assert.AreEqual(2, token.Line);
+            Assert.AreEqual(0, token.Column);
+
+            token = lexer.GetToken().Value;
+            Assert.AreEqual(4, token.Line);
+            Assert.AreEqual(4, token.Column);
+
+            token = lexer.GetToken().Value;
+            Assert.AreEqual(5, token.Line);
+            Assert.AreEqual(8, token.Column);
         }
+
+        [TestMethod()]
+        public void GetTokenSetsLineAndColumnCorrectlyWith8SpacesPerTab()
+        {
+            var lexer = new Lexer(@"..\..\line_and_column.txt", 8);
+
+            Token token;
+
+            token = lexer.GetToken().Value;
+            Assert.AreEqual(0, token.Line);
+            Assert.AreEqual(0, token.Column);
+
+            token = lexer.GetToken().Value;
+            Assert.AreEqual(0, token.Line);
+            Assert.AreEqual(6, token.Column);
+
+            token = lexer.GetToken().Value;
+            Assert.AreEqual(2, token.Line);
+            Assert.AreEqual(0, token.Column);
+
+            token = lexer.GetToken().Value;
+            Assert.AreEqual(4, token.Line);
+            Assert.AreEqual(8, token.Column);
+
+            token = lexer.GetToken().Value;
+            Assert.AreEqual(5, token.Line);
+            Assert.AreEqual(16, token.Column);
+        }
+
 
         // comments
         // invalid identifiers
