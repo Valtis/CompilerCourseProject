@@ -45,7 +45,7 @@
   <ItemGroup>
     <Compile Include="ErrorReporter.cs" />
     <Compile Include="Lexing\IdentifierAndKeywordParser.cs" />
-    <Compile Include="Lexing\Parser.cs" />
+    <Compile Include="Lexing\TokenParser.cs" />
     <Compile Include="Lexing\TextReader.cs" />
     <Compile Include="Lexing\Lexer.cs" />
     <Compile Include="Lexing\WhitespaceParser.cs" />

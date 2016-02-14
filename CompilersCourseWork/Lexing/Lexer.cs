@@ -8,7 +8,7 @@ namespace CompilersCourseWork.Lexing
     public class Lexer
     {
         private TextReader reader;
-        private IList<Parser> parsers;
+        private IList<TokenParser> parsers;
         // whitespace parsing (ignoring, really) is special cased, as this is done before
         // regular tokenization to remove any whitespace.
         private WhitespaceParser whitespaceParser;
@@ -17,7 +17,7 @@ namespace CompilersCourseWork.Lexing
         public Lexer(string path, int spaces_per_tab=4)
         {
             reader = new TextReader(path, spaces_per_tab);
-            parsers = new List<Parser>();
+            parsers = new List<TokenParser>();
             whitespaceParser = new WhitespaceParser(reader);
             parsers.Add(new IdentifierAndKeywordParser(reader));
            

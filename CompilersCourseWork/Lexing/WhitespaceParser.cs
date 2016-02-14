@@ -4,7 +4,7 @@ using CompilersCourseWork.Tokens;
 
 namespace CompilersCourseWork.Lexing
 {
-    internal class WhitespaceParser : Parser
+    internal class WhitespaceParser : TokenParser
     {
         private ISet<char> whitespace;
 

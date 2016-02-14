@@ -7,7 +7,7 @@ using CompilersCourseWork.Tokens;
 
 namespace CompilersCourseWork.Lexing
 {
-    internal class IdentifierAndKeywordParser : Parser
+    internal class IdentifierAndKeywordParser : TokenParser
     {
 
         private IDictionary<string, Type> keywords;

@@ -1,13 +1,8 @@
 ﻿using CompilersCourseWork.Tokens;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CompilersCourseWork.Lexing
 {
-    internal abstract class Parser
+    internal abstract class TokenParser
     {
         private readonly TextReader reader;
 
@@ -19,7 +14,7 @@ namespace CompilersCourseWork.Lexing
             }
         }
 
-        internal Parser(TextReader reader)
+        internal TokenParser(TextReader reader)
         {
             this.reader = reader;
         }
