@@ -22,11 +22,11 @@ namespace CompilersCourseWork.Tests
             var lexer = new Lexer(@"..\..\valid_identifiers.txt");
 
             Assert.AreEqual(new IdentifierToken("hello"), lexer.GetToken().Value);
-            Assert.AreEqual(new IdentifierToken("world"), lexer.GetToken().Value);
-            Assert.AreEqual(new IdentifierToken("this"), lexer.GetToken().Value);
-            Assert.AreEqual(new IdentifierToken("is"), lexer.GetToken().Value);
-            Assert.AreEqual(new IdentifierToken("a"), lexer.GetToken().Value);
-            Assert.AreEqual(new IdentifierToken("test"), lexer.GetToken().Value);
+            Assert.AreEqual(new IdentifierToken("w_or_ld"), lexer.GetToken().Value);
+            Assert.AreEqual(new IdentifierToken("this_"), lexer.GetToken().Value);
+            Assert.AreEqual(new IdentifierToken("i123s"), lexer.GetToken().Value);
+            Assert.AreEqual(new IdentifierToken("a987"), lexer.GetToken().Value);
+            Assert.AreEqual(new IdentifierToken("t_12_es_190t"), lexer.GetToken().Value);
         }
 
         [TestMethod()]
