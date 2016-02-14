@@ -24,22 +24,22 @@ namespace CompilersCourseWork.Lexing
             this.reader = reader;
         }
 
-        internal Optional<Token> Parse()
+        internal Token Parse()
         {
             var line = reader.Line;
             var column = reader.Column;
 
             var token = DoParse();
-            if (token.HasValue)
+            if (token != null)
             {
-                token.Value.Line = line;
-                token.Value.Column = column;
+                token.Line = line;
+                token.Column = column;
             }
 
             return token;
         }
 
         internal abstract bool Parses(char character);
-        protected abstract Optional<Token> DoParse();
+        protected abstract Token DoParse();
     }
 }

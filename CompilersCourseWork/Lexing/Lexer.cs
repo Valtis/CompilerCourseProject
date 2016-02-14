@@ -23,13 +23,13 @@ namespace CompilersCourseWork.Lexing
            
         }
 
-        public Optional<Token> GetToken()
+        public Token GetToken()
         {
             var character = reader.PeekCharacter();
 
             if (!character.HasValue)
             {
-                return Optional<Token>.None;
+                return new EOFToken();
             }
 
             if (whitespaceParser.Parses(character.Value))

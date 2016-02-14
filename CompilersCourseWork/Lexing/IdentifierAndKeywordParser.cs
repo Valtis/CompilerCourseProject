@@ -34,7 +34,7 @@ namespace CompilersCourseWork.Lexing
             return char.IsLetter(character);
         }
 
-        protected override Optional<Token> DoParse()
+        protected override Token DoParse()
         {
             var builder = new StringBuilder();
             
@@ -49,11 +49,10 @@ namespace CompilersCourseWork.Lexing
             var text = builder.ToString();
             if (keywords.Keys.Contains(text))
             {
-                var token = (Token)Activator.CreateInstance(keywords[text]);
-                return Optional<Token>.Some(token);
+                return (Token)Activator.CreateInstance(keywords[text]);
             }
 
-            return Optional<Token>.Some(new IdentifierToken(text));
+            return new IdentifierToken(text);
         }
 
 

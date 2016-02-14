@@ -18,7 +18,7 @@ namespace CompilersCourseWork.Lexing
 
         }
 
-        protected override Optional<Token> DoParse()
+        protected override Token DoParse()
         {
             while (Reader.PeekCharacter().HasValue && 
                 whitespace.Contains(Reader.PeekCharacter().Value))
@@ -26,7 +26,7 @@ namespace CompilersCourseWork.Lexing
                 Reader.NextCharacter();
             }
 
-            return Optional<Token>.None;
+            return null;
         }
 
         internal override bool Parses(char character)

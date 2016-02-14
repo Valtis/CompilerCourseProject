@@ -64,7 +64,7 @@ namespace CompilersCourseWork.Lexing
             }
         }
 
-        internal Optional<char> NextCharacter()
+        internal char? NextCharacter()
         {
 
             var value = PeekCharacter();
@@ -94,15 +94,15 @@ namespace CompilersCourseWork.Lexing
             return value;
         }
 
-        internal Optional<char> PeekCharacter()
+        internal char? PeekCharacter()
         {
             if (Line == lines.Length)
             {
-                return Optional<char>.None;
+                return null;
             }
             else
             {
-                return Optional<char>.Some(lines[Line][array_pos]);
+                return lines[Line][array_pos];
             }
         }
     }
