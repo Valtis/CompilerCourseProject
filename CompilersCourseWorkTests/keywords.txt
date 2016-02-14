@@ -1,0 +1,11 @@
+﻿var 
+for 
+end 
+in 
+do 
+read 
+print 
+int 
+string 
+bool 
+assert
