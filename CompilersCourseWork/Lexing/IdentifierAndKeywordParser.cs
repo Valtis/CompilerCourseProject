@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CompilersCourseWork.Tokens;
+using CompilersCourseWork.ErrorHandling;
 
 namespace CompilersCourseWork.Lexing
 {
@@ -12,7 +13,7 @@ namespace CompilersCourseWork.Lexing
 
         private IDictionary<string, Type> keywords;
 
-        internal IdentifierAndKeywordParser(TextReader reader) : base(reader)
+        internal IdentifierAndKeywordParser(TextReader reader, ErrorReporter reporter) : base(reader, reporter)
         {
             keywords = new Dictionary<string, Type>();
 

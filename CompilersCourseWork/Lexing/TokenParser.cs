@@ -1,10 +1,12 @@
-﻿using CompilersCourseWork.Tokens;
+﻿using CompilersCourseWork.ErrorHandling;
+using CompilersCourseWork.Tokens;
 
 namespace CompilersCourseWork.Lexing
 {
     internal abstract class TokenParser
     {
         private readonly TextReader reader;
+        private ErrorReporter reporter;
 
         internal TextReader Reader
         {
@@ -14,9 +16,23 @@ namespace CompilersCourseWork.Lexing
             }
         }
 
-        internal TokenParser(TextReader reader)
+        public ErrorReporter Reporter
+        {
+            get
+            {
+                return reporter;
+            }
+
+            set
+            {
+                reporter = value;
+            }
+        }
+
+        internal TokenParser(TextReader reader, ErrorReporter reporter)
         {
             this.reader = reader;
+            this.Reporter = reporter;
         }
 
         internal Token Parse()

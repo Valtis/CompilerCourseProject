@@ -10,7 +10,7 @@ namespace CompilersCourseWork.Lexing
     {
         // reading and keeping all lines in memory makes implementation easier, but can be expensive
         // memory wise. This is an intentional tradeoff. 
-        private String[] lines;
+        private string[] lines;
 
         private int line;
 
@@ -47,6 +47,15 @@ namespace CompilersCourseWork.Lexing
             }
         }
 
+        public string[] Lines
+        {
+            get
+            {
+                return lines;
+            }
+
+        }
+
         internal TextReader(string path, int spaces_per_tab)
         {
             Line = 0;
@@ -58,9 +67,9 @@ namespace CompilersCourseWork.Lexing
 
             // append newlines to every line, as ReadAllLines strips them but parsers
             // assume they are present
-            for (int i = 0; i < lines.Length; ++i)
+            for (int i = 0; i < Lines.Length; ++i)
             {
-                lines[i] += "\n";
+                Lines[i] += "\n";
             }
         }
 
@@ -80,14 +89,14 @@ namespace CompilersCourseWork.Lexing
                 Column += 1;
             }
 
-            if (array_pos >= lines[Line].Length)
+            if (array_pos >= Lines[Line].Length)
             {
                 array_pos = 0;
                 Column = 0;
                 ++Line;
-                if (Line >= lines.Length)
+                if (Line >= Lines.Length)
                 {
-                    Line = lines.Length;
+                    Line = Lines.Length;
                 }
             }
 
@@ -96,13 +105,13 @@ namespace CompilersCourseWork.Lexing
 
         internal char? PeekCharacter()
         {
-            if (Line == lines.Length)
+            if (Line == Lines.Length)
             {
                 return null;
             }
             else
             {
-                return lines[Line][array_pos];
+                return Lines[Line][array_pos];
             }
         }
     }
