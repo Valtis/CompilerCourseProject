@@ -15,7 +15,12 @@ namespace CompilersCourseWork.Tokens
 
         public override bool Equals(object obj)
         {
-            return obj != null && obj.GetType() == this.GetType();
+            return obj != null && obj.GetType().Equals(this.GetType());
+        }
+
+        public override int GetHashCode()
+        {
+            return 42;
         }
     }
 }
