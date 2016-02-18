@@ -39,6 +39,14 @@ namespace CompilersCourseWork.ErrorHandling
             }
         }
 
+        public string Message
+        {
+            get
+            {
+                return msg;
+            }
+        }
+
         public ErrorData(string[] lines, Error type, string msg, int line, int column)
         {
             this.lines = lines;

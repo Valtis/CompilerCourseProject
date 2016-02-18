@@ -1,4 +1,5 @@
 ﻿using CompilersCourseWork;
+using CompilersCourseWork.ErrorHandling;
 using CompilersCourseWork.Tokens;
 using System;
 using System.Collections.Generic;
@@ -14,13 +15,18 @@ namespace CompilersCourseWork.Lexing
         private WhitespaceParser whitespaceParser;
 
 
-        public Lexer(string path, int spaces_per_tab=4)
+        public Lexer(string path, ErrorReporter reporter, int spaces_per_tab=4)
         {
             reader = new TextReader(path, spaces_per_tab);
+            reporter.Lines = reader.Lines;
+               
+            whitespaceParser = new WhitespaceParser(reader, reporter);
+
             parsers = new List<TokenParser>();
-            whitespaceParser = new WhitespaceParser(reader);
-            parsers.Add(new IdentifierAndKeywordParser(reader));
-           
+            parsers.Add(new IdentifierAndKeywordParser(reader, reporter));
+            parsers.Add(new IntegerParser(reader, reporter));
+            parsers.Add(new StringParser(reader, reporter));
+
         }
 
         public Token GetToken()
@@ -36,6 +42,11 @@ namespace CompilersCourseWork.Lexing
             {
                 whitespaceParser.Parse();
                 character = reader.PeekCharacter();
+            }
+
+            if (!character.HasValue)
+            {
+                return new EOFToken();
             }
 
             foreach (var parser in parsers)

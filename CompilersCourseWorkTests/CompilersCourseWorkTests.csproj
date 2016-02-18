@@ -55,6 +55,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tokens\KeywordTokenTests.cs" />
     <Compile Include="Tokens\IdentifierTokenTests.cs" />
+    <Compile Include="Tokens\NumberTokenTests.cs" />
+    <Compile Include="Tokens\TextTokenTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CompilersCourseWork\CompilersCourseWork.csproj">
@@ -64,9 +66,13 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="empty.txt" />
+    <Content Include="invalid_integers.txt" />
+    <Content Include="invalid_strings.txt" />
     <Content Include="keywords.txt" />
     <Content Include="line_and_column.txt" />
+    <Content Include="valid_integers.txt" />
     <Content Include="valid_identifiers.txt" />
+    <Content Include="valid_strings.txt" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

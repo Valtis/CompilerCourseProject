@@ -35,6 +35,8 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -43,8 +45,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ErrorReporter.cs" />
+    <Compile Include="ErrorHandling\ErrorData.cs" />
+    <Compile Include="ErrorHandling\ErrorReporter.cs" />
     <Compile Include="Lexing\IdentifierAndKeywordParser.cs" />
+    <Compile Include="Lexing\IntegerParser.cs" />
     <Compile Include="Lexing\TokenParser.cs" />
     <Compile Include="Lexing\TextReader.cs" />
     <Compile Include="Lexing\Lexer.cs" />
@@ -61,14 +65,17 @@
     <Compile Include="Tokens\InToken.cs" />
     <Compile Include="Tokens\IntToken.cs" />
     <Compile Include="Tokens\Keyword.cs" />
+    <Compile Include="Tokens\NumberToken.cs" />
     <Compile Include="Tokens\PrintToken.cs" />
     <Compile Include="Tokens\ReadToken.cs" />
     <Compile Include="Tokens\StringToken.cs" />
+    <Compile Include="Tokens\TextToken.cs" />
     <Compile Include="Tokens\Token.cs" />
     <Compile Include="Tokens\VarToken.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <Compile Include="Lexing\StringParser.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
