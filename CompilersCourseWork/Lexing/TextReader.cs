@@ -101,8 +101,8 @@ namespace CompilersCourseWork.Lexing
             {
                 Column += 1;
             }
-
-            if (array_pos >= Lines[Line].Length)
+            
+            if (Line < Lines.Length && array_pos >= Lines[Line].Length)
             {
                 array_pos = 0;
                 Column = 0;

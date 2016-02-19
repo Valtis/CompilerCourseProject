@@ -7,6 +7,7 @@ namespace CompilersCourseWork.Lexing
     class CommentParser : TokenParser
     {
         private bool isMultilineComment;
+        private int nesting;
 
         internal CommentParser(TextReader reader, ErrorReporter reporter) : base(reader, reporter)
         {
@@ -15,6 +16,7 @@ namespace CompilersCourseWork.Lexing
 
         internal override bool Parses(char character)
         {
+            nesting = 0;
             if (character == '/')
             {
                 Reader.NextCharacter();
@@ -51,13 +53,27 @@ namespace CompilersCourseWork.Lexing
                 {                    
                     character = Reader.NextCharacter();
                                           
+                    if (character.HasValue && character.Value == '/')
+                    {
+                        character = Reader.NextCharacter();
+                        if (character.Value == '*')
+                        {
+                            ++nesting;
+                            character = Reader.NextCharacter();
+                        }
+                    }
+
                     if (character.HasValue && character.Value == '*')
                     {
                         character = Reader.PeekCharacter();
                         if (character.HasValue && character.Value == '/')
                         {
                             Reader.NextCharacter();
-                            break;
+                            --nesting;
+                            if (nesting < 0)
+                            {
+                                break;
+                            }
                         }                        
                     }
                 }

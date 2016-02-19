@@ -9,3 +9,5 @@ comment ****/
 */
 "test"
 /* hello */
+/* /* nested token */ */
+/* unterminated 
