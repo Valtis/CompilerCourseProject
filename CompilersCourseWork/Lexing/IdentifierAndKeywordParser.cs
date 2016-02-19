@@ -48,7 +48,7 @@ namespace CompilersCourseWork.Lexing
             }
 
             var text = builder.ToString();
-            if (keywords.Keys.Contains(text))
+            if (keywords.ContainsKey(text))
             {
                 return (Token)Activator.CreateInstance(keywords[text]);
             }

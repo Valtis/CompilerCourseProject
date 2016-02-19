@@ -1,6 +1,6 @@
 ﻿namespace CompilersCourseWork.Tokens
 {
-    public class IntToken : Keyword
+    public class IntToken : KeywordToken
     {
         protected override string GetKeyword()
         {

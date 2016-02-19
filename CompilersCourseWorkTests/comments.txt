@@ -1,0 +1,11 @@
+﻿// one line comment
+valid_token / anothertoken
+/*****multi
+line
+comment ****/
+1234
+/* multiline comment
+// with single comment inside
+*/
+"test"
+/* hello */

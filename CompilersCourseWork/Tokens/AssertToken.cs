@@ -1,6 +1,6 @@
 ﻿namespace CompilersCourseWork.Tokens
 {
-    public class AssertToken : Keyword
+    public class AssertToken : KeywordToken
     {
         protected override string GetKeyword()
         {

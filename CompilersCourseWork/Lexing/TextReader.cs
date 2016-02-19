@@ -47,6 +47,19 @@ namespace CompilersCourseWork.Lexing
             }
         }
 
+        internal void Backtrack()
+        {
+            if (array_pos != 0)
+            {
+                --array_pos;
+            }
+            else if (Line != 0)
+            {
+                --Line;
+                array_pos = lines[Line].Length - 1;
+            }
+        }
+
         public string[] Lines
         {
             get

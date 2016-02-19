@@ -12,37 +12,40 @@ namespace CompilersCourseWork.Lexing
         private IList<TokenParser> parsers;
         // whitespace parsing (ignoring, really) is special cased, as this is done before
         // regular tokenization to remove any whitespace.
-        private WhitespaceParser whitespaceParser;
-
 
         public Lexer(string path, ErrorReporter reporter, int spaces_per_tab=4)
         {
             reader = new TextReader(path, spaces_per_tab);
             reporter.Lines = reader.Lines;
                
-            whitespaceParser = new WhitespaceParser(reader, reporter);
 
             parsers = new List<TokenParser>();
+            parsers.Add(new WhitespaceParser(reader, reporter));
+            parsers.Add(new CommentParser(reader, reporter));
             parsers.Add(new IdentifierAndKeywordParser(reader, reporter));
             parsers.Add(new IntegerParser(reader, reporter));
             parsers.Add(new StringParser(reader, reporter));
+            parsers.Add(new OperatorParser(reader, reporter));
 
         }
 
-        public Token GetToken()
+        public Token NextToken()
+        {
+            Token token = null;
+
+            while (token == null || 
+                token.GetType() == typeof(WhitespaceToken) ||
+                token.GetType() == typeof(CommentToken))
+            {
+                token = GetToken();
+            }
+
+            return token;
+        }
+        
+        private Token GetToken()
         {
             var character = reader.PeekCharacter();
-
-            if (!character.HasValue)
-            {
-                return new EOFToken();
-            }
-
-            if (whitespaceParser.Parses(character.Value))
-            {
-                whitespaceParser.Parse();
-                character = reader.PeekCharacter();
-            }
 
             if (!character.HasValue)
             {
@@ -56,7 +59,7 @@ namespace CompilersCourseWork.Lexing
                     return parser.Parse();
                 }
             }
-            
+
             throw new NotImplementedException("Not implemented");
         }       
     }

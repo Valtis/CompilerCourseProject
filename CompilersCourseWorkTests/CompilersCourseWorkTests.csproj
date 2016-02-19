@@ -65,11 +65,14 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="comments.txt" />
     <Content Include="empty.txt" />
+    <Content Include="example_program.txt" />
     <Content Include="invalid_integers.txt" />
     <Content Include="invalid_strings.txt" />
     <Content Include="keywords.txt" />
     <Content Include="line_and_column.txt" />
+    <Content Include="operators.txt" />
     <Content Include="valid_integers.txt" />
     <Content Include="valid_identifiers.txt" />
     <Content Include="valid_strings.txt" />

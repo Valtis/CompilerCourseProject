@@ -31,7 +31,7 @@ namespace CompilersCourseWork.Lexing
                 Reader.NextCharacter();
             }
 
-            return null;
+            return new WhitespaceToken();
         }
 
 

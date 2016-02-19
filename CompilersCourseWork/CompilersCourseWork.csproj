@@ -47,8 +47,10 @@
   <ItemGroup>
     <Compile Include="ErrorHandling\ErrorData.cs" />
     <Compile Include="ErrorHandling\ErrorReporter.cs" />
+    <Compile Include="Lexing\CommentParser.cs" />
     <Compile Include="Lexing\IdentifierAndKeywordParser.cs" />
     <Compile Include="Lexing\IntegerParser.cs" />
+    <Compile Include="Lexing\OperatorParser.cs" />
     <Compile Include="Lexing\TokenParser.cs" />
     <Compile Include="Lexing\TextReader.cs" />
     <Compile Include="Lexing\Lexer.cs" />
@@ -56,7 +58,13 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tokens\AssertToken.cs" />
+    <Compile Include="Tokens\AssignmentToken.cs" />
     <Compile Include="Tokens\BoolToken.cs" />
+    <Compile Include="Tokens\AndToken.cs" />
+    <Compile Include="Tokens\ColonToken.cs" />
+    <Compile Include="Tokens\CommentToken.cs" />
+    <Compile Include="Tokens\ComparisonToken.cs" />
+    <Compile Include="Tokens\DivideToken.cs" />
     <Compile Include="Tokens\DoToken.cs" />
     <Compile Include="Tokens\EndToken.cs" />
     <Compile Include="Tokens\EOFToken.cs" />
@@ -64,14 +72,23 @@
     <Compile Include="Tokens\ForToken.cs" />
     <Compile Include="Tokens\InToken.cs" />
     <Compile Include="Tokens\IntToken.cs" />
-    <Compile Include="Tokens\Keyword.cs" />
+    <Compile Include="Tokens\KeywordToken.cs" />
+    <Compile Include="Tokens\LessThanToken.cs" />
+    <Compile Include="Tokens\MinusToken.cs" />
+    <Compile Include="Tokens\MultiplyToken.cs" />
+    <Compile Include="Tokens\NotToken.cs" />
     <Compile Include="Tokens\NumberToken.cs" />
+    <Compile Include="Tokens\OperatorToken.cs" />
+    <Compile Include="Tokens\PlusToken.cs" />
     <Compile Include="Tokens\PrintToken.cs" />
+    <Compile Include="Tokens\RangeToken.cs" />
     <Compile Include="Tokens\ReadToken.cs" />
+    <Compile Include="Tokens\SemicolonToken.cs" />
     <Compile Include="Tokens\StringToken.cs" />
     <Compile Include="Tokens\TextToken.cs" />
     <Compile Include="Tokens\Token.cs" />
     <Compile Include="Tokens\VarToken.cs" />
+    <Compile Include="Tokens\WhitespaceToken.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

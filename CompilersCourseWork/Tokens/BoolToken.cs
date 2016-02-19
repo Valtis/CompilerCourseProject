@@ -1,6 +1,6 @@
 ﻿namespace CompilersCourseWork.Tokens
 {
-    public class BoolToken : Keyword
+    public class BoolToken : KeywordToken
     {
         protected override string GetKeyword()
         {

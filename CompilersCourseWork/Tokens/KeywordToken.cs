@@ -2,7 +2,7 @@
 
 namespace CompilersCourseWork.Tokens
 {
-    public abstract class Keyword : Token
+    public abstract class KeywordToken : Token
     {
 
         protected override Tuple<string, string> GetStringRepresentation()

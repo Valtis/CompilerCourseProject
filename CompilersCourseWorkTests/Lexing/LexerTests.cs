@@ -13,7 +13,7 @@ namespace CompilersCourseWork.Tests
         public void GetTokenReturnsEOFOnEndOfFile()
         {
             var lexer = new Lexer(@"..\..\empty.txt", new ErrorReporter());
-            Assert.AreEqual(new EOFToken(), lexer.GetToken());
+            Assert.AreEqual(new EOFToken(), lexer.NextToken());
         }
 
 
@@ -22,12 +22,12 @@ namespace CompilersCourseWork.Tests
         {
             var lexer = new Lexer(@"..\..\valid_identifiers.txt", new ErrorReporter());
 
-            Assert.AreEqual(new IdentifierToken("hello"), lexer.GetToken());
-            Assert.AreEqual(new IdentifierToken("w_or_ld"), lexer.GetToken());
-            Assert.AreEqual(new IdentifierToken("this_"), lexer.GetToken());
-            Assert.AreEqual(new IdentifierToken("i123s"), lexer.GetToken());
-            Assert.AreEqual(new IdentifierToken("a987"), lexer.GetToken());
-            Assert.AreEqual(new IdentifierToken("t_12_es_190t"), lexer.GetToken());
+            Assert.AreEqual(new IdentifierToken("hello"), lexer.NextToken());
+            Assert.AreEqual(new IdentifierToken("w_or_ld"), lexer.NextToken());
+            Assert.AreEqual(new IdentifierToken("this_"), lexer.NextToken());
+            Assert.AreEqual(new IdentifierToken("i123s"), lexer.NextToken());
+            Assert.AreEqual(new IdentifierToken("a987"), lexer.NextToken());
+            Assert.AreEqual(new IdentifierToken("t_12_es_190t"), lexer.NextToken());
         }
 
         [TestMethod()]
@@ -35,17 +35,17 @@ namespace CompilersCourseWork.Tests
         {
             var lexer = new Lexer(@"..\..\keywords.txt", new ErrorReporter());
 
-            Assert.AreEqual(new VarToken(), lexer.GetToken());
-            Assert.AreEqual(new ForToken(), lexer.GetToken());
-            Assert.AreEqual(new EndToken(), lexer.GetToken());
-            Assert.AreEqual(new InToken(), lexer.GetToken());
-            Assert.AreEqual(new DoToken(), lexer.GetToken());
-            Assert.AreEqual(new ReadToken(), lexer.GetToken());
-            Assert.AreEqual(new PrintToken(), lexer.GetToken());
-            Assert.AreEqual(new IntToken(), lexer.GetToken());
-            Assert.AreEqual(new StringToken(), lexer.GetToken());
-            Assert.AreEqual(new BoolToken(), lexer.GetToken());
-            Assert.AreEqual(new AssertToken(), lexer.GetToken());
+            Assert.AreEqual(new VarToken(), lexer.NextToken());
+            Assert.AreEqual(new ForToken(), lexer.NextToken());
+            Assert.AreEqual(new EndToken(), lexer.NextToken());
+            Assert.AreEqual(new InToken(), lexer.NextToken());
+            Assert.AreEqual(new DoToken(), lexer.NextToken());
+            Assert.AreEqual(new ReadToken(), lexer.NextToken());
+            Assert.AreEqual(new PrintToken(), lexer.NextToken());
+            Assert.AreEqual(new IntToken(), lexer.NextToken());
+            Assert.AreEqual(new StringToken(), lexer.NextToken());
+            Assert.AreEqual(new BoolToken(), lexer.NextToken());
+            Assert.AreEqual(new AssertToken(), lexer.NextToken());
         }
         
         [TestMethod()]
@@ -53,9 +53,9 @@ namespace CompilersCourseWork.Tests
         {
             var lexer = new Lexer(@"..\..\valid_integers.txt", new ErrorReporter());
 
-            Assert.AreEqual(new NumberToken(123), lexer.GetToken());
-            Assert.AreEqual(new NumberToken(0), lexer.GetToken());
-            Assert.AreEqual(new NumberToken(9876543210), lexer.GetToken());
+            Assert.AreEqual(new NumberToken(123), lexer.NextToken());
+            Assert.AreEqual(new NumberToken(0), lexer.NextToken());
+            Assert.AreEqual(new NumberToken(9876543210), lexer.NextToken());
         }
 
         [TestMethod()]
@@ -64,9 +64,9 @@ namespace CompilersCourseWork.Tests
             var reporter = new ErrorReporter();
             var lexer = new Lexer(@"..\..\invalid_integers.txt", reporter);
 
-            Assert.AreEqual(new NumberToken(567), lexer.GetToken());
-            Assert.AreEqual(new IdentifierToken("Hello"), lexer.GetToken());
-            Assert.AreEqual(new NumberToken(1), lexer.GetToken());
+            Assert.AreEqual(new NumberToken(567), lexer.NextToken());
+            Assert.AreEqual(new IdentifierToken("Hello"), lexer.NextToken());
+            Assert.AreEqual(new NumberToken(1), lexer.NextToken());
 
             Assert.AreEqual(2, reporter.Errors.Count);
 
@@ -87,11 +87,11 @@ namespace CompilersCourseWork.Tests
         {
             var lexer = new Lexer(@"..\..\valid_strings.txt", new ErrorReporter());
 
-            Assert.AreEqual(new TextToken("hello"), lexer.GetToken());
-            Assert.AreEqual(new TextToken("wor\tld"), lexer.GetToken());
-            Assert.AreEqual(new TextToken("thi\ns"), lexer.GetToken());
-            Assert.AreEqual(new TextToken("\"is\""), lexer.GetToken());
-            Assert.AreEqual(new TextToken("a\rtest"), lexer.GetToken());
+            Assert.AreEqual(new TextToken("hello"), lexer.NextToken());
+            Assert.AreEqual(new TextToken("wor\tld"), lexer.NextToken());
+            Assert.AreEqual(new TextToken("thi\ns"), lexer.NextToken());
+            Assert.AreEqual(new TextToken("\"is\""), lexer.NextToken());
+            Assert.AreEqual(new TextToken("a\rtest"), lexer.NextToken());
         }
 
         [TestMethod()]
@@ -100,9 +100,9 @@ namespace CompilersCourseWork.Tests
             var reporter = new ErrorReporter();
             var lexer = new Lexer(@"..\..\invalid_strings.txt", reporter);
 
-            Assert.AreEqual(new TextToken("invaliddescape"), lexer.GetToken());
-            Assert.AreEqual(new TextToken("unterminated"), lexer.GetToken());
-            Assert.AreEqual(new TextToken("valid for checking unterminated"), lexer.GetToken());
+            Assert.AreEqual(new TextToken("invaliddescape"), lexer.NextToken());
+            Assert.AreEqual(new TextToken("unterminated"), lexer.NextToken());
+            Assert.AreEqual(new TextToken("valid for checking unterminated"), lexer.NextToken());
 
             Assert.AreEqual(2, reporter.Errors.Count);
 
@@ -117,6 +117,38 @@ namespace CompilersCourseWork.Tests
             Assert.AreEqual(13, reporter.Errors[1].Column);
             Assert.IsTrue(reporter.Errors[1].Message.ToLower().Contains("unmatched"));
         }
+
+        [TestMethod()]
+        public void GetTokenParsesOperatorsCorrectly()
+        {
+            var lexer = new Lexer(@"..\..\operators.txt", new ErrorReporter());
+
+            Assert.AreEqual(new PlusToken(), lexer.NextToken());
+            Assert.AreEqual(new MinusToken(), lexer.NextToken());
+            Assert.AreEqual(new MultiplyToken(), lexer.NextToken());
+            Assert.AreEqual(new DivideToken(), lexer.NextToken());
+            Assert.AreEqual(new AssignmentToken(), lexer.NextToken());
+            Assert.AreEqual(new LessThanToken(), lexer.NextToken());
+            Assert.AreEqual(new ComparisonToken(), lexer.NextToken());
+            Assert.AreEqual(new AndToken(), lexer.NextToken());
+            Assert.AreEqual(new NotToken(), lexer.NextToken());
+            Assert.AreEqual(new SemicolonToken(), lexer.NextToken());
+            Assert.AreEqual(new ColonToken(), lexer.NextToken());
+            Assert.AreEqual(new RangeToken(), lexer.NextToken());
+        }
+
+        [TestMethod()]
+        public void GetTokenParsesCommentsCorrectly()
+        {
+            var lexer = new Lexer(@"..\..\comments.txt", new ErrorReporter());
+
+            Assert.AreEqual(new IdentifierToken("valid_token"), lexer.NextToken());
+            Assert.AreEqual(new DivideToken(), lexer.NextToken());
+            Assert.AreEqual(new IdentifierToken("anothertoken"), lexer.NextToken());
+            Assert.AreEqual(new NumberToken(1234), lexer.NextToken());
+            Assert.AreEqual(new TextToken("test"), lexer.NextToken());
+            Assert.AreEqual(new EOFToken(), lexer.NextToken());
+        }
         
         [TestMethod()]
         public void GetTokenSetsLineAndColumnCorrectlyWith4SpacesPerTab()
@@ -125,23 +157,23 @@ namespace CompilersCourseWork.Tests
 
             Token token;
 
-            token = lexer.GetToken();
+            token = lexer.NextToken();
             Assert.AreEqual(0, token.Line);
             Assert.AreEqual(0, token.Column);
 
-            token = lexer.GetToken();
+            token = lexer.NextToken();
             Assert.AreEqual(0, token.Line);
             Assert.AreEqual(6, token.Column);
 
-            token = lexer.GetToken();
+            token = lexer.NextToken();
             Assert.AreEqual(2, token.Line);
             Assert.AreEqual(0, token.Column);
 
-            token = lexer.GetToken();
+            token = lexer.NextToken();
             Assert.AreEqual(4, token.Line);
             Assert.AreEqual(4, token.Column);
 
-            token = lexer.GetToken();
+            token = lexer.NextToken();
             Assert.AreEqual(5, token.Line);
             Assert.AreEqual(8, token.Column);
         }
@@ -153,37 +185,100 @@ namespace CompilersCourseWork.Tests
 
             Token token;
 
-            token = lexer.GetToken();
+            token = lexer.NextToken();
             Assert.AreEqual(0, token.Line);
             Assert.AreEqual(0, token.Column);
 
-            token = lexer.GetToken();
+            token = lexer.NextToken();
             Assert.AreEqual(0, token.Line);
             Assert.AreEqual(6, token.Column);
 
-            token = lexer.GetToken();
+            token = lexer.NextToken();
             Assert.AreEqual(2, token.Line);
             Assert.AreEqual(0, token.Column);
 
-            token = lexer.GetToken();
+            token = lexer.NextToken();
             Assert.AreEqual(4, token.Line);
             Assert.AreEqual(8, token.Column);
 
-            token = lexer.GetToken();
+            token = lexer.NextToken();
             Assert.AreEqual(5, token.Line);
             Assert.AreEqual(16, token.Column);
         }
 
-        // comments
-        // invalid identifiers
-        // integers
-        // invalid integers
-        // strings
-        // invalid strings
-        // booleans
-        // invalid booleans
-        // operators
-        // invalid operators
+
+
+        [TestMethod()]
+        public void ExampleProgramIsTokenizedCorrectly()
+        {
+            var lexer = new Lexer(@"..\..\example_program.txt", new ErrorReporter(), 8);
+            TokenHelper(lexer, new PrintToken(), 0, 0);
+            TokenHelper(lexer, new TextToken("Give a number"), 0, 6);
+            TokenHelper(lexer, new SemicolonToken(), 0, 21);
+
+            TokenHelper(lexer, new VarToken(), 1, 0);
+            TokenHelper(lexer, new IdentifierToken("n"), 1, 4);
+            TokenHelper(lexer, new ColonToken(), 1, 6);
+            TokenHelper(lexer, new IntToken(), 1, 8);
+            TokenHelper(lexer, new SemicolonToken(), 1, 11);
+
+            TokenHelper(lexer, new ReadToken(), 2, 0);
+            TokenHelper(lexer, new IdentifierToken("n"), 2, 5);
+            TokenHelper(lexer, new SemicolonToken(), 2, 6);
+
+            TokenHelper(lexer, new VarToken(), 3, 0);
+            TokenHelper(lexer, new IdentifierToken("v"), 3, 4);
+            TokenHelper(lexer, new ColonToken(), 3, 6);
+            TokenHelper(lexer, new IntToken(), 3, 8);
+            TokenHelper(lexer, new AssignmentToken(), 3, 12);
+            TokenHelper(lexer, new NumberToken(1), 3, 15);
+            TokenHelper(lexer, new SemicolonToken(), 3, 16);
+
+            TokenHelper(lexer, new VarToken(), 4, 0);
+            TokenHelper(lexer, new IdentifierToken("i"), 4, 4);
+            TokenHelper(lexer, new ColonToken(), 4, 6);
+            TokenHelper(lexer, new IntToken(), 4, 8);
+            TokenHelper(lexer, new SemicolonToken(), 4, 11);
+
+            TokenHelper(lexer, new ForToken(), 5, 0);
+            TokenHelper(lexer, new IdentifierToken("i"), 5, 4);
+            TokenHelper(lexer, new InToken(), 5, 6);
+            TokenHelper(lexer, new NumberToken(1), 5, 9);
+            TokenHelper(lexer, new RangeToken(), 5, 10);
+            TokenHelper(lexer, new IdentifierToken("n"), 5, 12);
+            TokenHelper(lexer, new DoToken(), 5, 14);
+
+            TokenHelper(lexer, new IdentifierToken("v"), 6, 8);
+            TokenHelper(lexer, new AssignmentToken(), 6, 10);
+            TokenHelper(lexer, new IdentifierToken("v"), 6, 13);
+            TokenHelper(lexer, new MultiplyToken(), 6, 15);
+            TokenHelper(lexer, new IdentifierToken("i"), 6, 17);
+            TokenHelper(lexer, new SemicolonToken(), 6, 18);
+
+            TokenHelper(lexer, new EndToken(), 7, 0);
+            TokenHelper(lexer, new ForToken(), 7, 4);
+            TokenHelper(lexer, new SemicolonToken(), 7, 7);
+
+
+            TokenHelper(lexer, new PrintToken(), 8, 0);
+            TokenHelper(lexer, new TextToken("The result is: "), 8, 6);
+            TokenHelper(lexer, new SemicolonToken(), 8, 23);
+
+            TokenHelper(lexer, new PrintToken(), 9, 0);
+            TokenHelper(lexer, new IdentifierToken("v"), 9, 6);
+            TokenHelper(lexer, new SemicolonToken(), 9, 7);
+        }
+
+        private void TokenHelper(Lexer lexer, Token expected, int line, int column)
+        {
+            var actual = lexer.NextToken();
+            Assert.AreEqual(expected, actual);
+            Assert.AreEqual(line, actual.Line);
+            Assert.AreEqual(column, actual.Column);
+        }
+        // invalid characters when token start expected
+        // invalid operators (.. mostly)
+        // parenthesis!
 
     }
 }
