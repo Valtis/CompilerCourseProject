@@ -5,7 +5,7 @@ line
 comment ****/
 1234
 /* multiline comment
-// with single comment inside
+// with single line comment inside
 */
 "test"
 /* hello */

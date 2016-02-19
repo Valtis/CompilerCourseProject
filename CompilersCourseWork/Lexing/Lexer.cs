@@ -9,13 +9,16 @@ namespace CompilersCourseWork.Lexing
     public class Lexer
     {
         private TextReader reader;
+        private ErrorReporter reporter;
         private IList<TokenParser> parsers;
+
         // whitespace parsing (ignoring, really) is special cased, as this is done before
         // regular tokenization to remove any whitespace.
 
         public Lexer(string path, ErrorReporter reporter, int spaces_per_tab=4)
         {
             reader = new TextReader(path, spaces_per_tab);
+            this.reporter = reporter;
             reporter.Lines = reader.Lines;
                
 
@@ -45,6 +48,8 @@ namespace CompilersCourseWork.Lexing
         
         private Token GetToken()
         {
+            var line = reader.Line;
+            var column = reader.Column;
             var character = reader.PeekCharacter();
 
             if (!character.HasValue)
@@ -60,7 +65,17 @@ namespace CompilersCourseWork.Lexing
                 }
             }
 
-            throw new NotImplementedException("Not implemented");
+
+            reporter.ReportError(
+                Error.LEXICAL_ERROR,
+                "Invalid start for token: " + "'" + character.Value + "'",
+                line,
+                column
+                );
+
+            reader.NextCharacter();
+            // force next level to get next token
+            return new WhitespaceToken();
         }       
     }
 }

@@ -47,7 +47,7 @@ namespace CompilersCourseWork.Tests
             Assert.AreEqual(new BoolToken(), lexer.NextToken());
             Assert.AreEqual(new AssertToken(), lexer.NextToken());
         }
-        
+
         [TestMethod()]
         public void GetTokensHandlesIntegers()
         {
@@ -76,7 +76,7 @@ namespace CompilersCourseWork.Tests
             Assert.IsTrue(reporter.Errors[0].Message.ToLower().Contains("invalid character"));
 
 
-            Assert.AreEqual(Error.LEXICAL_ERROR, reporter.Errors[0].Type);
+            Assert.AreEqual(Error.LEXICAL_ERROR, reporter.Errors[1].Type);
             Assert.AreEqual(1, reporter.Errors[1].Line);
             Assert.AreEqual(0, reporter.Errors[1].Column);
             Assert.IsTrue(reporter.Errors[1].Message.ToLower().Contains("number does not fit"));
@@ -112,7 +112,7 @@ namespace CompilersCourseWork.Tests
             Assert.IsTrue(reporter.Errors[0].Message.ToLower().Contains("invalid escape sequence"));
 
 
-            Assert.AreEqual(Error.LEXICAL_ERROR, reporter.Errors[0].Type);
+            Assert.AreEqual(Error.LEXICAL_ERROR, reporter.Errors[1].Type);
             Assert.AreEqual(1, reporter.Errors[1].Line);
             Assert.AreEqual(13, reporter.Errors[1].Column);
             Assert.IsTrue(reporter.Errors[1].Message.ToLower().Contains("unmatched"));
@@ -135,6 +135,68 @@ namespace CompilersCourseWork.Tests
             Assert.AreEqual(new SemicolonToken(), lexer.NextToken());
             Assert.AreEqual(new ColonToken(), lexer.NextToken());
             Assert.AreEqual(new RangeToken(), lexer.NextToken());
+            Assert.AreEqual(new LParenToken(), lexer.NextToken());
+            Assert.AreEqual(new RParenToken(), lexer.NextToken());
+        }
+
+        [TestMethod()]
+        public void GetTokenParsesHandlesInvalidOperators()
+        {
+            var reporter = new ErrorReporter();
+            var lexer = new Lexer(@"..\..\invalid_operators.txt", reporter);
+
+            Assert.AreEqual(new IdentifierToken("this"), lexer.NextToken());
+            Assert.AreEqual(new IdentifierToken("contains"), lexer.NextToken());
+            Assert.AreEqual(new RangeToken(), lexer.NextToken());
+            Assert.AreEqual(new IdentifierToken("invalid_operators"), lexer.NextToken());
+
+            Assert.AreEqual(2, reporter.Errors.Count);
+
+            Assert.AreEqual(Error.LEXICAL_ERROR, reporter.Errors[0].Type);
+            Assert.AreEqual(0, reporter.Errors[0].Line);
+            Assert.AreEqual(5, reporter.Errors[0].Column);
+            Assert.IsTrue(reporter.Errors[0].Message.ToLower().Contains("invalid operator"));
+
+
+            Assert.AreEqual(Error.LEXICAL_ERROR, reporter.Errors[1].Type);
+            Assert.AreEqual(0, reporter.Errors[1].Line);
+            Assert.AreEqual(17, reporter.Errors[1].Column);
+            Assert.IsTrue(reporter.Errors[1].Message.ToLower().Contains("invalid operator"));
+        }
+                
+        [TestMethod()]
+        public void GetTokenParsesHandlesInvalidCharacters()
+        {
+            var reporter = new ErrorReporter();
+            var lexer = new Lexer(@"..\..\invalid_characters.txt", reporter);
+
+            Assert.AreEqual(new IdentifierToken("hello"), lexer.NextToken());
+            Assert.AreEqual(new IdentifierToken("there"), lexer.NextToken());
+            Assert.AreEqual(new TextToken("just"), lexer.NextToken());
+            Assert.AreEqual(new IdentifierToken("testing"), lexer.NextToken());
+            Assert.AreEqual(new NumberToken(1234), lexer.NextToken());
+
+            Assert.AreEqual(4, reporter.Errors.Count);
+
+            Assert.AreEqual(Error.LEXICAL_ERROR, reporter.Errors[0].Type);
+            Assert.AreEqual(0, reporter.Errors[0].Line);
+            Assert.AreEqual(0, reporter.Errors[0].Column);
+            Assert.IsTrue(reporter.Errors[0].Message.ToLower().Contains("invalid start"));
+
+            Assert.AreEqual(Error.LEXICAL_ERROR, reporter.Errors[1].Type);
+            Assert.AreEqual(0, reporter.Errors[1].Line);
+            Assert.AreEqual(6, reporter.Errors[1].Column);
+            Assert.IsTrue(reporter.Errors[1].Message.ToLower().Contains("invalid start"));
+
+            Assert.AreEqual(Error.LEXICAL_ERROR, reporter.Errors[2].Type);
+            Assert.AreEqual(0, reporter.Errors[2].Line);
+            Assert.AreEqual(18, reporter.Errors[2].Column);
+            Assert.IsTrue(reporter.Errors[2].Message.ToLower().Contains("invalid start"));
+
+            Assert.AreEqual(Error.LEXICAL_ERROR, reporter.Errors[3].Type);
+            Assert.AreEqual(0, reporter.Errors[3].Line);
+            Assert.AreEqual(26, reporter.Errors[3].Column);
+            Assert.IsTrue(reporter.Errors[3].Message.ToLower().Contains("invalid start"));
         }
 
         [TestMethod()]
@@ -149,7 +211,7 @@ namespace CompilersCourseWork.Tests
             Assert.AreEqual(new TextToken("test"), lexer.NextToken());
             Assert.AreEqual(new EOFToken(), lexer.NextToken());
         }
-        
+
         [TestMethod()]
         public void GetTokenSetsLineAndColumnCorrectlyWith4SpacesPerTab()
         {
@@ -269,6 +331,29 @@ namespace CompilersCourseWork.Tests
             TokenHelper(lexer, new SemicolonToken(), 9, 7);
         }
 
+        [TestMethod()]
+        public void ExampleProgram2IsTokenizedCorrectly()
+        {
+            var lexer = new Lexer(@"..\..\example_program2.txt", new ErrorReporter(), 8);
+            TokenHelper(lexer, new VarToken(), 0, 0);
+            TokenHelper(lexer, new IdentifierToken("X"), 0, 4);
+            TokenHelper(lexer, new ColonToken(), 0, 6);
+            TokenHelper(lexer, new IntToken(), 0, 8);
+            TokenHelper(lexer, new AssignmentToken(), 0, 12);
+            TokenHelper(lexer, new NumberToken(4), 0, 15);
+            TokenHelper(lexer, new PlusToken(), 0, 17);
+            TokenHelper(lexer, new LParenToken(), 0, 19);
+            TokenHelper(lexer, new NumberToken(6), 0, 20);
+            TokenHelper(lexer, new MultiplyToken(), 0, 22);
+            TokenHelper(lexer, new NumberToken(2), 0, 24);
+            TokenHelper(lexer, new RParenToken(), 0, 25);
+            TokenHelper(lexer, new SemicolonToken(), 0, 26);
+
+            TokenHelper(lexer, new PrintToken(), 1, 0);
+            TokenHelper(lexer, new IdentifierToken("X"), 1, 6);
+            TokenHelper(lexer, new SemicolonToken(), 1, 7);
+        }
+
         private void TokenHelper(Lexer lexer, Token expected, int line, int column)
         {
             var actual = lexer.NextToken();
@@ -276,9 +361,10 @@ namespace CompilersCourseWork.Tests
             Assert.AreEqual(line, actual.Line);
             Assert.AreEqual(column, actual.Column);
         }
+
+
         // invalid characters when token start expected
         // invalid operators (.. mostly)
-        // parenthesis!
 
     }
 }

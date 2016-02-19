@@ -74,6 +74,7 @@
     <Compile Include="Tokens\IntToken.cs" />
     <Compile Include="Tokens\KeywordToken.cs" />
     <Compile Include="Tokens\LessThanToken.cs" />
+    <Compile Include="Tokens\LParenToken.cs" />
     <Compile Include="Tokens\MinusToken.cs" />
     <Compile Include="Tokens\MultiplyToken.cs" />
     <Compile Include="Tokens\NotToken.cs" />
@@ -83,6 +84,7 @@
     <Compile Include="Tokens\PrintToken.cs" />
     <Compile Include="Tokens\RangeToken.cs" />
     <Compile Include="Tokens\ReadToken.cs" />
+    <Compile Include="Tokens\RParenToken.cs" />
     <Compile Include="Tokens\SemicolonToken.cs" />
     <Compile Include="Tokens\StringToken.cs" />
     <Compile Include="Tokens\TextToken.cs" />

@@ -36,6 +36,8 @@ namespace CompilersCourseWork.Lexing
             operators.Add('!', typeof(NotToken));
             operators.Add(';', typeof(SemicolonToken));
             operators.Add(':', typeof(ColonToken));
+            operators.Add('(', typeof(LParenToken));
+            operators.Add(')', typeof(RParenToken));
         }
 
         internal override bool Parses(char character)
@@ -45,6 +47,8 @@ namespace CompilersCourseWork.Lexing
 
         protected override Token DoParse()
         {
+            var line = Reader.Line;
+            var column = Reader.Column;
             var character = Reader.NextCharacter().Value;
 
             if (two_character_operators.ContainsKey(character))
@@ -61,7 +65,22 @@ namespace CompilersCourseWork.Lexing
                 }
             }
 
-            return (Token)Activator.CreateInstance(operators[character]);            
+            try
+            {
+                return (Token)Activator.CreateInstance(operators[character]);
+            }
+            catch (KeyNotFoundException e)
+            {
+                Reporter.ReportError(
+                    Error.LEXICAL_ERROR,
+                    "Invalid operator " + "'" + character + "'",
+                    line,
+                    column
+                    );
+
+                // pretend we read whitespace to force lexer to get next token
+                return new WhitespaceToken();
+            }            
         }
     }
 }
