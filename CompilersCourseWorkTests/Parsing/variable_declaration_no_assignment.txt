@@ -1,0 +1,3 @@
+﻿var a : string;
+var b : int;
+var c : bool;
