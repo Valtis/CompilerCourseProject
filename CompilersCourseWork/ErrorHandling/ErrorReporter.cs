@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CompilersCourseWork.ErrorHandling
 {
-    public enum Error { LEXICAL_ERROR }
+    public enum Error { NOTE, WARNING, LEXICAL_ERROR, SYNTAX_ERROR }
 
     public class ErrorReporter
     {
@@ -18,7 +18,10 @@ namespace CompilersCourseWork.ErrorHandling
         {
             get
             {
-                return errors;
+                var filtered_list = from e in errors
+                                    where (e.Type != Error.NOTE && e.Type != Error.WARNING)
+                                    select e;
+                return new List<ErrorData>(filtered_list);
             }
         }
 
@@ -42,7 +45,7 @@ namespace CompilersCourseWork.ErrorHandling
 
         public void ReportError(Error type, string msg, int line, int column)
         {
-            Errors.Add(new ErrorData(Lines, type, msg, line, column));
+            errors.Add(new ErrorData(Lines, type, msg, line, column));
         }   
 
         public void PrintErrors()

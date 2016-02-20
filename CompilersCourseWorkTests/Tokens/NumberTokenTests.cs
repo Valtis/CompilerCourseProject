@@ -16,7 +16,7 @@ namespace CompilersCourseWork.Tokens.Tests
         public void StringRepresentationIsCorrect()
         {
             var token = new NumberToken(654);
-            Assert.AreEqual("<number:0,0;654>", token.ToString());
+            Assert.AreEqual("<number - '654'>", token.ToString());
         }
    
         [TestMethod()]

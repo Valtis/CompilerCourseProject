@@ -18,7 +18,7 @@ namespace CompilersCourseWork.Tokens.Tests
             token.Line = 5;
             token.Column = 25;
 
-            Assert.AreEqual("<text:5,25;Hello>", token.ToString());
+            Assert.AreEqual("<text - 'Hello'>", token.ToString());
             
         }
 

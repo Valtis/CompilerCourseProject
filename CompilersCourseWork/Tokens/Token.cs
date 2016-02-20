@@ -42,9 +42,15 @@ namespace CompilersCourseWork.Tokens
         public override string ToString()
         {
             var repr = GetStringRepresentation();
-            return "<" + repr.Item1 + ":" + Line + "," + Column + ";" + repr.Item2 + ">";
+            string ret =  "<" + repr.Item1;
+            if (repr.Item2.Length != 0)
+            {
+                ret += " - '" + repr.Item2 + "'";
+            }
+            return ret + ">";
         }
-        
+         
+                
         protected abstract Tuple<String, String> GetStringRepresentation();
     }
 }

@@ -42,7 +42,7 @@ namespace CompilersCourseWork.AST
             }
 
             var asVariableNode = obj as VariableNode;
-            if (obj == null || asVariableNode.Name != Name || asVariableNode.Type != Type)
+            if (asVariableNode == null || asVariableNode.Name != Name || asVariableNode.Type != Type)
             {
                 return false;
             }

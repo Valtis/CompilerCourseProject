@@ -62,12 +62,29 @@ namespace CompilersCourseWork.ErrorHandling
             ConsoleColor color = Console.ForegroundColor;
             switch (Type)
             {
+                case Error.NOTE:
+                    color = ConsoleColor.Green;
+                    Console.ForegroundColor = color;
+                    Console.Write("Note: ");
+                    break;
+
+                case Error.WARNING:
+                    color = ConsoleColor.Yellow;
+                    Console.ForegroundColor = color;
+                    Console.Write("Warning: ");
+                    break;
+
                 case Error.LEXICAL_ERROR:
                     color = ConsoleColor.Red;
                     Console.ForegroundColor = color;
-                    Console.Write("Lexical error ");
+                    Console.Write("Lexical error: ");
                     break;
 
+                case Error.SYNTAX_ERROR:
+                    color = ConsoleColor.Red;
+                    Console.ForegroundColor = color;
+                    Console.Write("Syntax error: ");
+                    break;
                 default:
                     Console.Write("<INVALID_ERROR_TYPE>: ");
                     break;
@@ -76,7 +93,7 @@ namespace CompilersCourseWork.ErrorHandling
 
             Console.ResetColor();
             // line, column are zero-based internally
-            Console.Write("at line " + (line+1) + " column " + (column+1) + ": " + msg);
+            Console.Write(msg + " at line " + (line + 1) + " column " + (column + 1));
             Console.Write("\n\n" + lines[line]);
 
             Console.ForegroundColor = color;

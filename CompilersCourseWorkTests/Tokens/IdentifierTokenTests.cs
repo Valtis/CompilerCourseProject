@@ -18,7 +18,7 @@ namespace CompilersCourseWork.Tokens.Tests
             token.Line = 5;
             token.Column = 20;
 
-            Assert.AreEqual("<Identifier:5,20;Hello>", token.ToString());
+            Assert.AreEqual("<Identifier - 'Hello'>", token.ToString());
         }
 
 

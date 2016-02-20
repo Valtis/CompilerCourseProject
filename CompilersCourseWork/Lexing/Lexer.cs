@@ -94,7 +94,17 @@ namespace CompilersCourseWork.Lexing
 
             if (!character.HasValue)
             {
-                return new EOFToken();
+                var eof = new EOFToken();
+                eof.Line = reader.Lines.Length - 1;
+                if (eof.Line != -1)
+                {
+                    eof.Column = reader.Lines[eof.Line].Length - 1;
+                }
+                else
+                {
+                    eof.Column = 0;
+                }
+                return eof;
             }
 
             foreach (var parser in parsers)

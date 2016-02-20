@@ -12,10 +12,10 @@ namespace CompilersCourseWork.Tokens.Tests
             token.Line = 20;
             token.Column = 40;
 
-            Assert.AreEqual("<Keyword:20,40;for>", token.ToString());
+            Assert.AreEqual("<Keyword - 'for'>", token.ToString());
 
             var token2 = new VarToken();
-            Assert.AreEqual("<Keyword:0,0;var>", token2.ToString());
+            Assert.AreEqual("<Keyword - 'var'>", token2.ToString());
         }
 
         [TestMethod()]

@@ -3,6 +3,7 @@ using CompilersCourseWork.ErrorHandling;
 using CompilersCourseWork.Lexing;
 using CompilersCourseWork.Tokens;
 using System;
+using System.Collections.Generic;
 
 namespace CompilersCourseWork.Parsing
 {
@@ -36,38 +37,70 @@ namespace CompilersCourseWork.Parsing
 
         private Node ParseStatement()
         {
-            var type = lexer.PeekToken().GetType();
+            var token =  lexer.PeekToken();
+            var type = token.GetType();
             Node node = null;
             if (type == typeof(VarToken))
             {
                 node = ParseVariableDeclaration();
             }
-
-            lexer.NextToken();
-            if (node == null)
+            else
             {
-                throw new NotImplementedException("Not implemented");
+                ReportUnexpectedToken(
+                    new List<Token>
+                    {
+                        new VarToken()
+                    },
+                    lexer.PeekToken());
             }
+
+            try
+            {
+                Expect<SemicolonToken>();
+            } catch (InvalidParseException e)
+            {
+                reporter.ReportError(Error.NOTE,
+                    "This statement is missing its semicolon",
+                    token.Line,
+                    token.Column
+                );
+            }
+
             return node;
         }
 
 
         private Node ParseVariableDeclaration()
         {
-            lexer.NextToken();
-            var idToken = (IdentifierToken)lexer.NextToken();
-            lexer.NextToken();
+            var varToken = lexer.NextToken();
 
-            var typeToken = lexer.NextToken();
-            var var_node = new VariableNode(
-                idToken.Line, 
-                idToken.Column,
-                idToken.Identifier,
-                GetTypeFrom(typeToken)
+            try
+            {
+                var idToken = Expect<IdentifierToken>();
+
+                Expect<ColonToken>();
+
+                var typeToken = lexer.NextToken();
+                var var_node = new VariableNode(
+                    idToken.Line, 
+                    idToken.Column,
+                    idToken.Identifier,
+                    GetTypeFrom(typeToken)
+                    );
+
+
+                return var_node;
+            } 
+            catch (InvalidParseException e)
+            {
+                SkipToToken<SemicolonToken>();
+                reporter.ReportError(Error.NOTE,
+                    "Error occured while parsing variable declaration",
+                    varToken.Line,
+                    varToken.Column
                 );
-
-
-            return var_node;
+                return new ErrorNode();
+            }            
         }
 
 
@@ -88,8 +121,69 @@ namespace CompilersCourseWork.Parsing
                 return VariableType.BOOLEAN;
             }
 
-            throw new NotImplementedException("Error handling not implemented");
+            ReportUnexpectedToken(
+                new List<Token>
+                {
+                    new StringToken(),
+                    new IntToken(),
+                    new BoolToken()
+                }
+                , token);
+
+            throw new InvalidParseException();
         }
-        
+                
+
+        private T Expect<T>() where T : Token, new()
+        {
+            var token = lexer.NextToken();
+
+            var asT = token as T;
+            if (asT == null)
+            {
+
+                // backtrack in case this token is a token that we will
+                // skip to in the calling method
+                lexer.Backtrack();
+             
+                ReportUnexpectedToken(new T(), token);
+                throw new InvalidParseException();
+            }
+
+            return asT;
+        }
+
+        private void ReportUnexpectedToken(Token expected, Token actual)
+        {
+            reporter.ReportError(Error.SYNTAX_ERROR,
+                    "Expected token " + expected + " but was " + actual,
+                    actual.Line,
+                    actual.Column
+                    );
+        }
+
+        private void ReportUnexpectedToken(IList<Token> expected, Token actual)
+        {
+            string str =  "";
+            foreach (var e in expected)
+            {
+                str += " " + e;
+            }
+            
+            reporter.ReportError(Error.SYNTAX_ERROR,
+                    "Expected one of" + str + " but was " + actual,
+                    actual.Line,
+                    actual.Column
+                    );
+        }
+
+        private void SkipToToken<T>() where T : Token
+        {
+            while (lexer.PeekToken()?.GetType() != typeof(T))
+            {
+                lexer.NextToken();
+            }
+            
+        }
     }
 }

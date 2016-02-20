@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AST\ErrorNode.cs" />
     <Compile Include="AST\Node.cs" />
     <Compile Include="AST\StatementsNode.cs" />
     <Compile Include="AST\VariableNode.cs" />
@@ -60,6 +61,7 @@
     <Compile Include="Lexing\TextReader.cs" />
     <Compile Include="Lexing\Lexer.cs" />
     <Compile Include="Lexing\WhitespaceParser.cs" />
+    <Compile Include="Parsing\InvalidParseException.cs" />
     <Compile Include="Parsing\Parser.cs" />
     <Compile Include="Parsing\VariableType.cs" />
     <Compile Include="Program.cs" />

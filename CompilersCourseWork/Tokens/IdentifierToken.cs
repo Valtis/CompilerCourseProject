@@ -4,13 +4,17 @@ namespace CompilersCourseWork.Tokens
 {
     public class IdentifierToken : Token
     {
-        private string identifier;
+        private readonly string identifier;
 
+
+        public IdentifierToken()
+        {
+            identifier = "";
+        }
 
         public IdentifierToken(String identifier)
         {
-            Identifier = identifier;
-
+            this.identifier = identifier;
         }
 
         public string Identifier
@@ -18,11 +22,6 @@ namespace CompilersCourseWork.Tokens
             get
             {
                 return identifier;
-            }
-
-            set
-            {
-                identifier = value;
             }
         }
 
