@@ -16,9 +16,7 @@ namespace CompilersCourseWork.Lexing
         {
             return character == '"';
         }
-
-
-
+        
         protected override Token DoParse()
         {
             var builder = new StringBuilder();

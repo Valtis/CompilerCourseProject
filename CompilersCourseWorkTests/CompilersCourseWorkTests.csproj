@@ -65,22 +65,22 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="comments.txt" />
-    <Content Include="empty.txt" />
+    <Content Include="Lexing\comments.txt" />
+    <Content Include="Lexing\empty.txt" />
     <Content Include="example_program.txt" />
     <Content Include="example_program2.txt" />
-    <Content Include="invalid_characters.txt" />
-    <Content Include="invalid_integers.txt" />
-    <Content Include="invalid_strings.txt" />
-    <Content Include="keywords.txt" />
-    <Content Include="line_and_column.txt" />
-    <Content Include="operators.txt" />
-    <Content Include="valid_integers.txt" />
-    <Content Include="valid_identifiers.txt" />
-    <Content Include="valid_strings.txt" />
+    <Content Include="Lexing\invalid_characters.txt" />
+    <Content Include="Lexing\invalid_integers.txt" />
+    <Content Include="Lexing\invalid_strings.txt" />
+    <Content Include="Lexing\keywords.txt" />
+    <Content Include="Lexing\line_and_column.txt" />
+    <Content Include="Lexing\operators.txt" />
+    <Content Include="Lexing\valid_integers.txt" />
+    <Content Include="Lexing\valid_identifiers.txt" />
+    <Content Include="Lexing\valid_strings.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="invalid_operators.txt" />
+    <Content Include="Lexing\invalid_operators.txt" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
