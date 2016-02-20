@@ -80,6 +80,10 @@ namespace CompilersCourseWork.Lexing
             {
                 return '\\';
             }
+            else if (next_char == '"')
+            {
+                return '"';
+            }
             else
             {
                 Reporter.ReportError(Error.LEXICAL_ERROR,
