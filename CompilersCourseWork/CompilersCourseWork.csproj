@@ -47,6 +47,8 @@
   <ItemGroup>
     <Compile Include="ErrorHandling\ErrorData.cs" />
     <Compile Include="ErrorHandling\ErrorReporter.cs" />
+    <Compile Include="ErrorHandling\InternalCompilerErrorException.cs" />
+    <Compile Include="Lexing\BacktrackBuffer.cs" />
     <Compile Include="Lexing\CommentParser.cs" />
     <Compile Include="Lexing\IdentifierAndKeywordParser.cs" />
     <Compile Include="Lexing\IntegerParser.cs" />

@@ -268,6 +268,105 @@ namespace CompilersCourseWork.Tests
             Assert.AreEqual(16, token.Column);
         }
 
+        [TestMethod()]
+        public void LexerPeekingWorks()
+        {
+            var lexer = new Lexer(@"..\..\example_program.txt", new ErrorReporter());
+
+            Assert.AreEqual(new PrintToken(), lexer.PeekToken());
+            Assert.AreEqual(new PrintToken(), lexer.PeekToken());
+            Assert.AreEqual(new PrintToken(), lexer.NextToken());
+            Assert.AreEqual(new TextToken("Give a number"), lexer.NextToken());
+            Assert.AreEqual(new SemicolonToken(), lexer.PeekToken());
+            Assert.AreEqual(new SemicolonToken(), lexer.NextToken());
+        }
+
+        [TestMethod()]
+        public void LexerPeekingWorksWithBacktracking()
+        {
+            var lexer = new Lexer(@"..\..\example_program.txt", new ErrorReporter());
+
+            lexer.NextToken();
+            lexer.NextToken();
+            lexer.NextToken();
+            Assert.AreEqual(new VarToken(), lexer.PeekToken());
+
+            lexer.Backtrack();
+            Assert.AreEqual(new SemicolonToken(), lexer.PeekToken());
+            Assert.AreEqual(new SemicolonToken(), lexer.NextToken());
+            Assert.AreEqual(new VarToken(), lexer.PeekToken());
+            Assert.AreEqual(new VarToken(), lexer.PeekToken());
+            lexer.Backtrack();
+            lexer.Backtrack();
+            
+            Assert.AreEqual(new TextToken("Give a number"), lexer.PeekToken());
+            Assert.AreEqual(new TextToken("Give a number"), lexer.NextToken());
+        }
+
+
+        [TestMethod()]
+        public void LexerBackTrackingWorks()
+        {
+            var lexer = new Lexer(@"..\..\example_program.txt", new ErrorReporter());
+
+            Assert.AreEqual(new PrintToken(), lexer.NextToken());
+            Assert.AreEqual(new TextToken("Give a number"), lexer.NextToken());
+            Assert.AreEqual(new SemicolonToken(), lexer.NextToken());
+
+            lexer.Backtrack();
+
+            Assert.AreEqual(new SemicolonToken(), lexer.NextToken());
+
+            lexer.Backtrack();
+            lexer.Backtrack();
+
+            Assert.AreEqual(new TextToken("Give a number"), lexer.NextToken());
+            Assert.AreEqual(new SemicolonToken(), lexer.NextToken());
+        }
+
+        [TestMethod()]
+        public void LexerBackTrackingThrowsIfCalledTooManyTimes()
+        {
+            var lexer = new Lexer(@"..\..\example_program.txt", new ErrorReporter());
+
+            Assert.AreEqual(new PrintToken(), lexer.NextToken());
+            Assert.AreEqual(new TextToken("Give a number"), lexer.NextToken());
+            Assert.AreEqual(new SemicolonToken(), lexer.NextToken());
+
+            for (int i = 0; i < Lexer.BACKTRACK_BUFFER_SIZE; ++i)
+            {
+                lexer.Backtrack();
+            }
+
+            bool throws = false;
+            try
+            {
+               lexer.Backtrack();
+            } catch (InternalCompilerErrorException e)
+            {
+                throws = true;
+            }
+
+            Assert.IsTrue(throws);
+        }
+
+        [TestMethod()]
+        public void LexerBackTrackingThrowsIfCalledWithNonFullBufferTooManyTimes()
+        {
+            var lexer = new Lexer(@"..\..\example_program.txt", new ErrorReporter());
+
+            bool throws = false;
+            try
+            {
+               lexer.Backtrack();
+            }
+            catch (InternalCompilerErrorException e)
+            {
+                throws = true;
+            }
+
+            Assert.IsTrue(throws);
+        }
 
 
         [TestMethod()]
