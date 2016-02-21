@@ -51,7 +51,10 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="AST\IdentifierNodeTests.cs" />
+    <Compile Include="AST\IntegerNodeTests.cs" />
     <Compile Include="AST\StatementsNodeTests.cs" />
+    <Compile Include="AST\StringNodeTests.cs" />
     <Compile Include="AST\VariableNodeTests.cs" />
     <Compile Include="Lexing\LexerTests.cs" />
     <Compile Include="Parsing\ParserTests.cs" />
@@ -83,6 +86,7 @@
     <Content Include="Lexing\valid_strings.txt" />
     <Content Include="Parsing\invalid_variable_declaration_no_assignment.txt" />
     <Content Include="Parsing\variable_declaration_no_assignment.txt" />
+    <Content Include="Parsing\variable_declaration_with_assignment.txt" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Lexing\invalid_operators.txt" />

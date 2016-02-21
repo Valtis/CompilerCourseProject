@@ -14,13 +14,15 @@ namespace CompilersCourseWork.Parsing.Tests
         {
             var reporter = new ErrorReporter();
             var parser = new Parser(
-                new Lexer("../../Parsing/variable_declaration_no_assignment.txt", reporter), 
+                new Lexer("../../Parsing/variable_declaration_no_assignment.txt", reporter),
                 reporter);
 
             var node = parser.Parse();
 
+            Assert.AreEqual(0, reporter.Errors.Count);
+
             ASTPreOrderMatches(
-                node, 
+                node,
                 new List<Node>{
                     new StatementsNode(0, 0),
                     new VariableNode(0, 0, "a", VariableType.STRING),
@@ -28,7 +30,7 @@ namespace CompilersCourseWork.Parsing.Tests
                     new VariableNode(0, 0, "c", VariableType.BOOLEAN),
                 });
 
-            Assert.AreEqual(0, reporter.Errors.Count);
+
         }
 
         [TestMethod()]
@@ -91,6 +93,105 @@ namespace CompilersCourseWork.Parsing.Tests
             Assert.AreEqual(7, reporter.Errors[6].Line);
             Assert.AreEqual(11, reporter.Errors[6].Column);
             Assert.IsTrue(reporter.Errors[6].Message.ToLower().Contains("was <eof - 'eof'>"));
+        }
+
+
+        [TestMethod()]
+        public void ParserParsesValidVariableDeclarationWithAssignment()
+        {
+            var reporter = new ErrorReporter();
+            var parser = new Parser(
+                new Lexer("../../Parsing/variable_declaration_with_assignment.txt", reporter),
+                reporter);
+
+            var node = parser.Parse();
+
+            Assert.AreEqual(0, reporter.Errors.Count);
+
+            ASTPreOrderMatches(
+               node,
+               new List<Node>{
+                    new StatementsNode(0, 0),
+
+                    new VariableNode(0, 0, "a", VariableType.STRING),
+                    new IntegerNode(0, 0, 4),
+
+                    new VariableNode(0, 0, "b", VariableType.BOOLEAN),
+                    new IntegerNode(0, 0, -6),
+
+                    new VariableNode(0, 0, "c", VariableType.INTEGER),
+                    new AddNode(0, 0, null, null),
+                    new IntegerNode(0, 0, 2),
+                    new IntegerNode(0, 0, 4),
+
+
+                    new VariableNode(0, 0, "d", VariableType.INTEGER),
+                    new AddNode(0, 0, null, null),
+                    new StringNode(0, 0, "hello "),
+                    new StringNode(0, 0, " world"),
+
+                    new VariableNode(0, 0, "e", VariableType.INTEGER),
+                    new SubtractNode(0, 0, null, null),
+                    new IntegerNode(0, 0, 2),
+                    new IntegerNode(0, 0, 4),
+
+                    new VariableNode(0, 0, "f", VariableType.INTEGER),
+                    new MultiplyNode(0, 0, null, null),
+                    new IntegerNode(0, 0, 2),
+                    new IntegerNode(0, 0, 4),
+
+                    new VariableNode(0, 0, "g", VariableType.INTEGER),
+                    new DivideNode(0, 0, null, null),
+                    new IntegerNode(0, 0, 20),
+                    new IntegerNode(0, 0, 42),
+
+                    new VariableNode(0, 0, "h", VariableType.INTEGER),
+                    new AndNode(0, 0, null, null),
+                    new IntegerNode(0, 0, 20),
+                    new IntegerNode(0, 0, 42),
+
+                    new VariableNode(0, 0, "i", VariableType.INTEGER),
+                    new ComparisonNode(0, 0, null, null),
+                    new IntegerNode(0, 0, 20),
+                    new IntegerNode(0, 0, 4),
+
+                    new VariableNode(0, 0, "j", VariableType.INTEGER),
+                    new LessThanNode(0, 0, null, null),
+                    new IntegerNode(0, 0, 402),
+                    new IntegerNode(0, 0, 32),
+
+                    new VariableNode(0, 0, "k", VariableType.INTEGER),
+                    new NotNode(0, 0, null),
+                    new IntegerNode(0, 0, 20),
+
+                    new VariableNode(0, 0, "l", VariableType.STRING),
+                    new LessThanNode(0, 0, null, null),
+                    new StringNode(0, 0, "hello"),
+                    new StringNode(0, 0, "world"),
+
+                    new VariableNode(0, 0, "m", VariableType.STRING),
+                    new MultiplyNode(0, 0, null, null),
+                    new AddNode(0, 0, null, null),
+                    new IntegerNode(0, 0, 2),
+                    new IntegerNode(0, 0, 4),
+                    new SubtractNode(0, 0, null, null),
+                    new IntegerNode(0, 0, 5),
+                    new IntegerNode(0, 0, 6),
+
+                    new VariableNode(0, 0, "n", VariableType.STRING),
+                    new MultiplyNode(0, 0, null, null),
+                    new AddNode(0, 0, null, null),
+                    new IdentifierNode(0, 0, "abc"),
+                    new IntegerNode(0, 0, 4),
+                    new IdentifierNode(0, 0, "def"),
+
+                    new VariableNode(0, 0, "o", VariableType.BOOLEAN),
+                    new NotNode(0, 0, null),
+                    new AndNode(0, 0, null, null),
+                    new IdentifierNode(0, 0, "a"),
+                    new IdentifierNode(0, 0, "b"),
+               });
+
         }
 
         private void ASTPreOrderMatches(Node node, IList<Node> nodes_preorder)

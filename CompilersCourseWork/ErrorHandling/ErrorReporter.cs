@@ -48,9 +48,9 @@ namespace CompilersCourseWork.ErrorHandling
             errors.Add(new ErrorData(Lines, type, msg, line, column));
         }   
 
-        public void PrintErrors()
+        public void PrintMessages()
         {
-            foreach (var error in Errors)
+            foreach (var error in errors)
             {
                 error.Print();
             }
