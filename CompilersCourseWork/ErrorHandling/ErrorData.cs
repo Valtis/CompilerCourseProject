@@ -77,13 +77,13 @@ namespace CompilersCourseWork.ErrorHandling
                 case Error.LEXICAL_ERROR:
                     color = ConsoleColor.Red;
                     Console.ForegroundColor = color;
-                    Console.Write("Lexical error: ");
+                    Console.Write("\n\nLexical error: ");
                     break;
 
                 case Error.SYNTAX_ERROR:
                     color = ConsoleColor.Red;
                     Console.ForegroundColor = color;
-                    Console.Write("Syntax error: ");
+                    Console.Write("\n\nSyntax error: ");
                     break;
                 default:
                     Console.Write("<INVALID_ERROR_TYPE>: ");
