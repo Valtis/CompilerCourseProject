@@ -15,11 +15,6 @@ namespace CompilersCourseWork.Lexing
         // maintain a list of previously read tokens in order to allow backtracking if needed
         private BacktrackBuffer backtrack_buffer;
         
-
-        
-        // whitespace parsing (ignoring, really) is special cased, as this is done before
-        // regular tokenization to remove any whitespace.
-
         public Lexer(string path, ErrorReporter reporter, int spaces_per_tab=4)
         {
 
