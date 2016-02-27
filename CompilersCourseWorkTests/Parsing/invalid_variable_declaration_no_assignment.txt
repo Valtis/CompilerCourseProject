@@ -3,6 +3,6 @@ var b  string;
 var valid : string;
 var d : "hello";
 var 412 : int;
-var hello 12345 int;
+var e 12345 int;
 var;
-var a : int
+var f : int

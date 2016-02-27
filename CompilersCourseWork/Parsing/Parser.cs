@@ -9,6 +9,7 @@ namespace CompilersCourseWork.Parsing
 {
     public class Parser
     {
+        private bool suppressSemicolonReporting;
         private Lexer lexer;
         private ErrorReporter reporter;
 
@@ -18,6 +19,7 @@ namespace CompilersCourseWork.Parsing
         {
             this.lexer = lexer;
             this.reporter = reporter;
+            this.suppressSemicolonReporting = false;
 
             binary_operators = new Dictionary<Type, Type>
             {
@@ -40,7 +42,7 @@ namespace CompilersCourseWork.Parsing
         {
             var token = lexer.PeekToken();
             var statements = new StatementsNode(token.Line, token.Column);
-            while (lexer.PeekToken().GetType() != typeof(EOFToken))
+            while (!(lexer.PeekToken() is EOFToken))
             {
                 statements.AddChildren(ParseStatement());
             }
@@ -50,6 +52,7 @@ namespace CompilersCourseWork.Parsing
 
         private Node ParseStatement()
         {
+            suppressSemicolonReporting = false;
             var token = lexer.PeekToken();
             var type = token.GetType();
             Node node = null;
@@ -70,17 +73,27 @@ namespace CompilersCourseWork.Parsing
 
             try
             {
+                // somewhat ugly hack to prevent double reporting of missing ';',
+                // if this was already reported at lower level (variable declaration for example)
                 Expect<SemicolonToken>();
             }
             catch (InvalidParseException e)
             {
-                reporter.ReportError(Error.NOTE,
-                    "This statement is missing its semicolon",
-                    token.Line,
-                    token.Column
-                );
-            }
 
+                SkipToToken<SemicolonToken>();
+                lexer.NextToken();
+                if (suppressSemicolonReporting)
+                {
+                    reporter.ReportError(Error.NOTE,
+                        "This statement is missing its semicolon",
+                        token.Line,
+                        token.Column);
+                }
+
+
+                return new ErrorNode();
+            }
+            
             return node;
         }
 
@@ -103,10 +116,47 @@ namespace CompilersCourseWork.Parsing
                     GetTypeFrom(typeToken)
                     );
 
-                if (lexer.PeekToken().GetType().Equals(typeof(AssignmentToken)))
+                if (lexer.PeekToken() is AssignmentToken)
                 {
                     lexer.NextToken();
                     var_node.AddChildren(ParseExpression());
+                }
+                else if (!(lexer.PeekToken() is SemicolonToken))
+                {
+                    suppressSemicolonReporting = true;
+                    var token = lexer.PeekToken();
+                    // better error reporting for this case
+                    ReportUnexpectedToken(
+                        new List<Token>{ new SemicolonToken(), new AssignmentToken() },
+                        token);
+
+                    // if it looks like next token start an expression, note that 
+                    // maybe assignment is missing
+           
+                    if (token is NumberToken ||
+                        token is TextToken ||
+                        token is IdentifierToken ||
+                        token is LParenToken ||
+                        token is MinusToken)
+                    {
+                        reporter.ReportError(Error.NOTE,
+                            "Maybe you are missing ':='",
+                            token.Line,
+                            token.Column
+                        );
+                    }
+                    // else, note that semicolon is probably missing
+                    else
+                    {
+                        reporter.ReportError(Error.NOTE,
+                            "Maybe you are missing ';'",
+                            token.Line,
+                            token.Column
+                        );
+                    }
+                    SkipToToken<SemicolonToken>();
+
+                    throw new InvalidParseException();
                 }
 
                 return var_node;
@@ -126,7 +176,7 @@ namespace CompilersCourseWork.Parsing
         Node ParseExpression()
         {
             
-            if (lexer.PeekToken().GetType() == typeof(NotToken))
+            if (lexer.PeekToken() is NotToken)
             {
                 return ParseNotExpression();
             }
@@ -168,13 +218,13 @@ namespace CompilersCourseWork.Parsing
             long sign = 1;
             var token = lexer.NextToken();
 
-            if (token.GetType().Equals(typeof(MinusToken)))
+            if (token is MinusToken)
             {
                 sign = -1;
                 token = lexer.NextToken();
             }
 
-            if (token.GetType().Equals(typeof(NumberToken)))
+            if (token is NumberToken)
             {
 
                 return new IntegerNode(
@@ -182,46 +232,51 @@ namespace CompilersCourseWork.Parsing
                     token.Column,
                     sign * (token as NumberToken).Value);
             }
-            else if (token.GetType().Equals(typeof(TextToken)))
+            else if (token is TextToken)
             {
                 return new StringNode(
                     token.Line,
                     token.Column,
                     (token as TextToken).Text);
             }
-            else if (token.GetType().Equals(typeof(IdentifierToken)))
+            else if (token is IdentifierToken)
             {
                 return new IdentifierNode(
                     token.Line,
                     token.Column,
                     (token as IdentifierToken).Identifier);
             }
-            else if (token.GetType().Equals(typeof(LParenToken)))
+            else if (token is LParenToken)
             {
                 var exp = ParseExpression();
                 Expect<RParenToken>();
                 return exp;
             }
-
-
-            lexer.Backtrack();
-            throw new NotImplementedException("Not implemented");
+            else
+            {
+                reporter.ReportError(
+                    Error.SYNTAX_ERROR,
+                    "Unexpected token " + token + " when operand was expected",
+                    token.Line,
+                    token.Column);
+                lexer.Backtrack();
+                throw new InvalidParseException();
+            }
         }
 
 
 
         private VariableType GetTypeFrom(Token token)
         {
-            var type = token.GetType();
-            if (type.Equals(typeof(IntToken)))
+            if (token is IntToken)
             {
                 return VariableType.INTEGER;
             }
-            else if (type.Equals(typeof(StringToken)))
+            else if (token is StringToken)
             {
                 return VariableType.STRING;
             }
-            else if (type.Equals(typeof(BoolToken)))
+            else if (token is BoolToken)
             {
                 return VariableType.BOOLEAN;
             }
@@ -242,20 +297,22 @@ namespace CompilersCourseWork.Parsing
         private T Expect<T>() where T : Token, new()
         {
             var token = lexer.NextToken();
-
-            var asT = token as T;
-            if (asT == null)
+            if (!(token is T))
             {
 
                 // backtrack in case this token is a token that we will
                 // skip to in the calling method
                 lexer.Backtrack();
 
-                ReportUnexpectedToken(new T(), token);
+                // workaround for double semicolon reporting 
+                if (!(typeof(T).Equals(typeof(SemicolonToken)) && suppressSemicolonReporting))
+                {
+                    ReportUnexpectedToken(new T(), token);
+                }
                 throw new InvalidParseException();
             }
 
-            return asT;
+            return (T)token;
         }
 
         private void ReportUnexpectedToken(Token expected, Token actual)
@@ -284,7 +341,8 @@ namespace CompilersCourseWork.Parsing
 
         private void SkipToToken<T>() where T : Token
         {
-            while (lexer.PeekToken()?.GetType() != typeof(T))
+            while (!(lexer.PeekToken() is T || 
+                lexer.PeekToken() is EOFToken))
             {
                 lexer.NextToken();
             }

@@ -13,7 +13,7 @@ namespace CompilersCourseWork.Tests
         public void GetTokenReturnsEOFOnEndOfFile()
         {
             var reporter = new ErrorReporter();
-            var lexer = new Lexer(@"..\..\Lexing\empty.txt", reporter);
+            var lexer = new Lexer(@"..\..\empty.txt", reporter);
             Assert.AreEqual(new EOFToken(), lexer.NextToken());
             Assert.AreEqual(0, reporter.Errors.Count);
         }

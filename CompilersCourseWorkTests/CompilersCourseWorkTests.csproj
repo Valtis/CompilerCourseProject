@@ -72,7 +72,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Lexing\comments.txt" />
-    <Content Include="Lexing\empty.txt" />
+    <Content Include="empty.txt" />
     <Content Include="example_program.txt" />
     <Content Include="example_program2.txt" />
     <Content Include="Lexing\invalid_characters.txt" />
@@ -85,6 +85,7 @@
     <Content Include="Lexing\valid_identifiers.txt" />
     <Content Include="Lexing\valid_strings.txt" />
     <Content Include="Parsing\invalid_variable_declaration_no_assignment.txt" />
+    <Content Include="Parsing\invalid_variable_declaration_with_assignment.txt" />
     <Content Include="Parsing\variable_declaration_no_assignment.txt" />
     <Content Include="Parsing\variable_declaration_with_assignment.txt" />
   </ItemGroup>

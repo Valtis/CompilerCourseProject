@@ -1,0 +1,9 @@
+﻿var a : int 2 + 34;
+var b : int 
+var valid : int = 45;
+var c : int = 4 + 1;
+var d : int :=;
+var e : int := 2+;
+var f : int := 2 4;
+var g : int := (hello + "world";
+var h : int := 2 + 4
