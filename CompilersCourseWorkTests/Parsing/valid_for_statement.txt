@@ -1,0 +1,13 @@
+﻿for foo in 0..1 do
+  a := 4;
+end for	;
+
+for bar in (1 + 4)..hello do
+  var foo : int := 4;
+end for	;
+
+
+for	bar in !((1 * 4) + 1) .. hello -2 do
+  var foo : int := 4;
+  foo := foo + 1;
+end for;

@@ -60,12 +60,21 @@ namespace CompilersCourseWork.Parsing
             {
                 node = ParseVariableAssignment();
             }
+            else if (token is ForToken)
+            {
+                node = ParseForStatement();
+            }
             else
             {
                 ReportUnexpectedToken(
                     new List<Token>
                     {
-                        new VarToken()
+                        new VarToken(),
+                        new IdentifierToken(),
+                        new ForToken(),
+                        new ReadToken(),
+                        new PrintToken(),
+                        new AssertToken(),
                     },
                     lexer.PeekToken());
                 SkipToToken<SemicolonToken>();
@@ -149,8 +158,6 @@ namespace CompilersCourseWork.Parsing
             }
         }
 
-
-
         Node ParseVariableAssignment()
         {
             var identifier = Expect<IdentifierToken>();
@@ -194,6 +201,45 @@ namespace CompilersCourseWork.Parsing
             }
         }
 
+        Node ParseForStatement()
+        {
+            var forToken = Expect<ForToken>();
+
+            try
+            {
+                Expect<IdentifierToken>();
+                Expect<InToken>();
+                ParseExpression();
+                Expect<RangeToken>();
+                ParseExpression();
+                Expect<DoToken>();
+
+                ParseStatement();
+
+                while (!(lexer.PeekToken() is EndToken))
+                {
+                    ParseStatement();
+                }
+
+                Expect<EndToken>();
+                Expect<ForToken>();
+            }
+            catch (InvalidParseException e)
+            {
+                reporter.ReportError(Error.NOTE,
+                    "Error occured while parsing for statement",
+                    forToken.Line,
+                    forToken.Column
+                );
+
+                SkipToToken<SemicolonToken>();
+                return new ErrorNode();
+            }
+
+
+            return null;
+        }
+
         Node ParseExpression()
         {
             
@@ -219,12 +265,14 @@ namespace CompilersCourseWork.Parsing
                     lhs,
                     ParseOperand() });
             }
-            else if (!(peek_token is SemicolonToken))
+            else if (!(peek_token is SemicolonToken) && !(peek_token is RangeToken) && !(peek_token is DoToken))
             {
                 reporter.ReportError(
                     Error.SYNTAX_ERROR,
                     "Unexpected token " + peek_token + 
-                    " when binary operator or " + new SemicolonToken() + 
+                    " when binary operator, " + new SemicolonToken() + 
+                    ", " + new DoToken() +
+                    " or " + new RangeToken() +
                     "  was expected",
                     peek_token.Line,
                     peek_token.Column
