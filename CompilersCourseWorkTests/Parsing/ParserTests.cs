@@ -397,6 +397,66 @@ namespace CompilersCourseWork.Parsing.Tests
             Assert.IsTrue(reporter.Errors[6].Message.ToLower().Contains("was <operator - ';'>"));
         }
 
+
+        [TestMethod()]
+        public void ParserParsesValidForStatement()
+        {
+
+            var reporter = new ErrorReporter();
+            var parser = new Parser(
+                new Lexer("../../Parsing/valid_for_statement.txt", reporter),
+                reporter);
+
+            var node = parser.Parse();
+
+            ASTPreOrderMatches(
+                node,
+                new List<Node>{
+                    new StatementsNode(0, 0),
+
+                    new ForNode(0, 0, null, null, null, null),
+                    new IdentifierNode(0, 0, "foo"),
+                    new IntegerNode(0, 0, 5),
+                    new IntegerNode(0, 0, 9),
+                    new StatementsNode(0, 0),
+                    new VariableAssignmentNode(0, 0, "a"),
+                    new IntegerNode(0, 0, 4),
+
+                    new ForNode(0, 0, null, null, null, null),
+                    new IdentifierNode(0, 0, "bar"),
+                    new AddNode(0, 0, null, null),
+                    new IntegerNode(0, 0, 20),
+                    new IntegerNode(0, 0, 412),
+                    new IdentifierNode(0, 0, "hello"),
+                    new StatementsNode(0, 0),
+                    new VariableDeclarationNode(0, 0, "foo", VariableType.INTEGER),
+                    new IntegerNode(0, 0, 4),
+
+                    new ForNode(0, 0, null, null, null, null),
+                    new IdentifierNode(0, 0, "bar"),
+                    new NotNode(0, 0, null),
+                    new AddNode(0, 0, null, null),
+                    new MultiplyNode(0, 0, null, null),
+                    new IntegerNode(0, 0, 1),
+                    new IntegerNode(0, 0, 4),
+                    new IntegerNode(0, 0, 61),
+                    new SubtractNode(0, 0, null, null),
+                    new IdentifierNode(0, 0, "hello"),
+                    new IntegerNode(0, 0, 2),
+                    new StatementsNode(0, 0),
+                    new VariableDeclarationNode(0, 0, "foo", VariableType.INTEGER),
+                    new IntegerNode(0, 0, 4),
+                    new VariableAssignmentNode(0, 0, "foo"),
+                    new AddNode(0, 0, null, null),
+                    new IdentifierNode(0, 0, "foo"),
+                    new IntegerNode(0, 0, 1),
+
+                });
+
+            Assert.AreEqual(0, reporter.Errors.Count);
+            
+        }
+
         [TestMethod()]
         public void EmptyProgramIsError()
         {

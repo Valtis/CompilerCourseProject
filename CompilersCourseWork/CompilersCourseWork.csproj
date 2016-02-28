@@ -50,6 +50,7 @@
     <Compile Include="AST\ComparisonNode.cs" />
     <Compile Include="AST\DivideNode.cs" />
     <Compile Include="AST\ErrorNode.cs" />
+    <Compile Include="AST\ForNode.cs" />
     <Compile Include="AST\IdentifierNode.cs" />
     <Compile Include="AST\IntegerNode.cs" />
     <Compile Include="AST\LessThanNode.cs" />

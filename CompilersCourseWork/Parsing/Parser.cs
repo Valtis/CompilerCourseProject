@@ -207,22 +207,38 @@ namespace CompilersCourseWork.Parsing
 
             try
             {
-                Expect<IdentifierToken>();
+
+                var identifierToken = Expect<IdentifierToken>();
+                var identifierNode = new IdentifierNode(
+                    identifierToken.Line,
+                    identifierToken.Column,
+                    identifierToken.Identifier);
                 Expect<InToken>();
-                ParseExpression();
+                var startExpression = ParseExpression();
                 Expect<RangeToken>();
-                ParseExpression();
+                var stopExpression = ParseExpression();
                 Expect<DoToken>();
 
-                ParseStatement();
+                var statements = new StatementsNode(0, 0);
+
+                statements.AddChild(ParseStatement());
 
                 while (!(lexer.PeekToken() is EndToken))
                 {
-                    ParseStatement();
+                    statements.AddChild(ParseStatement());
                 }
 
                 Expect<EndToken>();
                 Expect<ForToken>();
+
+                return new ForNode(
+                    forToken.Line,
+                    forToken.Column,
+                    identifierNode,
+                    startExpression,
+                    stopExpression,
+                    statements
+                    );
             }
             catch (InvalidParseException e)
             {
@@ -234,10 +250,7 @@ namespace CompilersCourseWork.Parsing
 
                 SkipToToken<SemicolonToken>();
                 return new ErrorNode();
-            }
-
-
-            return null;
+            }            
         }
 
         Node ParseExpression()

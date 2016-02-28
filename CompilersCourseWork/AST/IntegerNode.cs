@@ -32,6 +32,10 @@
             return (obj as IntegerNode).Value == Value;
         }
 
+        public override string ToString()
+        {
+            return "IdentifierNode - " + value;
+        }
 
         public override int GetHashCode()
         {
