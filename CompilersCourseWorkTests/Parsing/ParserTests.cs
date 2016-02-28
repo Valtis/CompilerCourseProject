@@ -25,9 +25,9 @@ namespace CompilersCourseWork.Parsing.Tests
                 node,
                 new List<Node>{
                     new StatementsNode(0, 0),
-                    new VariableNode(0, 0, "a", VariableType.STRING),
-                    new VariableNode(0, 0, "b", VariableType.INTEGER),
-                    new VariableNode(0, 0, "c", VariableType.BOOLEAN),
+                    new VariableDeclarationNode(0, 0, "a", VariableType.STRING),
+                    new VariableDeclarationNode(0, 0, "b", VariableType.INTEGER),
+                    new VariableDeclarationNode(0, 0, "c", VariableType.BOOLEAN),
                 });
 
 
@@ -49,7 +49,7 @@ namespace CompilersCourseWork.Parsing.Tests
                     new StatementsNode(0, 0),
                     new ErrorNode(),
                     new ErrorNode(),
-                    new VariableNode(0, 0, "valid", VariableType.STRING),
+                    new VariableDeclarationNode(0, 0, "valid", VariableType.STRING),
                     new ErrorNode(),
                     new ErrorNode(),
                     new ErrorNode(),
@@ -113,63 +113,63 @@ namespace CompilersCourseWork.Parsing.Tests
                new List<Node>{
                     new StatementsNode(0, 0),
 
-                    new VariableNode(0, 0, "a", VariableType.STRING),
+                    new VariableDeclarationNode(0, 0, "a", VariableType.STRING),
                     new IntegerNode(0, 0, 4),
 
-                    new VariableNode(0, 0, "b", VariableType.BOOLEAN),
+                    new VariableDeclarationNode(0, 0, "b", VariableType.BOOLEAN),
                     new IntegerNode(0, 0, -6),
 
-                    new VariableNode(0, 0, "c", VariableType.INTEGER),
+                    new VariableDeclarationNode(0, 0, "c", VariableType.INTEGER),
                     new AddNode(0, 0, null, null),
                     new IntegerNode(0, 0, 2),
                     new IntegerNode(0, 0, 4),
 
 
-                    new VariableNode(0, 0, "d", VariableType.INTEGER),
+                    new VariableDeclarationNode(0, 0, "d", VariableType.INTEGER),
                     new AddNode(0, 0, null, null),
                     new StringNode(0, 0, "hello "),
                     new StringNode(0, 0, " world"),
 
-                    new VariableNode(0, 0, "e", VariableType.INTEGER),
+                    new VariableDeclarationNode(0, 0, "e", VariableType.INTEGER),
                     new SubtractNode(0, 0, null, null),
                     new IntegerNode(0, 0, 2),
                     new IntegerNode(0, 0, 4),
 
-                    new VariableNode(0, 0, "f", VariableType.INTEGER),
+                    new VariableDeclarationNode(0, 0, "f", VariableType.INTEGER),
                     new MultiplyNode(0, 0, null, null),
                     new IntegerNode(0, 0, 2),
                     new IntegerNode(0, 0, 4),
 
-                    new VariableNode(0, 0, "g", VariableType.INTEGER),
+                    new VariableDeclarationNode(0, 0, "g", VariableType.INTEGER),
                     new DivideNode(0, 0, null, null),
                     new IntegerNode(0, 0, 20),
                     new IntegerNode(0, 0, 42),
 
-                    new VariableNode(0, 0, "h", VariableType.INTEGER),
+                    new VariableDeclarationNode(0, 0, "h", VariableType.INTEGER),
                     new AndNode(0, 0, null, null),
                     new IntegerNode(0, 0, 20),
                     new IntegerNode(0, 0, 42),
 
-                    new VariableNode(0, 0, "i", VariableType.INTEGER),
+                    new VariableDeclarationNode(0, 0, "i", VariableType.INTEGER),
                     new ComparisonNode(0, 0, null, null),
                     new IntegerNode(0, 0, 20),
                     new IntegerNode(0, 0, 4),
 
-                    new VariableNode(0, 0, "j", VariableType.INTEGER),
+                    new VariableDeclarationNode(0, 0, "j", VariableType.INTEGER),
                     new LessThanNode(0, 0, null, null),
                     new IntegerNode(0, 0, 402),
                     new IntegerNode(0, 0, 32),
 
-                    new VariableNode(0, 0, "k", VariableType.INTEGER),
+                    new VariableDeclarationNode(0, 0, "k", VariableType.INTEGER),
                     new NotNode(0, 0, null),
                     new IntegerNode(0, 0, 20),
 
-                    new VariableNode(0, 0, "l", VariableType.STRING),
+                    new VariableDeclarationNode(0, 0, "l", VariableType.STRING),
                     new LessThanNode(0, 0, null, null),
                     new StringNode(0, 0, "hello"),
                     new StringNode(0, 0, "world"),
 
-                    new VariableNode(0, 0, "m", VariableType.STRING),
+                    new VariableDeclarationNode(0, 0, "m", VariableType.STRING),
                     new MultiplyNode(0, 0, null, null),
                     new AddNode(0, 0, null, null),
                     new IntegerNode(0, 0, 2),
@@ -178,14 +178,14 @@ namespace CompilersCourseWork.Parsing.Tests
                     new IntegerNode(0, 0, 5),
                     new IntegerNode(0, 0, 6),
 
-                    new VariableNode(0, 0, "n", VariableType.STRING),
+                    new VariableDeclarationNode(0, 0, "n", VariableType.STRING),
                     new MultiplyNode(0, 0, null, null),
                     new AddNode(0, 0, null, null),
                     new IdentifierNode(0, 0, "abc"),
                     new IntegerNode(0, 0, 4),
                     new IdentifierNode(0, 0, "def"),
 
-                    new VariableNode(0, 0, "o", VariableType.BOOLEAN),
+                    new VariableDeclarationNode(0, 0, "o", VariableType.BOOLEAN),
                     new NotNode(0, 0, null),
                     new AndNode(0, 0, null, null),
                     new IdentifierNode(0, 0, "a"),
@@ -265,7 +265,10 @@ namespace CompilersCourseWork.Parsing.Tests
             Assert.AreEqual(Error.SYNTAX_ERROR, reporter.Errors[5].Type);
             Assert.AreEqual(6, reporter.Errors[5].Line);
             Assert.AreEqual(17, reporter.Errors[5].Column);
-            Assert.IsTrue(reporter.Errors[5].Message.ToLower().Contains("expected token <operator - ';'>"));
+            Assert.IsTrue(reporter.Errors[5].Message.ToLower().Contains("expected one of"));
+            Assert.IsTrue(reporter.Errors[5].Message.ToLower().Contains("<operator - ';'>"));
+            Assert.IsTrue(reporter.Errors[5].Message.ToLower().Contains("<operator - '*'>"));
+            Assert.IsTrue(reporter.Errors[5].Message.ToLower().Contains("<operator - '+'>"));
             Assert.IsTrue(reporter.Errors[5].Message.ToLower().Contains("was <number - '4'>"));
 
 
@@ -284,27 +287,74 @@ namespace CompilersCourseWork.Parsing.Tests
         }
 
         [TestMethod()]
+        public void ParserParsesValidVariableAssignment()
+        {
+            var reporter = new ErrorReporter();
+            var parser = new Parser(
+                new Lexer("../../Parsing/valid_variable_assignment.txt", reporter),
+                reporter);
+
+            var node = parser.Parse();
+
+            ASTPreOrderMatches(
+                node,
+                new List<Node>{
+                    new StatementsNode(0, 0),
+
+                    new VariableAssignmentNode(0, 0, "a"),
+                    new IntegerNode(0, 0, 5),
+
+                    new VariableAssignmentNode(0, 0, "b"),
+                    new MultiplyNode(0, 0, null, null),
+                    new AddNode(0, 0, null, null),
+                    new IntegerNode(0, 0, 6),
+                    new IntegerNode(0, 0, 4),
+                    new IntegerNode(0, 0, 2),
+
+                    new VariableAssignmentNode(0, 0, "c"),
+                    new NotNode(0, 0, null),
+                    new ComparisonNode(0, 0, null, null),
+                    new IdentifierNode(0, 0, "a"),
+                    new IdentifierNode(0, 0, "b"),
+
+                    new VariableAssignmentNode(0, 0, "d"),
+                    new AndNode(0, 0, null, null),
+                    new IdentifierNode(0, 0, "a"),
+                    new IdentifierNode(0, 0, "b"),
+
+                });
+
+            Assert.AreEqual(0, reporter.Errors.Count);
+        }
+
+        [TestMethod()]
+        public void ParserParsesInvalidVariableAssignment()
+        {
+            Assert.Fail();
+        }
+
+        [TestMethod()]
         public void EmptyProgramIsError()
         {
             Assert.Fail();
         }
 
-        private void ASTPreOrderMatches(Node node, IList<Node> nodes_preorder)
+        private void ASTPreOrderMatches(Node node, IList<Node> nodesPreorder)
         {
-            CheckPreorder(node, nodes_preorder);
-            Assert.AreEqual(0, nodes_preorder.Count);
+            CheckPreorder(node, nodesPreorder);
+            Assert.AreEqual(0, nodesPreorder.Count);
         }
 
-        private void CheckPreorder(Node node, IList<Node> nodes_preorder)
+        private void CheckPreorder(Node node, IList<Node> nodesPreOrder)
         {
-            Assert.AreNotEqual(nodes_preorder.Count, 0);
-            Assert.AreEqual(nodes_preorder[0], node);
+            Assert.AreNotEqual(nodesPreOrder.Count, 0);
+            Assert.AreEqual(nodesPreOrder[0], node);
 
-            nodes_preorder.RemoveAt(0);
+            nodesPreOrder.RemoveAt(0);
 
             foreach (var child in node.Children)
             {
-                CheckPreorder(child, nodes_preorder);
+                CheckPreorder(child, nodesPreOrder);
             }
         }
     }

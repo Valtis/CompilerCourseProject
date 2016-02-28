@@ -15,8 +15,8 @@ namespace CompilersCourseWork.AST.Tests
         [TestMethod()]
         public void TwoVariableNodesWithSameNameAndTypeAreEqual()
         {
-            var node1 = new VariableNode(1, 2, "test", VariableType.STRING);
-            var node2 = new VariableNode(71, 122, "test", VariableType.STRING);
+            var node1 = new VariableDeclarationNode(1, 2, "test", VariableType.STRING);
+            var node2 = new VariableDeclarationNode(71, 122, "test", VariableType.STRING);
 
 
             Assert.AreEqual(node1, node2);
@@ -25,24 +25,24 @@ namespace CompilersCourseWork.AST.Tests
         [TestMethod()]
         public void TwoVariableNodesWithSameNameAndDifferentTypeAreNotEqual()
         {
-            var node1 = new VariableNode(1, 2, "test", VariableType.INTEGER);
-            var node2 = new VariableNode(71, 122, "test", VariableType.STRING);
+            var node1 = new VariableDeclarationNode(1, 2, "test", VariableType.INTEGER);
+            var node2 = new VariableDeclarationNode(71, 122, "test", VariableType.STRING);
             Assert.AreNotEqual(node1, node2);
         }
 
         [TestMethod()]
         public void TwoVariableNodesWithDifferentNameAndSameTypeAreNotEqual()
         {
-            var node1 = new VariableNode(1, 2, "test", VariableType.BOOLEAN);
-            var node2 = new VariableNode(71, 122, "dfasdasd", VariableType.BOOLEAN);
+            var node1 = new VariableDeclarationNode(1, 2, "test", VariableType.BOOLEAN);
+            var node2 = new VariableDeclarationNode(71, 122, "dfasdasd", VariableType.BOOLEAN);
             Assert.AreNotEqual(node1, node2);
         }
 
         [TestMethod()]
         public void TwoVariableNodesWithSameNameAndTypeHaveSameHashCode()
         {
-            var node1 = new VariableNode(1, 2, "test", VariableType.STRING);
-            var node2 = new VariableNode(71, 122, "test", VariableType.STRING);
+            var node1 = new VariableDeclarationNode(1, 2, "test", VariableType.STRING);
+            var node2 = new VariableDeclarationNode(71, 122, "test", VariableType.STRING);
 
 
             Assert.AreEqual(node1.GetHashCode(), node2.GetHashCode());

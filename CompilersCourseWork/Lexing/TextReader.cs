@@ -17,9 +17,9 @@ namespace CompilersCourseWork.Lexing
         // column is meant for human-readable notifications, where tab character gets converted
         // into a given number of spaces. array_pos tracks the position at given line, used internally
         private int column;
-        private int array_pos;
+        private int arrayPos;
         
-        private int spaces_per_tab;
+        private int spacesPerTab;
 
         public int Line
         {
@@ -49,14 +49,14 @@ namespace CompilersCourseWork.Lexing
 
         internal void Backtrack()
         {
-            if (array_pos != 0)
+            if (arrayPos != 0)
             {
-                --array_pos;
+                --arrayPos;
             }
             else if (Line != 0)
             {
                 --Line;
-                array_pos = lines[Line].Length - 1;
+                arrayPos = lines[Line].Length - 1;
             }
         }
 
@@ -69,12 +69,12 @@ namespace CompilersCourseWork.Lexing
 
         }
 
-        internal TextReader(string path, int spaces_per_tab)
+        internal TextReader(string path, int spacesPerTab)
         {
             Line = 0;
             Column = 0;
-            array_pos = 0;
-            this.spaces_per_tab = spaces_per_tab;
+            arrayPos = 0;
+            this.spacesPerTab = spacesPerTab;
 
             lines = System.IO.File.ReadAllLines(path);
 
@@ -91,20 +91,20 @@ namespace CompilersCourseWork.Lexing
 
             var value = PeekCharacter();
 
-            ++array_pos;
+            ++arrayPos;
 
             if (value.HasValue && value.Value == '\t')
             {
-                Column += spaces_per_tab;
+                Column += spacesPerTab;
             }
             else
             {
                 Column += 1;
             }
             
-            if (Line < Lines.Length && array_pos >= Lines[Line].Length)
+            if (Line < Lines.Length && arrayPos >= Lines[Line].Length)
             {
-                array_pos = 0;
+                arrayPos = 0;
                 Column = 0;
                 ++Line;
                 if (Line >= Lines.Length)
@@ -124,7 +124,7 @@ namespace CompilersCourseWork.Lexing
             }
             else
             {
-                return Lines[Line][array_pos];
+                return Lines[Line][arrayPos];
             }
         }
     }

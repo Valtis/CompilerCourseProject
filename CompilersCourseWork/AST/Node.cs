@@ -49,7 +49,7 @@ namespace CompilersCourseWork.AST
         }
 
 
-        public void AddChildren(Node node)
+        public void AddChild(Node node)
         {
             Children.Add(node);
         }

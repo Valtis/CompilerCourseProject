@@ -59,7 +59,8 @@
     <Compile Include="AST\StatementsNode.cs" />
     <Compile Include="AST\StringNode.cs" />
     <Compile Include="AST\SubtractNode.cs" />
-    <Compile Include="AST\VariableNode.cs" />
+    <Compile Include="AST\VariableAssignmentNode.cs" />
+    <Compile Include="AST\VariableDeclarationNode.cs" />
     <Compile Include="ErrorHandling\ErrorData.cs" />
     <Compile Include="ErrorHandling\ErrorReporter.cs" />
     <Compile Include="ErrorHandling\InternalCompilerErrorException.cs" />

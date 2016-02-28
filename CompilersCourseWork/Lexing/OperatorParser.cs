@@ -11,17 +11,17 @@ namespace CompilersCourseWork.Lexing
     internal class OperatorParser : TokenParser
     {
         private IDictionary<char, Type> operators;
-        private IDictionary<char, IDictionary<char, Type>> two_character_operators; 
+        private IDictionary<char, IDictionary<char, Type>> twoCharacterOperators; 
 
         internal OperatorParser(TextReader reader, ErrorReporter reporter) : base(reader, reporter)
         {
 
-            two_character_operators = new Dictionary<char, IDictionary<char, Type>>();
-            two_character_operators[':'] = new Dictionary<char, Type>();
-            two_character_operators[':']['='] = typeof(AssignmentToken);
+            twoCharacterOperators = new Dictionary<char, IDictionary<char, Type>>();
+            twoCharacterOperators[':'] = new Dictionary<char, Type>();
+            twoCharacterOperators[':']['='] = typeof(AssignmentToken);
 
-            two_character_operators['.'] = new Dictionary<char, Type>();
-            two_character_operators['.']['.'] = typeof(RangeToken);
+            twoCharacterOperators['.'] = new Dictionary<char, Type>();
+            twoCharacterOperators['.']['.'] = typeof(RangeToken);
 
 
             operators = new Dictionary<char, Type>();
@@ -42,7 +42,7 @@ namespace CompilersCourseWork.Lexing
 
         internal override bool Parses(char character)
         {
-            return operators.ContainsKey(character) || two_character_operators.ContainsKey(character);
+            return operators.ContainsKey(character) || twoCharacterOperators.ContainsKey(character);
         }
 
         protected override Token DoParse()
@@ -51,16 +51,16 @@ namespace CompilersCourseWork.Lexing
             var column = Reader.Column;
             var character = Reader.NextCharacter().Value;
 
-            if (two_character_operators.ContainsKey(character))
+            if (twoCharacterOperators.ContainsKey(character))
             {
                 var next = Reader.PeekCharacter();
                 if (next.HasValue)
                 {
-                    if (two_character_operators[character].ContainsKey(next.Value))
+                    if (twoCharacterOperators[character].ContainsKey(next.Value))
                     {
                         Reader.NextCharacter();
                         return (Token)Activator.
-                            CreateInstance(two_character_operators[character][next.Value]);
+                            CreateInstance(twoCharacterOperators[character][next.Value]);
                     }
                 }
             }

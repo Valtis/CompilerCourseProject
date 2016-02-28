@@ -62,37 +62,37 @@ namespace CompilersCourseWork.Lexing
             Reader.NextCharacter();
 			// there should be, at very least, a newline character remaining,
 			// so getting the value without a check should not cause issues
-            var next_char = Reader.PeekCharacter().Value;
+            var nextChar = Reader.PeekCharacter().Value;
 
-			if (next_char == 'n')
+			if (nextChar == 'n')
             {
                 return '\n';
             }
-            else if (next_char == 't')
+            else if (nextChar == 't')
             {
                 return '\t';
             }
-            else if (next_char == 'r')
+            else if (nextChar == 'r')
             {
                 return '\r';
             }
-            else if (next_char == '\\')
+            else if (nextChar == '\\')
             {
                 return '\\';
             }
-            else if (next_char == '"')
+            else if (nextChar == '"')
             {
                 return '"';
             }
             else
             {
                 Reporter.ReportError(Error.LEXICAL_ERROR,
-                    "Invalid escape sequence character '" + next_char + "'",
+                    "Invalid escape sequence character '" + nextChar + "'",
                     Reader.Line,
                     Reader.Column
                     );
 
-                return next_char;
+                return nextChar;
             }
         }
     }

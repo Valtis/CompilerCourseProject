@@ -1,18 +1,13 @@
 ﻿using CompilersCourseWork.Parsing;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CompilersCourseWork.AST
 {
-    public class VariableNode : Node
+    public class VariableDeclarationNode : Node
     {
         private readonly string name;
         private readonly VariableType type;
         
-        public VariableNode(int line, int column, string name, VariableType type) : base(line, column)
+        public VariableDeclarationNode(int line, int column, string name, VariableType type) : base(line, column)
         {
             this.name = name;
             this.type = type;
@@ -41,7 +36,7 @@ namespace CompilersCourseWork.AST
                 return false;
             }
 
-            var asVariableNode = obj as VariableNode;
+            var asVariableNode = obj as VariableDeclarationNode;
             if (asVariableNode == null || asVariableNode.Name != Name || asVariableNode.Type != Type)
             {
                 return false;

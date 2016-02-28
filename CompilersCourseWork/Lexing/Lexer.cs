@@ -13,16 +13,16 @@ namespace CompilersCourseWork.Lexing
         private IList<TokenParser> parsers;
 
         // maintain a list of previously read tokens in order to allow backtracking if needed
-        private BacktrackBuffer backtrack_buffer;
+        private BacktrackBuffer backTrackBuffer;
         
-        public Lexer(string path, ErrorReporter reporter, int spaces_per_tab=4)
+        public Lexer(string path, ErrorReporter reporter, int spacesPerTab=4)
         {
 
-            reader = new TextReader(path, spaces_per_tab);
+            reader = new TextReader(path, spacesPerTab);
             this.reporter = reporter;
             reporter.Lines = reader.Lines;
 
-            backtrack_buffer = new BacktrackBuffer(BACKTRACK_BUFFER_SIZE);
+            backTrackBuffer = new BacktrackBuffer(BACKTRACK_BUFFER_SIZE);
            
             parsers = new List<TokenParser>();
             parsers.Add(new WhitespaceParser(reader, reporter));
@@ -37,9 +37,9 @@ namespace CompilersCourseWork.Lexing
         public Token NextToken()
         {
 
-            if (!backtrack_buffer.Empty())
+            if (!backTrackBuffer.Empty())
             {
-                return backtrack_buffer.GetToken();
+                return backTrackBuffer.GetToken();
             }
 
             Token token = null;
@@ -50,15 +50,15 @@ namespace CompilersCourseWork.Lexing
                 token = GetToken();
             }
 
-            backtrack_buffer.AddToken(token);
+            backTrackBuffer.AddToken(token);
             return token;
         }
 
         public Token PeekToken()
         {
-            if (!backtrack_buffer.Empty())
+            if (!backTrackBuffer.Empty())
             {
-                return backtrack_buffer.PeekToken();
+                return backTrackBuffer.PeekToken();
             }
             else
             {
@@ -70,15 +70,15 @@ namespace CompilersCourseWork.Lexing
                     token = GetToken();
                 }
 
-                backtrack_buffer.AddToken(token);
-                backtrack_buffer.Backtrack();
-                return backtrack_buffer.PeekToken();
+                backTrackBuffer.AddToken(token);
+                backTrackBuffer.Backtrack();
+                return backTrackBuffer.PeekToken();
             }
         }
 
         public void Backtrack()
         {
-            backtrack_buffer.Backtrack();            
+            backTrackBuffer.Backtrack();            
         }
 
         private Token GetToken()

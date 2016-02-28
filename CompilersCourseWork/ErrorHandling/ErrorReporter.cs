@@ -18,10 +18,10 @@ namespace CompilersCourseWork.ErrorHandling
         {
             get
             {
-                var filtered_list = from e in errors
+                var filteredList = from e in errors
                                     where (e.Type != Error.NOTE && e.Type != Error.WARNING)
                                     select e;
-                return new List<ErrorData>(filtered_list);
+                return new List<ErrorData>(filteredList);
             }
         }
 

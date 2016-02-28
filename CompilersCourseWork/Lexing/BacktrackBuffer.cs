@@ -6,28 +6,28 @@ namespace CompilersCourseWork.Lexing
 {
     internal class BacktrackBuffer
     {
-        private readonly int buffer_size;
-        private IList<Token> backtrack_buffer;
-        private int backtrack_position;
+        private readonly int bufferSize;
+        private IList<Token> backtrackBuffer;
+        private int backtrackPosition;
 
         internal BacktrackBuffer(int size)
         {
-            backtrack_buffer = new List<Token>();
-            buffer_size = size;
-            backtrack_position = -1;
+            backtrackBuffer = new List<Token>();
+            bufferSize = size;
+            backtrackPosition = -1;
         }
 
         internal bool Empty()
         {
-            return backtrack_position == -1;
+            return backtrackPosition == -1;
         }
 
         internal void Backtrack()
         {
 
-            ++backtrack_position;
-            if (backtrack_position >= buffer_size ||
-                backtrack_position >= backtrack_buffer.Count)
+            ++backtrackPosition;
+            if (backtrackPosition >= bufferSize ||
+                backtrackPosition >= backtrackBuffer.Count)
             {
                 throw new InternalCompilerErrorException("Attempted to backtrack too many times");
             }
@@ -35,26 +35,26 @@ namespace CompilersCourseWork.Lexing
 
         internal Token GetToken()
         {
-            return backtrack_buffer[backtrack_position--];
+            return backtrackBuffer[backtrackPosition--];
         }
 
         internal Token PeekToken()
         {
-            return backtrack_buffer[backtrack_position];
+            return backtrackBuffer[backtrackPosition];
         }
 
         internal void AddToken(Token token)
         {
-            if (backtrack_position != -1)
+            if (backtrackPosition != -1)
             {
-                --backtrack_position;
+                --backtrackPosition;
                 return;
             }
 
-            backtrack_buffer.Insert(0, token);
-            while (backtrack_buffer.Count > buffer_size)
+            backtrackBuffer.Insert(0, token);
+            while (backtrackBuffer.Count > bufferSize)
             {
-                backtrack_buffer.RemoveAt(backtrack_buffer.Count - 1);
+                backtrackBuffer.RemoveAt(backtrackBuffer.Count - 1);
             } 
         }
 
