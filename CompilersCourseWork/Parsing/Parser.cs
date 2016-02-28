@@ -9,7 +9,6 @@ namespace CompilersCourseWork.Parsing
 {
     public class Parser
     {
-        private bool suppressSemicolonReporting;
         private Lexer lexer;
         private ErrorReporter reporter;
 
@@ -19,7 +18,6 @@ namespace CompilersCourseWork.Parsing
         {
             this.lexer = lexer;
             this.reporter = reporter;
-            this.suppressSemicolonReporting = false;
 
             binaryOperators = new Dictionary<Type, Type>
             {
@@ -52,7 +50,6 @@ namespace CompilersCourseWork.Parsing
 
         private Node ParseStatement()
         {
-            suppressSemicolonReporting = false;
             var token = lexer.PeekToken();
             Node node = null;
             if (token is VarToken)
@@ -85,15 +82,12 @@ namespace CompilersCourseWork.Parsing
 
                 SkipToToken<SemicolonToken>();
                 lexer.NextToken();
-                if (suppressSemicolonReporting)
-                {
+                
                     reporter.ReportError(Error.NOTE,
                         "This statement is missing its semicolon",
                         token.Line,
                         token.Column);
-                }
-
-
+                
                 return new ErrorNode();
             }
             
@@ -123,50 +117,19 @@ namespace CompilersCourseWork.Parsing
                 {
                     lexer.NextToken();
                     varNode.AddChild(ParseExpression());
-                } else if (!(lexer.PeekToken() is SemicolonToken))
+                }
+                else if (!(lexer.PeekToken() is SemicolonToken) && !(lexer.PeekToken() is EOFToken))
                 {
-                    suppressSemicolonReporting = true;
                     var token = lexer.PeekToken();
                     // better error reporting for this case
                     ReportUnexpectedToken(
-                        new List<Token>{ new SemicolonToken(), new AssignmentToken() },
+                        new List<Token> { new SemicolonToken(), new AssignmentToken() },
                         token);
 
                     // if it looks like next token start an expression, note that 
                     // maybe assignment is missing
-           
-                    if (token is NumberToken ||
-                        token is TextToken ||
-                        token is IdentifierToken ||
-                        token is LParenToken ||
-                        token is MinusToken)
-                    {
-                        reporter.ReportError(
-                            Error.NOTE,
-                            "Maybe you are missing ':='",
-                            token.Line,
-                            token.Column
-                        );
-                    }
-                    else if (token is ComparisonToken)
-                    {
-                        reporter.ReportError(
-                            Error.NOTE,
-                            "Maybe you meant to use assignment ':=' instead of comparison '='",
-                            token.Line,
-                            token.Column
-                            );
-                    }
-                    // else, note that semicolon is probably missing
-                    else
-                    {
-                        reporter.ReportError(
-                            Error.NOTE,
-                            "Maybe you are missing ';'",
-                            token.Line,
-                            token.Column
-                        );
-                    }
+
+                    NoteMissingExpressionStartOrAssignment(token);
 
                     throw new InvalidParseException();
                 }
@@ -186,22 +149,49 @@ namespace CompilersCourseWork.Parsing
             }
         }
 
+
+
         Node ParseVariableAssignment()
         {
             var identifier = Expect<IdentifierToken>();
+            try
+            {
 
-            Expect<AssignmentToken>();
+                try {
+                    Expect<AssignmentToken>();
+                }
+                catch (InvalidParseException e)
+                {
+                    var token = lexer.PeekToken();
 
-            var expressionNode = ParseExpression();
+                    // some code duplication here (similar to variable declaration notes)
+                    // it is not 100% match, but perhaps it could be refactored?
+                    NoteMissingExpressionStartOrAssignment(token);
+
+                    throw;
+                }
+                var expressionNode = ParseExpression();
 
 
-            var assignNode = new VariableAssignmentNode(
-                identifier.Line, 
-                identifier.Column,
-                identifier.Identifier);
+                var assignNode = new VariableAssignmentNode(
+                    identifier.Line,
+                    identifier.Column,
+                    identifier.Identifier);
 
-            assignNode.AddChild(expressionNode);
-            return assignNode;
+                assignNode.AddChild(expressionNode);
+                return assignNode;
+            }
+            catch (InvalidParseException e)
+            {
+                reporter.ReportError(Error.NOTE,
+                    "Error occured while parsing variable assignment",
+                    identifier.Line,
+                    identifier.Column
+                );
+
+                SkipToToken<SemicolonToken>();
+                return new ErrorNode();
+            }
         }
 
         Node ParseExpression()
@@ -231,22 +221,13 @@ namespace CompilersCourseWork.Parsing
             }
             else if (!(peek_token is SemicolonToken))
             {
-
-                var tokens = new List<Token>();
-
-                foreach (var operatorToken in binaryOperators.Keys)
-                {
-                    tokens.Add(
-                        (Token)Activator.
-                            CreateInstance(operatorToken));
-
-                }
-       
-
-                tokens.Add(new SemicolonToken());
-                ReportUnexpectedToken(
-                    tokens,
-                    peek_token
+                reporter.ReportError(
+                    Error.SYNTAX_ERROR,
+                    "Unexpected token " + peek_token + 
+                    " when binary operator or " + new SemicolonToken() + 
+                    "  was expected",
+                    peek_token.Line,
+                    peek_token.Column
                     );
 
                 throw new InvalidParseException();
@@ -358,10 +339,8 @@ namespace CompilersCourseWork.Parsing
                 lexer.Backtrack();
 
                 // workaround for double semicolon reporting 
-                if (!(typeof(T).Equals(typeof(SemicolonToken)) && suppressSemicolonReporting))
-                {
-                    ReportUnexpectedToken(new T(), token);
-                }
+                ReportUnexpectedToken(new T(), token);
+                
                 throw new InvalidParseException();
             }
 
@@ -400,6 +379,32 @@ namespace CompilersCourseWork.Parsing
                 lexer.NextToken();
             }
 
+        }
+
+        private void NoteMissingExpressionStartOrAssignment(Token token)
+        {
+            if (token is NumberToken ||
+                token is TextToken ||
+                token is IdentifierToken ||
+                token is LParenToken ||
+                token is MinusToken)
+            {
+                reporter.ReportError(
+                    Error.NOTE,
+                    "Maybe you are missing ':='",
+                    token.Line,
+                    token.Column
+                );
+            }
+            else if (token is ComparisonToken)
+            {
+                reporter.ReportError(
+                    Error.NOTE,
+                    "Maybe you meant to use assignment ':=' instead of comparison '='",
+                    token.Line,
+                    token.Column
+                    );
+            }
         }
     }
 }
