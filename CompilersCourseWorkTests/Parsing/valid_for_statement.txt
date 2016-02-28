@@ -11,3 +11,10 @@ for	bar in !((1 * 4) + 61) .. hello -2 do
   var foo : int := 4;
   foo := foo + 1;
 end for;
+
+for f in 3..6 do
+  for g in 7..8 do
+    a:=5;
+  end for;
+
+end for;

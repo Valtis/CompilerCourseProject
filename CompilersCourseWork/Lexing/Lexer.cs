@@ -6,7 +6,7 @@ namespace CompilersCourseWork.Lexing
 {
     public class Lexer
     {
-        public const int BACKTRACK_BUFFER_SIZE = 3;
+        public const int BACKTRACK_BUFFER_SIZE = 4;
 
         private TextReader reader;
         private ErrorReporter reporter;
@@ -15,7 +15,7 @@ namespace CompilersCourseWork.Lexing
         // maintain a list of previously read tokens in order to allow backtracking if needed
         private BacktrackBuffer backTrackBuffer;
         
-        public Lexer(string path, ErrorReporter reporter, int spacesPerTab=4)
+        public Lexer(string path, ErrorReporter reporter, int spacesPerTab=8)
         {
 
             reader = new TextReader(path, spacesPerTab);

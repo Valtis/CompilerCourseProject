@@ -227,7 +227,7 @@ namespace CompilersCourseWork.Parsing.Tests
             Assert.IsTrue(reporter.Errors[0].Message.ToLower().Contains("one of"));
             Assert.IsTrue(reporter.Errors[0].Message.ToLower().Contains("<operator - ';'>"));
             Assert.IsTrue(reporter.Errors[0].Message.ToLower().Contains("<operator - ':='>"));
-            
+
 
 
             Assert.AreEqual(Error.SYNTAX_ERROR, reporter.Errors[1].Type);
@@ -369,7 +369,7 @@ namespace CompilersCourseWork.Parsing.Tests
             Assert.AreEqual(2, reporter.Errors[2].Column);
             Assert.IsTrue(reporter.Errors[2].Message.ToLower().Contains("expected token <operator - ':='>"));
             Assert.IsTrue(reporter.Errors[2].Message.ToLower().Contains("was <number - '4'>"));
-            
+
             Assert.AreEqual(Error.SYNTAX_ERROR, reporter.Errors[3].Type);
             Assert.AreEqual(3, reporter.Errors[3].Line);
             Assert.AreEqual(8, reporter.Errors[3].Column);
@@ -451,10 +451,156 @@ namespace CompilersCourseWork.Parsing.Tests
                     new IdentifierNode(0, 0, "foo"),
                     new IntegerNode(0, 0, 1),
 
+
+                    new ForNode(0, 0, null, null, null, null),
+                    new IdentifierNode(0, 0, "f"),
+                    new IntegerNode(0, 0, 3),
+                    new IntegerNode(0, 0, 6),
+                    new StatementsNode(0, 0),
+                    new ForNode(0, 0, null, null, null, null),
+                    new IdentifierNode(0, 0, "g"),
+                    new IntegerNode(0, 0, 7),
+                    new IntegerNode(0, 0, 8),
+                    new StatementsNode(0, 0),
+                    new VariableAssignmentNode(0, 0, "a"),
+                    new IntegerNode(0, 0, 5),
+
                 });
 
             Assert.AreEqual(0, reporter.Errors.Count);
-            
+        }
+
+        [TestMethod()]
+        public void ParserParsesInvalidForStatements()
+        {
+
+            var reporter = new ErrorReporter();
+            var parser = new Parser(
+                new Lexer("../../Parsing/invalid_for_statement.txt", reporter),
+                reporter);
+
+            var node = parser.Parse();
+
+            ASTPreOrderMatches(
+                node,
+                new List<Node>{
+                    new StatementsNode(0, 0),
+                    new ErrorNode(),
+                    new ErrorNode(),
+                    new ErrorNode(),
+                    new ErrorNode(),
+                    new ErrorNode(),
+                    new ErrorNode(),
+                    new ErrorNode(),
+                    new ErrorNode(),
+
+                    new ForNode(0, 0, null, null, null, null),
+                    new IdentifierNode(0, 0, "variable"),
+                    new IntegerNode(0, 0, 5),
+                    new IntegerNode(0, 0, 20),
+                    new StatementsNode(0, 0),
+                    new ErrorNode(),
+                    new VariableAssignmentNode(0, 0, "a"),
+                    new IntegerNode(0, 0, 91),
+                    
+
+                    new ForNode(0, 0, null, null, null, null),
+                    new IdentifierNode(0, 0, "abcd"),
+                    new IntegerNode(0, 0, 1),
+                    new IntegerNode(0, 0, 5),
+                    new StatementsNode(0, 0),
+
+                    new ErrorNode(),
+                    new ErrorNode(),
+                    new ErrorNode(),
+            });
+
+            Assert.AreEqual(14, reporter.Errors.Count);
+
+            Assert.AreEqual(Error.SYNTAX_ERROR, reporter.Errors[0].Type);
+            Assert.AreEqual(0, reporter.Errors[0].Line);
+            Assert.AreEqual(4, reporter.Errors[0].Column);
+            Assert.IsTrue(reporter.Errors[0].Message.ToLower().Contains("expected token <identifier>"));
+            Assert.IsTrue(reporter.Errors[0].Message.ToLower().Contains("but was <number - '1243'>"));
+
+
+            Assert.AreEqual(Error.SYNTAX_ERROR, reporter.Errors[1].Type);
+            Assert.AreEqual(4, reporter.Errors[1].Line);
+            Assert.AreEqual(4, reporter.Errors[1].Column);
+            Assert.IsTrue(reporter.Errors[1].Message.ToLower().Contains("expected token <identifier>"));
+            Assert.IsTrue(reporter.Errors[1].Message.ToLower().Contains("but was <keyword - 'in'>"));
+
+
+            Assert.AreEqual(Error.SYNTAX_ERROR, reporter.Errors[2].Type);
+            Assert.AreEqual(8, reporter.Errors[2].Line);
+            Assert.AreEqual(14, reporter.Errors[2].Column);
+            Assert.IsTrue(reporter.Errors[2].Message.ToLower().Contains("expected token <keyword - 'in'>"));
+            Assert.IsTrue(reporter.Errors[2].Message.ToLower().Contains("but was <number - '5'>"));
+
+
+            Assert.AreEqual(Error.SYNTAX_ERROR, reporter.Errors[3].Type);
+            Assert.AreEqual(12, reporter.Errors[3].Line);
+            Assert.AreEqual(16, reporter.Errors[3].Column);
+            Assert.IsTrue(reporter.Errors[3].Message.ToLower().Contains("unexpected token <operator - '..'>"));
+            Assert.IsTrue(reporter.Errors[3].Message.ToLower().Contains("when operand was expected"));
+
+
+            Assert.AreEqual(Error.SYNTAX_ERROR, reporter.Errors[4].Type);
+            Assert.AreEqual(16, reporter.Errors[4].Line);
+            Assert.AreEqual(18, reporter.Errors[4].Column);
+            Assert.IsTrue(reporter.Errors[4].Message.ToLower().Contains("unexpected token <number - '9'>"));
+            Assert.IsTrue(reporter.Errors[4].Message.ToLower().Contains("when binary operator"));
+            Assert.IsTrue(reporter.Errors[4].Message.ToLower().Contains("<keyword - 'do'>"));
+
+            Assert.AreEqual(Error.SYNTAX_ERROR, reporter.Errors[5].Type);
+            Assert.AreEqual(20, reporter.Errors[5].Line);
+            Assert.AreEqual(20, reporter.Errors[5].Column);
+            Assert.IsTrue(reporter.Errors[5].Message.ToLower().Contains("unexpected token <keyword - 'do'>"));
+            Assert.IsTrue(reporter.Errors[5].Message.ToLower().Contains("when operand was expected"));
+
+
+            Assert.AreEqual(Error.SYNTAX_ERROR, reporter.Errors[6].Type);
+            Assert.AreEqual(24, reporter.Errors[6].Line);
+            Assert.AreEqual(18, reporter.Errors[6].Column);
+            Assert.IsTrue(reporter.Errors[6].Message.ToLower().Contains("expected token <operator - ')'>"));
+            Assert.IsTrue(reporter.Errors[6].Message.ToLower().Contains("but was <operator - '..'>"));
+
+
+            Assert.AreEqual(Error.SYNTAX_ERROR, reporter.Errors[7].Type);
+            Assert.AreEqual(29, reporter.Errors[7].Line);
+            Assert.AreEqual(8, reporter.Errors[7].Column);
+            Assert.IsTrue(reporter.Errors[7].Message.ToLower().Contains("unexpected token <identifier - 'a'>"));
+            Assert.IsTrue(reporter.Errors[7].Message.ToLower().Contains("when binary operator"));
+            Assert.IsTrue(reporter.Errors[7].Message.ToLower().Contains("<keyword - 'do'>"));
+
+            Assert.AreEqual(Error.SYNTAX_ERROR, reporter.Errors[8].Type);
+            Assert.AreEqual(34, reporter.Errors[8].Line);
+            Assert.AreEqual(13, reporter.Errors[8].Column);
+            Assert.IsTrue(reporter.Errors[8].Message.ToLower().Contains("unexpected token <operator - ';'>"));
+            Assert.IsTrue(reporter.Errors[8].Message.ToLower().Contains("when operand was expected"));
+
+            Assert.AreEqual(Error.SYNTAX_ERROR, reporter.Errors[9].Type);
+            Assert.AreEqual(40, reporter.Errors[9].Line);
+            Assert.AreEqual(0, reporter.Errors[9].Column);
+            Assert.IsTrue(reporter.Errors[9].Message.ToLower().Contains("unexpected token <keyword - 'end'>"));
+            Assert.IsTrue(reporter.Errors[9].Message.ToLower().Contains("when binary operator"));
+            Assert.IsTrue(reporter.Errors[9].Message.ToLower().Contains("<keyword - 'do'>"));
+
+
+            Assert.AreEqual(Error.SYNTAX_ERROR, reporter.Errors[10].Type);
+            Assert.AreEqual(44, reporter.Errors[10].Line);
+            Assert.AreEqual(0, reporter.Errors[10].Column);
+            Assert.IsTrue(reporter.Errors[10].Message.ToLower().Contains("for loop must contain at least a single statement"));
+
+            Assert.AreEqual(Error.SYNTAX_ERROR, reporter.Errors[11].Type);
+            Assert.AreEqual(48, reporter.Errors[11].Line);
+            Assert.AreEqual(4, reporter.Errors[11].Column);
+            Assert.IsTrue(reporter.Errors[11].Message.ToLower().Contains("expected token <identifier> but was <operator - ';'>"));
+
+            Assert.AreEqual(Error.SYNTAX_ERROR, reporter.Errors[12].Type);
+            Assert.AreEqual(52, reporter.Errors[12].Line);
+            Assert.AreEqual(4, reporter.Errors[12].Column);
+            Assert.IsTrue(reporter.Errors[12].Message.ToLower().Contains("expected <keyword - 'for'> but was <operator - ';'>"));
         }
 
         [TestMethod()]

@@ -78,12 +78,12 @@ namespace CompilersCourseWork.Parsing
                     },
                     lexer.PeekToken());
                 SkipToToken<SemicolonToken>();
+
+                node = new ErrorNode();
             }
 
             try
             {
-                // somewhat ugly hack to prevent double reporting of missing ';',
-                // if this was already reported at lower level (variable declaration for example)
                 Expect<SemicolonToken>();
             }
             catch (InvalidParseException e)
@@ -91,15 +91,15 @@ namespace CompilersCourseWork.Parsing
 
                 SkipToToken<SemicolonToken>();
                 lexer.NextToken();
-                
-                    reporter.ReportError(Error.NOTE,
-                        "This statement is missing its semicolon",
-                        token.Line,
-                        token.Column);
-                
+
+                reporter.ReportError(Error.NOTE,
+                    "This statement is missing its semicolon",
+                    token.Line,
+                    token.Column);
+
                 return new ErrorNode();
             }
-            
+
             return node;
         }
 
@@ -121,7 +121,7 @@ namespace CompilersCourseWork.Parsing
                     idToken.Identifier,
                     GetTypeFrom(typeToken)
                     );
-                
+
                 if (lexer.PeekToken() is AssignmentToken)
                 {
                     lexer.NextToken();
@@ -164,19 +164,19 @@ namespace CompilersCourseWork.Parsing
             try
             {
 
-                try {
+                try
+                {
                     Expect<AssignmentToken>();
                 }
                 catch (InvalidParseException e)
                 {
                     var token = lexer.PeekToken();
-
-                    // some code duplication here (similar to variable declaration notes)
-                    // it is not 100% match, but perhaps it could be refactored?
+                    
                     NoteMissingExpressionStartOrAssignment(token);
 
                     throw;
                 }
+
                 var expressionNode = ParseExpression();
 
 
@@ -207,26 +207,123 @@ namespace CompilersCourseWork.Parsing
 
             try
             {
+                Node identifierNode, startExpression, stopExpression;
+                try
+                {
+                    var identifierToken = Expect<IdentifierToken>();
+                    identifierNode = new IdentifierNode(
+                        identifierToken.Line,
+                        identifierToken.Column,
+                        identifierToken.Identifier);
+                    Expect<InToken>();
+                    startExpression = ParseExpression();
+                    Expect<RangeToken>();
+                    stopExpression = ParseExpression();
+                    Expect<DoToken>();
+                }
+                catch (InvalidParseException e)
+                {
+                    // heuristic: If we see "for;", it is likely a case of missing 'end'
+                    // rather than completely malformed for loop. In this case, skip to 
+                    // semicolon rather than "end"
 
-                var identifierToken = Expect<IdentifierToken>();
-                var identifierNode = new IdentifierNode(
-                    identifierToken.Line,
-                    identifierToken.Column,
-                    identifierToken.Identifier);
-                Expect<InToken>();
-                var startExpression = ParseExpression();
-                Expect<RangeToken>();
-                var stopExpression = ParseExpression();
-                Expect<DoToken>();
+                    lexer.Backtrack(); 
+                    
+                    var first = lexer.NextToken();
+                    var second = lexer.PeekToken();
+
+                    if (!(first is ForToken && second is SemicolonToken))
+                    {
+                        SkipToToken<EndToken>();
+                    }
+
+
+
+
+                    throw new InvalidParseException();
+                }
+
+
+                if (lexer.PeekToken() is EndToken)
+                {
+                    reporter.ReportError(
+                        Error.SYNTAX_ERROR,
+                        "For loop must contain at least a single statement",
+                        lexer.PeekToken().Line,
+                        lexer.PeekToken().Column
+                    );
+
+                    SkipToToken<SemicolonToken>();
+
+                    throw new InvalidParseException();
+                }
 
                 var statements = new StatementsNode(0, 0);
 
-                statements.AddChild(ParseStatement());
+                var node = ParseStatement();
+                statements.AddChild(node);
 
-                while (!(lexer.PeekToken() is EndToken))
+                // if this was the only statement in for loop, we may have
+                // skipped "end for;" when skipping tokens
+                if (node is ErrorNode)
                 {
-                    statements.AddChild(ParseStatement());
+                    lexer.Backtrack(); 
+                    lexer.Backtrack(); 
+                    lexer.Backtrack(); 
+                    
+                    var first = lexer.NextToken();
+                    var second = lexer.NextToken();
+                    if (first is EndToken &&
+                        second is ForToken)
+                    { 
+                        lexer.Backtrack();
+                        lexer.Backtrack();
+                    }
+                    else
+                    {
+                        lexer.NextToken();
+                    }
                 }
+
+                while (
+                    lexer.PeekToken() is VarToken ||
+                    lexer.PeekToken() is IdentifierToken ||
+                    lexer.PeekToken() is ForToken ||
+                    lexer.PeekToken() is ReadToken ||
+                    lexer.PeekToken() is PrintToken ||
+                    lexer.PeekToken() is AssertToken)
+                {
+                    node = ParseStatement();
+                    statements.AddChild(node);
+
+                }
+
+                // if last statement is missing its semicolon, this portion
+                // can get kinda wonky, because it skips to next semicolon,
+                // which means "end for" gets skipped.
+                //
+                // Backtrack and check if end or for are present in order to
+                // provide better error messages
+
+                if (!(lexer.PeekToken() is EndToken))
+                {
+                    lexer.Backtrack(); // hopefully ;
+                    lexer.Backtrack(); // hopefully for
+                    lexer.Backtrack(); // hopefully end
+
+                    // 
+                    var first = lexer.NextToken();
+                    var second = lexer.NextToken();
+                    if (first is EndToken &&
+                        second is ForToken)
+                    {
+                        // backtrack again and let the next stage handle this correctly
+
+                        lexer.Backtrack();
+                        lexer.Backtrack();
+                    }
+                }
+
 
                 Expect<EndToken>();
                 Expect<ForToken>();
@@ -243,19 +340,19 @@ namespace CompilersCourseWork.Parsing
             catch (InvalidParseException e)
             {
                 reporter.ReportError(Error.NOTE,
-                    "Error occured while parsing for statement",
+                    "Error occured while parsing for loop",
                     forToken.Line,
                     forToken.Column
                 );
 
                 SkipToToken<SemicolonToken>();
                 return new ErrorNode();
-            }            
+            }
         }
 
         Node ParseExpression()
         {
-            
+
             if (lexer.PeekToken() is NotToken)
             {
                 return ParseNotExpression();
@@ -265,7 +362,7 @@ namespace CompilersCourseWork.Parsing
             var lhs = ParseOperand();
 
             var peek_token = lexer.PeekToken();
-            
+
             if (binaryOperators.ContainsKey(peek_token.GetType()))
             {
                 var op = lexer.NextToken();
@@ -282,8 +379,8 @@ namespace CompilersCourseWork.Parsing
             {
                 reporter.ReportError(
                     Error.SYNTAX_ERROR,
-                    "Unexpected token " + peek_token + 
-                    " when binary operator, " + new SemicolonToken() + 
+                    "Unexpected token " + peek_token +
+                    " when binary operator, " + new SemicolonToken() +
                     ", " + new DoToken() +
                     " or " + new RangeToken() +
                     "  was expected",
@@ -295,7 +392,7 @@ namespace CompilersCourseWork.Parsing
             }
 
             return lhs;
-            
+
         }
 
         private Node ParseNotExpression()
@@ -401,7 +498,7 @@ namespace CompilersCourseWork.Parsing
 
                 // workaround for double semicolon reporting 
                 ReportUnexpectedToken(new T(), token);
-                
+
                 throw new InvalidParseException();
             }
 
@@ -434,7 +531,7 @@ namespace CompilersCourseWork.Parsing
 
         private void SkipToToken<T>() where T : Token
         {
-            while (!(lexer.PeekToken() is T || 
+            while (!(lexer.PeekToken() is T ||
                 lexer.PeekToken() is EOFToken))
             {
                 lexer.NextToken();

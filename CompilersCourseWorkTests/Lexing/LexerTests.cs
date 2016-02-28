@@ -358,6 +358,7 @@ namespace CompilersCourseWork.Tests
             Assert.AreEqual(new PrintToken(), lexer.NextToken());
             Assert.AreEqual(new TextToken("Give a number"), lexer.NextToken());
             Assert.AreEqual(new SemicolonToken(), lexer.NextToken());
+            lexer.NextToken();
 
             for (int i = 0; i < Lexer.BACKTRACK_BUFFER_SIZE; ++i)
             {

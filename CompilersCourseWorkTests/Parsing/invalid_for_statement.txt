@@ -1,0 +1,63 @@
+﻿for 1243 in 5..9 do
+	a:= 9;
+end for	;
+
+for in 5..9 do
+	a:= 9;
+end for	;
+
+for variable  5..9 do
+	a:= 9;
+end for	;
+
+for variable in ..9 do
+	a:= 9;
+end for	;
+
+for variable in 5 9 do
+	a:= 9;
+end for	;
+
+for variable in 5.. do
+	a:= 9;
+end for	;
+
+for variable in (5..423 do 
+	a:= 9;
+end for	;
+
+for variable in 5..423 
+	a:= 9;
+end for	;
+
+
+for variable in 5..20 do
+	q := ;
+	a:= 91;
+end for;
+
+for abcd in 1..5 do
+	a:= 9
+end for;
+
+for baz in 5..9 do
+
+end for	;
+
+for variable in 5..423 do
+	a:= 9;
+for ;
+
+for variable in 5..42 do
+	a:= 9;
+end ;
+
+/*
+for variable in 5..354 do
+	a:= 9;
+val for;
+
+for variable in 5..42783 do
+	a:= 9;
+end val;
+*/
