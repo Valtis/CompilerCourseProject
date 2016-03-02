@@ -63,7 +63,7 @@ namespace CompilersCourseWork.ErrorHandling
             switch (Type)
             {
                 case Error.NOTE:
-                    color = ConsoleColor.Green;
+                    color = ConsoleColor.DarkCyan;
                     Console.ForegroundColor = color;
                     Console.Write("Note: ");
                     break;
