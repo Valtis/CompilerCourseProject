@@ -85,11 +85,14 @@
     <Content Include="Lexing\valid_integers.txt" />
     <Content Include="Lexing\valid_identifiers.txt" />
     <Content Include="Lexing\valid_strings.txt" />
+    <Content Include="Parsing\invalid_read_statement.txt" />
     <Content Include="Parsing\invalid_variable_assignment.txt" />
     <Content Include="Parsing\invalid_variable_declaration_no_assignment.txt" />
     <Content Include="Parsing\invalid_variable_declaration_with_assignment.txt" />
     <Content Include="Parsing\invalid_for_statement.txt" />
     <Content Include="Parsing\valid_for_statement.txt" />
+    <Content Include="Parsing\valid_print_statement.txt" />
+    <Content Include="Parsing\valid_read_statement.txt" />
     <Content Include="Parsing\valid_variable_assignment.txt" />
     <Content Include="Parsing\variable_declaration_no_assignment.txt" />
     <Content Include="Parsing\variable_declaration_with_assignment.txt" />

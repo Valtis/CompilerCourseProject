@@ -117,7 +117,7 @@ namespace CompilersCourseWork.Parsing.Tests
                     new IntegerNode(0, 0, 4),
 
                     new VariableDeclarationNode(0, 0, "b", VariableType.BOOLEAN),
-                    new IntegerNode(0, 0, -6),
+                    new IdentifierNode(0, 0, "abc"),
 
                     new VariableDeclarationNode(0, 0, "c", VariableType.INTEGER),
                     new AddNode(0, 0, null, null),
@@ -512,7 +512,7 @@ namespace CompilersCourseWork.Parsing.Tests
 
                     new ErrorNode(),
 
-                    
+
                     new ForNode(0, 0, null, null, null, null),
                     new IdentifierNode(0, 0, "baz"),
                     new IntegerNode(0, 0, 5),
@@ -553,7 +553,7 @@ namespace CompilersCourseWork.Parsing.Tests
             Assert.AreEqual(16, reporter.Errors[3].Column);
             Assert.IsTrue(reporter.Errors[3].Message.ToLower().Contains("unexpected token <operator - '..'>"));
             Assert.IsTrue(reporter.Errors[3].Message.ToLower().Contains("when operand was expected"));
-            
+
 
             Assert.AreEqual(Error.SYNTAX_ERROR, reporter.Errors[4].Type);
             Assert.AreEqual(16, reporter.Errors[4].Line);
@@ -568,7 +568,7 @@ namespace CompilersCourseWork.Parsing.Tests
             Assert.IsTrue(reporter.Errors[5].Message.ToLower().Contains("unexpected token <keyword - 'do'>"));
             Assert.IsTrue(reporter.Errors[5].Message.ToLower().Contains("when operand was expected"));
 
-            
+
             Assert.AreEqual(Error.SYNTAX_ERROR, reporter.Errors[6].Type);
             Assert.AreEqual(24, reporter.Errors[6].Line);
             Assert.AreEqual(18, reporter.Errors[6].Column);
@@ -582,29 +582,25 @@ namespace CompilersCourseWork.Parsing.Tests
             Assert.IsTrue(reporter.Errors[7].Message.ToLower().Contains("unexpected token <identifier - 'a'>"));
             Assert.IsTrue(reporter.Errors[7].Message.ToLower().Contains("when binary operator"));
             Assert.IsTrue(reporter.Errors[7].Message.ToLower().Contains("<keyword - 'do'>"));
-            
+
             Assert.AreEqual(Error.SYNTAX_ERROR, reporter.Errors[8].Type);
             Assert.AreEqual(34, reporter.Errors[8].Line);
             Assert.AreEqual(13, reporter.Errors[8].Column);
             Assert.IsTrue(reporter.Errors[8].Message.ToLower().Contains("unexpected token <operator - ';'>"));
             Assert.IsTrue(reporter.Errors[8].Message.ToLower().Contains("when operand was expected"));
-            
+
             Assert.AreEqual(Error.SYNTAX_ERROR, reporter.Errors[9].Type);
             Assert.AreEqual(40, reporter.Errors[9].Line);
             Assert.AreEqual(0, reporter.Errors[9].Column);
             Assert.IsTrue(reporter.Errors[9].Message.ToLower().Contains("unexpected token <keyword - 'end'>"));
             Assert.IsTrue(reporter.Errors[9].Message.ToLower().Contains("when binary operator"));
             Assert.IsTrue(reporter.Errors[9].Message.ToLower().Contains("<keyword - 'do'>"));
-            
-            
+
             Assert.AreEqual(Error.SYNTAX_ERROR, reporter.Errors[10].Type);
             Assert.AreEqual(44, reporter.Errors[10].Line);
             Assert.AreEqual(0, reporter.Errors[10].Column);
             Assert.IsTrue(reporter.Errors[10].Message.ToLower().Contains("expected token <keyword - 'end'> but was <keyword - 'for'>"));
-           
-            
-            
-            
+
             Assert.AreEqual(Error.SYNTAX_ERROR, reporter.Errors[11].Type);
             Assert.AreEqual(47, reporter.Errors[11].Line);
             Assert.AreEqual(0, reporter.Errors[11].Column);
@@ -614,6 +610,125 @@ namespace CompilersCourseWork.Parsing.Tests
             Assert.AreEqual(55, reporter.Errors[12].Line);
             Assert.AreEqual(4, reporter.Errors[12].Column);
             Assert.IsTrue(reporter.Errors[12].Message.ToLower().Contains("expected token <keyword - 'for'> but was <operator - ';'>"));
+        }
+
+        [TestMethod()]
+        public void ParserParsesValidReadStatement()
+        {
+            var reporter = new ErrorReporter();
+            var parser = new Parser(
+                new Lexer("../../Parsing/valid_read_statement.txt", reporter),
+                reporter);
+
+            var node = parser.Parse();
+
+            ASTPreOrderMatches(
+                node,
+                new List<Node>{
+                    new StatementsNode(0, 0),
+                    new ReadNode(0, 0, null),
+                    new IdentifierNode(0, 0, "hello"),
+
+                    new ReadNode(0, 0, null),
+                    new IdentifierNode(0, 0, "ab12_32")
+
+                });
+
+            Assert.AreEqual(0, reporter.Errors.Count);
+        }
+
+
+        [TestMethod()]
+        public void ParserParsesInvalidReadStatement()
+        {
+            var reporter = new ErrorReporter();
+            var parser = new Parser(
+                new Lexer("../../Parsing/invalid_read_statement.txt", reporter),
+                reporter);
+
+            var node = parser.Parse();
+
+            ASTPreOrderMatches(
+                node,
+                new List<Node>{
+                    new StatementsNode(0, 0),
+                    new ErrorNode(),
+                    new ErrorNode(),
+
+                    new ReadNode(0, 0, null),
+                    new IdentifierNode(0, 0, "valid"),
+
+                    new ErrorNode(),
+                    new ErrorNode(),
+                });
+
+
+            Assert.AreEqual(4, reporter.Errors.Count);
+
+            Assert.AreEqual(Error.SYNTAX_ERROR, reporter.Errors[0].Type);
+            Assert.AreEqual(0, reporter.Errors[0].Line);
+            Assert.AreEqual(5, reporter.Errors[0].Column);
+            Assert.IsTrue(reporter.Errors[0].Message.ToLower().Contains("expected token <identifier> but was <number - '13'>"));
+
+ 
+            Assert.AreEqual(Error.SYNTAX_ERROR, reporter.Errors[1].Type);
+            Assert.AreEqual(1, reporter.Errors[1].Line);
+            Assert.AreEqual(4, reporter.Errors[1].Column);
+            Assert.IsTrue(reporter.Errors[1].Message.ToLower().Contains("expected token <identifier> but was <operator - ';'>"));
+
+            
+            Assert.AreEqual(Error.SYNTAX_ERROR, reporter.Errors[2].Type);
+            Assert.AreEqual(3, reporter.Errors[2].Line);
+            Assert.AreEqual(5, reporter.Errors[2].Column);
+            Assert.IsTrue(reporter.Errors[2].Message.ToLower().Contains("expected token <identifier> but was <keyword - 'var'>"));
+
+            
+            Assert.AreEqual(Error.SYNTAX_ERROR, reporter.Errors[3].Type);
+            Assert.AreEqual(5, reporter.Errors[3].Line);
+            Assert.AreEqual(0, reporter.Errors[3].Column);
+            Assert.IsTrue(reporter.Errors[3].Message.ToLower().Contains("expected token <operator - ';'> but was <keyword - 'read'>"));
+        }
+
+        [TestMethod()]
+        public void ParserParsesValidPrintStatement()
+        {
+
+            var reporter = new ErrorReporter();
+            var parser = new Parser(
+                new Lexer("../../Parsing/valid_print_statement.txt", reporter),
+                reporter);
+
+            var node = parser.Parse();
+
+            ASTPreOrderMatches(
+                node,
+                new List<Node>{
+                    new StatementsNode(0, 0),
+
+                    new PrintNode(0, 0, null),
+                    new StringNode(0, 0, "hello"),
+
+                    new PrintNode(0, 0, null),
+                    new IntegerNode(0, 0, 1),
+
+                    new PrintNode(0, 0, null),
+                    new IdentifierNode(0, 0, "abc"),
+
+                    new PrintNode(0, 0, null),
+                    new AddNode(0, 0, null, null),
+                    new IdentifierNode(0, 0, "abc"),
+                    new IntegerNode(0, 0, 4),
+
+                    new PrintNode(0, 0, null),
+                    new NotNode(0, 0, null),
+                    new IdentifierNode(0, 0, "foo"),
+
+                    new PrintNode(0, 0, null),
+                    new IdentifierNode(0, 0, "y"),
+
+                });
+
+            Assert.AreEqual(0, reporter.Errors.Count);
         }
 
         [TestMethod()]

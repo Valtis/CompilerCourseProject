@@ -57,6 +57,8 @@
     <Compile Include="AST\MultiplyNode.cs" />
     <Compile Include="AST\Node.cs" />
     <Compile Include="AST\NotNode.cs" />
+    <Compile Include="AST\PrintNode.cs" />
+    <Compile Include="AST\ReadNode.cs" />
     <Compile Include="AST\StatementsNode.cs" />
     <Compile Include="AST\StringNode.cs" />
     <Compile Include="AST\SubtractNode.cs" />

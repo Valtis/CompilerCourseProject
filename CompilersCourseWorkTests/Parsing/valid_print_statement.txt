@@ -1,0 +1,6 @@
+﻿print "hello";
+print 1;
+print abc;
+print abc + 4;
+print !foo;
+print (y);

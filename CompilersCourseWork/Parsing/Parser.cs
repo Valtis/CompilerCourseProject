@@ -64,6 +64,14 @@ namespace CompilersCourseWork.Parsing
             {
                 node = ParseForStatement();
             }
+            else if (token is ReadToken)
+            {
+                node = ParseReadStatement();
+            }
+            else if (token is PrintToken)
+            {
+                node = ParsePrintStatement();
+            }
             else
             {
                 ReportUnexpectedToken(
@@ -276,7 +284,7 @@ namespace CompilersCourseWork.Parsing
         {
             var statements = new StatementsNode(0, 0);
             do
-            {       
+            {
                 /* If we see "for;", it is likely a case of missing 'end'
                    rather than completely malformed for loop 
 
@@ -300,7 +308,7 @@ namespace CompilersCourseWork.Parsing
                         break;
                     }
                 }
-               
+
 
                 var node = ParseStatement();
 
@@ -359,6 +367,49 @@ namespace CompilersCourseWork.Parsing
             return statements;
         }
 
+        Node ParseReadStatement()
+        {
+            var readToken = Expect<ReadToken>();
+
+            try
+            {
+                var identifier = Expect<IdentifierToken>();
+                return new ReadNode(
+                    readToken.Line,
+                    readToken.Column,
+                    new IdentifierNode(
+                        identifier.Line,
+                        identifier.Column,
+                        identifier.Identifier));
+            }
+            catch (InvalidParseException e)
+            {
+
+                reporter.ReportError(
+                    Error.NOTE,
+                    "Error occured while parsing read statement",
+                    readToken.Line,
+                    readToken.Column);
+
+                lexer.Backtrack(); // in case identifier is missing and we consumed semicolon
+                SkipToToken<SemicolonToken>();
+                return new ErrorNode();
+            }
+        }
+
+        Node ParsePrintStatement()
+        {
+            var printToken = Expect<PrintToken>();
+
+            var expression = ParseExpression();
+
+            return new PrintNode(
+                printToken.Line,
+                printToken.Column,
+                expression
+                );
+        }
+
         Node ParseExpression()
         {
 
@@ -384,7 +435,11 @@ namespace CompilersCourseWork.Parsing
                     lhs,
                     ParseOperand() });
             }
-            else if (!(peek_token is SemicolonToken) && !(peek_token is RangeToken) && !(peek_token is DoToken))
+            else if (
+                !(peek_token is SemicolonToken) && 
+                !(peek_token is RangeToken) && 
+                !(peek_token is DoToken) && 
+                !(peek_token is RParenToken))
             {
                 reporter.ReportError(
                     Error.SYNTAX_ERROR,
@@ -416,14 +471,7 @@ namespace CompilersCourseWork.Parsing
 
         private Node ParseOperand()
         {
-            long sign = 1;
             var token = lexer.NextToken();
-
-            if (token is MinusToken)
-            {
-                sign = -1;
-                token = lexer.NextToken();
-            }
 
             if (token is NumberToken)
             {
@@ -431,7 +479,7 @@ namespace CompilersCourseWork.Parsing
                 return new IntegerNode(
                     token.Line,
                     token.Column,
-                    sign * (token as NumberToken).Value);
+                    (token as NumberToken).Value);
             }
             else if (token is TextToken)
             {

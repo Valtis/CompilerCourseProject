@@ -1,0 +1,6 @@
+﻿read 13;
+read;
+read valid;
+read var;
+read hello
+read foobar;

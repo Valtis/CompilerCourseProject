@@ -43,5 +43,10 @@ namespace CompilersCourseWork.AST
         {
             return Name.GetHashCode();
         }
+
+        public override string ToString()
+        {
+            return "IdentifierNode - " + name;
+        }
     }
 }

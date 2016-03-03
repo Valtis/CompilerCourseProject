@@ -1,5 +1,5 @@
 ﻿var a : string := 4;
-var b : bool := -6;
+var b : bool := (abc);
 var c: int := 2 + 4;
 var d: int := "hello " + " world";
 var e: int := 2 - 4;
