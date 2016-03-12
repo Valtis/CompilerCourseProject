@@ -1,0 +1,5 @@
+﻿print +;
+print;
+print 4
+valid_assignment := 4;
+print read;

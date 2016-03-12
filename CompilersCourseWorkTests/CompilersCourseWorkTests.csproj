@@ -85,6 +85,7 @@
     <Content Include="Lexing\valid_integers.txt" />
     <Content Include="Lexing\valid_identifiers.txt" />
     <Content Include="Lexing\valid_strings.txt" />
+    <Content Include="Parsing\invalid_print_statement.txt" />
     <Content Include="Parsing\invalid_read_statement.txt" />
     <Content Include="Parsing\invalid_variable_assignment.txt" />
     <Content Include="Parsing\invalid_variable_declaration_no_assignment.txt" />

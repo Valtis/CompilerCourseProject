@@ -401,13 +401,26 @@ namespace CompilersCourseWork.Parsing
         {
             var printToken = Expect<PrintToken>();
 
-            var expression = ParseExpression();
+            try
+            {
+                var expression = ParseExpression(); return new PrintNode(
+                 printToken.Line,
+                 printToken.Column,
+                 expression
+                 );
+            }
+            catch (InvalidParseException)
+            {
+                reporter.ReportError(
+                    Error.NOTE,
+                    "Error occured while parsing print statement",
+                    printToken.Line,
+                    printToken.Column);
 
-            return new PrintNode(
-                printToken.Line,
-                printToken.Column,
-                expression
-                );
+                lexer.Backtrack(); // in case  we already consumed the semicolon
+                SkipToToken<SemicolonToken>();
+                return new ErrorNode();
+            }
         }
 
         Node ParseExpression()
