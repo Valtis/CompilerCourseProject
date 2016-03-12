@@ -38,8 +38,19 @@ namespace CompilersCourseWork.Parsing
 
         private Node ParseStatements()
         {
+
             var token = lexer.PeekToken();
             var statements = new StatementsNode(token.Line, token.Column);
+
+            if (token is EOFToken)
+            {
+                reporter.ReportError(Error.SYNTAX_ERROR,
+                   "Program must contain at least a single statement",
+                    0,
+                    0);
+                statements.AddChild(new ErrorNode());
+            }
+
             while (!(lexer.PeekToken() is EOFToken))
             {
                 statements.AddChild(ParseStatement());

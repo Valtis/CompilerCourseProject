@@ -670,19 +670,19 @@ namespace CompilersCourseWork.Parsing.Tests
             Assert.AreEqual(5, reporter.Errors[0].Column);
             Assert.IsTrue(reporter.Errors[0].Message.ToLower().Contains("expected token <identifier> but was <number - '13'>"));
 
- 
+
             Assert.AreEqual(Error.SYNTAX_ERROR, reporter.Errors[1].Type);
             Assert.AreEqual(1, reporter.Errors[1].Line);
             Assert.AreEqual(4, reporter.Errors[1].Column);
             Assert.IsTrue(reporter.Errors[1].Message.ToLower().Contains("expected token <identifier> but was <operator - ';'>"));
 
-            
+
             Assert.AreEqual(Error.SYNTAX_ERROR, reporter.Errors[2].Type);
             Assert.AreEqual(3, reporter.Errors[2].Line);
             Assert.AreEqual(5, reporter.Errors[2].Column);
             Assert.IsTrue(reporter.Errors[2].Message.ToLower().Contains("expected token <identifier> but was <keyword - 'var'>"));
 
-            
+
             Assert.AreEqual(Error.SYNTAX_ERROR, reporter.Errors[3].Type);
             Assert.AreEqual(5, reporter.Errors[3].Line);
             Assert.AreEqual(0, reporter.Errors[3].Column);
@@ -865,7 +865,99 @@ namespace CompilersCourseWork.Parsing.Tests
         [TestMethod()]
         public void EmptyProgramIsError()
         {
-            Assert.Fail();
+            var reporter = new ErrorReporter();
+            var parser = new Parser(
+                new Lexer("../../empty.txt", reporter),
+                reporter);
+
+            var node = parser.Parse();
+
+            ASTPreOrderMatches(
+               node,
+               new List<Node>{
+                    new StatementsNode(0, 0),
+                    new ErrorNode(),
+               });
+
+
+            Assert.AreEqual(1, reporter.Errors.Count);
+
+            Assert.AreEqual(Error.SYNTAX_ERROR, reporter.Errors[0].Type);
+            Assert.AreEqual(0, reporter.Errors[0].Line);
+            Assert.AreEqual(0, reporter.Errors[0].Column);
+            Assert.IsTrue(reporter.Errors[0].Message.ToLower().Contains("program must contain at least a single statement"));
+        }
+
+        [TestMethod()]
+        public void ParserParsesValidProgram()
+        {
+            var reporter = new ErrorReporter();
+            var parser = new Parser(
+                new Lexer("../../example_program.txt", reporter),
+                reporter);
+
+            var node = parser.Parse();
+
+            ASTPreOrderMatches(
+               node,
+               new List<Node>{
+                    new StatementsNode(0, 0),
+                    new PrintNode(0, 0, null),
+                    new StringNode(0, 0, "Give a number"),
+
+                    new VariableDeclarationNode(0, 0, "n", VariableType.INTEGER),
+
+                    new ReadNode(0, 0, null),
+                    new IdentifierNode(0, 0, "n"),
+
+                    new VariableDeclarationNode(0, 0, "v", VariableType.INTEGER),
+                    new IntegerNode(0, 0, 1),
+
+                    new VariableDeclarationNode(0, 0, "i", VariableType.INTEGER),
+
+                    new ForNode(0, 0, null, null, null, null),
+                    new IdentifierNode(0, 0, "i"),
+                    new IntegerNode(0, 0, 1),
+                    new IdentifierNode(0, 0, "n"),
+                    new StatementsNode(0, 0),
+                    new VariableAssignmentNode(0, 0, "v"),
+                    new MultiplyNode(0, 0, null, null),
+                    new IdentifierNode(0, 0, "v"),
+                    new IdentifierNode(0, 0, "i"),
+
+                    new PrintNode(0, 0, null),
+                    new StringNode(0, 0, "The result is: "),
+
+                    new PrintNode(0, 0, null),
+                    new IdentifierNode(0, 0, "v"),
+               });
+        }
+
+        [TestMethod()]
+        public void ParserParsesValidProgram2()
+        {
+            var reporter = new ErrorReporter();
+            var parser = new Parser(
+                new Lexer("../../example_program2.txt", reporter),
+                reporter);
+
+            var node = parser.Parse();
+
+            ASTPreOrderMatches(
+               node,
+               new List<Node>{
+                    new StatementsNode(0, 0),
+                    
+                    new VariableDeclarationNode(0, 0, "X", VariableType.INTEGER),
+                    new AddNode(0, 0, null, null),
+                    new IntegerNode(0, 0, 4),
+                    new MultiplyNode(0, 0, null, null),
+                    new IntegerNode(0, 0, 6),
+                    new IntegerNode(0, 0, 2),
+
+                    new PrintNode(0, 0, null),
+                    new IdentifierNode(0, 0, "X"),
+               });
         }
 
         private void ASTPreOrderMatches(Node node, IList<Node> nodesPreorder)

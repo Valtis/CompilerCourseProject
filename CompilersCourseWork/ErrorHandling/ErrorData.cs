@@ -94,6 +94,12 @@ namespace CompilersCourseWork.ErrorHandling
             Console.ResetColor();
             // line, column are zero-based internally
             Console.Write(msg + " at line " + (line + 1) + " column " + (column + 1));
+
+            if (lines.Length == 0)
+            {
+                return;
+            }
+
             Console.Write("\n\n" + lines[line]);
 
             Console.ForegroundColor = color;
@@ -110,7 +116,8 @@ namespace CompilersCourseWork.ErrorHandling
                 }
                 Console.Write("^");
 
-            } else
+            }
+            else
             {
                 for (int i = 0; i < column; ++i)
                 {
@@ -118,14 +125,14 @@ namespace CompilersCourseWork.ErrorHandling
                 }
 
                 Console.Write("^");
-                
+
                 for (int i = 0; i < 6; ++i)
                 {
                     Console.Write("~");
                 }
             }
             Console.Write("\n");
-            
+
         }
 
     }
