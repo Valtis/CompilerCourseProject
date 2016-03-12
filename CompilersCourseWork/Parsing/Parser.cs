@@ -72,6 +72,10 @@ namespace CompilersCourseWork.Parsing
             {
                 node = ParsePrintStatement();
             }
+            else if (token is AssertToken)
+            {
+                node = ParseAssertStatement();
+            }
             else
             {
                 ReportUnexpectedToken(
@@ -403,11 +407,11 @@ namespace CompilersCourseWork.Parsing
 
             try
             {
-                var expression = ParseExpression(); return new PrintNode(
+                var expression = ParseExpression();
+                return new PrintNode(
                  printToken.Line,
                  printToken.Column,
-                 expression
-                 );
+                 expression);
             }
             catch (InvalidParseException)
             {
@@ -423,6 +427,35 @@ namespace CompilersCourseWork.Parsing
             }
         }
 
+        Node ParseAssertStatement()
+        {
+            var assertToken = Expect<AssertToken>();
+
+            try
+            {
+                Expect<LParenToken>();
+                var expression = ParseExpression();
+                Expect<RParenToken>();
+
+                return new AssertNode(
+                    assertToken.Line,
+                    assertToken.Column,
+                    expression);
+            }
+            catch (InvalidParseException)
+            {
+                reporter.ReportError(
+                    Error.NOTE,
+                    "Error occured while parsing assert statement",
+                    assertToken.Line,
+                    assertToken.Column);
+
+                lexer.Backtrack(); // in case  we already consumed the semicolon
+                SkipToToken<SemicolonToken>();
+                return new ErrorNode();
+            }
+        }
+            
         Node ParseExpression()
         {
 

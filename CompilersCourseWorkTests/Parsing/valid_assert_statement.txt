@@ -1,0 +1,4 @@
+﻿assert(abcd);
+assert("hello");
+assert(4);
+assert(5 = foo);

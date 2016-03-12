@@ -1,0 +1,5 @@
+﻿assert(read);
+assert 4 = 6;
+assert(3 := 4);
+assert;
+assert(assert(4=6));
