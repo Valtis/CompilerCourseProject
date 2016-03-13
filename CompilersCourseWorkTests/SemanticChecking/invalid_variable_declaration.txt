@@ -27,3 +27,4 @@ var y : int := ("hello" < 4) / 2;
 var z : int := ("hello" + 4) < 2;
 var aa : int := ("hello" - "world") & 2;
 var ab : int := ("hello" + (!4)) < 2; 
+var ac : int := (4 + (3 * ac)) / 2;

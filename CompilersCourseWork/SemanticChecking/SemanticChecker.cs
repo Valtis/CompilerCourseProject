@@ -142,16 +142,15 @@ namespace CompilersCourseWork.SemanticChecking
             }
 
 
-            // TODO: Should really go through all nodes & their children, and check if 
-            // the variable is present in any of them
-            if (node.Children[0] is IdentifierNode && 
-                ((IdentifierNode)node.Children[0]).Name == node.Name)
+
+            Node n = null;
+            if ((n = HasSelfAssignment(node)) != null)
             {
                 reporter.ReportError(
                     Error.SEMANTIC_ERROR,
                     "Cannot initialize variable with self",
-                    node.Children[0].Line,
-                    node.Children[0].Column);
+                    n.Line,
+                    n.Column);
             }
 
         }
@@ -345,6 +344,31 @@ namespace CompilersCourseWork.SemanticChecking
                 "Right side expression has type '" + node.Children[1].NodeType().Name() + "'",
                 node.Children[1].Line,
                 node.Children[1].Column);
+        }
+
+        private static Node HasSelfAssignment(VariableDeclarationNode node)
+        {
+            var stack = new Stack<Node>();
+            foreach (var child in node.Children)
+            {
+                stack.Push(child);
+            }
+
+            while (stack.Count != 0)
+            {
+                var current = stack.Pop();
+
+                if (current is IdentifierNode && ((IdentifierNode)current).Name == node.Name)
+                {
+                    return current;
+                }
+
+                foreach (var child in current.Children)
+                {
+                    stack.Push(child);
+                }
+            }
+            return null;
         }
     }
 }

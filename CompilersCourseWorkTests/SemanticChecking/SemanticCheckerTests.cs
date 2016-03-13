@@ -45,7 +45,7 @@ namespace CompilersCourseWork.SemanticChecking.Tests
             var semanticChecker = new SemanticChecker(reporter);
             node.Accept(semanticChecker);
 
-            Assert.AreEqual(28, reporter.Errors.Count);
+            Assert.AreEqual(29, reporter.Errors.Count);
 
             Assert.AreEqual(Error.SEMANTIC_ERROR, reporter.Errors[0].Type);
             Assert.AreEqual(1, reporter.Errors[0].Line);
@@ -187,6 +187,10 @@ namespace CompilersCourseWork.SemanticChecking.Tests
             Assert.AreEqual(28, reporter.Errors[27].Column);
             Assert.IsTrue(reporter.Errors[27].Message.ToLower().Contains("incompatible expression for operator '!'"));
 
+            Assert.AreEqual(Error.SEMANTIC_ERROR, reporter.Errors[28].Type);
+            Assert.AreEqual(29, reporter.Errors[28].Line);
+            Assert.AreEqual(26, reporter.Errors[28].Column);
+            Assert.IsTrue(reporter.Errors[28].Message.ToLower().Contains("cannot initialize variable with self"));
         }
 
 
