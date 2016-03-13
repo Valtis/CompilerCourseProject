@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace CompilersCourseWork.ErrorHandling
 {
-    public enum Error { NOTE, WARNING, LEXICAL_ERROR, SYNTAX_ERROR }
+    public enum Error { NOTE, WARNING, LEXICAL_ERROR, SYNTAX_ERROR,
+        SEMANTIC_ERROR
+    }
 
     public class ErrorReporter
     {

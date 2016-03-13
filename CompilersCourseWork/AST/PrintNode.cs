@@ -6,5 +6,10 @@
         {
             AddChild(expression);
         }
+
+        public override void Accept(NodeVisitor visitor)
+        {
+            visitor.Visit(this);
+        }
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace CompilersCourseWork.AST
+﻿using CompilersCourseWork.Parsing;
+
+namespace CompilersCourseWork.AST
 {
     public class IntegerNode : Node
     {
@@ -34,12 +36,22 @@
 
         public override string ToString()
         {
-            return "IdentifierNode - " + value;
+            return "IntegerNode - " + value;
         }
 
         public override int GetHashCode()
         {
             return (int)(Value % int.MaxValue);
+        }
+
+        public override void Accept(NodeVisitor visitor)
+        {
+            visitor.Visit(this);
+        }
+
+        public override VariableType NodeType()
+        {
+            return VariableType.INTEGER;
         }
     }
 }

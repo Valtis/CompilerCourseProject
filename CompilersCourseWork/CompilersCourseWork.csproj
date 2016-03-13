@@ -57,6 +57,7 @@
     <Compile Include="AST\LessThanNode.cs" />
     <Compile Include="AST\MultiplyNode.cs" />
     <Compile Include="AST\Node.cs" />
+    <Compile Include="AST\NodeVisitor.cs" />
     <Compile Include="AST\NotNode.cs" />
     <Compile Include="AST\PrintNode.cs" />
     <Compile Include="AST\ReadNode.cs" />
@@ -68,6 +69,7 @@
     <Compile Include="ErrorHandling\ErrorData.cs" />
     <Compile Include="ErrorHandling\ErrorReporter.cs" />
     <Compile Include="ErrorHandling\InternalCompilerErrorException.cs" />
+    <Compile Include="InternalCompilerError.cs" />
     <Compile Include="Lexing\BacktrackBuffer.cs" />
     <Compile Include="Lexing\CommentParser.cs" />
     <Compile Include="Lexing\IdentifierAndKeywordParser.cs" />
@@ -82,6 +84,7 @@
     <Compile Include="Parsing\VariableType.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SemanticChecking\SemanticChecker.cs" />
     <Compile Include="Tokens\AssertToken.cs" />
     <Compile Include="Tokens\AssignmentToken.cs" />
     <Compile Include="Tokens\BoolToken.cs" />

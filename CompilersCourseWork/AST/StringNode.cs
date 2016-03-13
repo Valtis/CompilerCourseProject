@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CompilersCourseWork.Parsing;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -42,6 +43,16 @@ namespace CompilersCourseWork.AST
         public override int GetHashCode()
         {
             return Value.GetHashCode();
+        }
+
+        public override void Accept(NodeVisitor visitor)
+        {
+            visitor.Visit(this);
+        }
+
+        public override VariableType NodeType()
+        {
+            return VariableType.STRING;
         }
     }
 }

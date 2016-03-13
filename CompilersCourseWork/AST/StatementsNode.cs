@@ -12,6 +12,10 @@ namespace CompilersCourseWork.AST
         {
 
         }
-        
+
+        public override void Accept(NodeVisitor visitor)
+        {
+            visitor.Visit(this);
+        }
     }
 }

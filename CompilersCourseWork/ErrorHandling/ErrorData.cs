@@ -71,13 +71,19 @@ namespace CompilersCourseWork.ErrorHandling
                 case Error.WARNING:
                     color = ConsoleColor.Yellow;
                     Console.ForegroundColor = color;
-                    Console.Write("Warning: ");
+                    Console.Write("\n\nWarning: ");
                     break;
 
                 case Error.LEXICAL_ERROR:
                     color = ConsoleColor.Red;
                     Console.ForegroundColor = color;
                     Console.Write("\n\nLexical error: ");
+                    break;
+
+                case Error.SEMANTIC_ERROR:
+                    color = ConsoleColor.Red;
+                    Console.ForegroundColor = color;
+                    Console.Write("\n\nSemantic error: ");
                     break;
 
                 case Error.SYNTAX_ERROR:

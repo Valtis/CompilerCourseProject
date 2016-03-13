@@ -1,0 +1,15 @@
+﻿var a : int := 4;
+var b : int := 2 + (4 * 2);
+var c : string := "hello";
+var d : string := "hello " + "world";
+var e : string := "This is a";
+var f : string := e + " test";
+var g : bool := a = 4;
+var h : bool := a < 2;
+var i : bool := !g;
+var j : bool := g & h;
+var k : int := ((4 * 2) + (9 / 4)) - (4 * (2+3));
+var l : bool := "hello" < "world";
+var m : bool := i < j;
+var n : bool := "hello" = "world";
+var o : bool := (4 < 5) = (3 < 6);

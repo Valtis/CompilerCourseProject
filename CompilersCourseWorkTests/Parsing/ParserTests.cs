@@ -931,6 +931,8 @@ namespace CompilersCourseWork.Parsing.Tests
                     new PrintNode(0, 0, null),
                     new IdentifierNode(0, 0, "v"),
                });
+
+            Assert.AreEqual(0, reporter.Errors.Count);
         }
 
         [TestMethod()]
@@ -958,6 +960,7 @@ namespace CompilersCourseWork.Parsing.Tests
                     new PrintNode(0, 0, null),
                     new IdentifierNode(0, 0, "X"),
                });
+            Assert.AreEqual(0, reporter.Errors.Count);
         }
 
         private void ASTPreOrderMatches(Node node, IList<Node> nodesPreorder)

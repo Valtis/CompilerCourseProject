@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CompilersCourseWork.Parsing;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CompilersCourseWork.AST
 {
-    public class Node
+    public abstract class Node
     {
         private IList<Node> children;
         private readonly int line;
@@ -68,6 +69,18 @@ namespace CompilersCourseWork.AST
         public override int GetHashCode()
         {
             return GetType().ToString().GetHashCode();
+        }
+
+        public abstract void Accept(NodeVisitor visitor);
+
+        public virtual VariableType NodeType()
+        {
+            throw new InternalCompilerError("Invalid node type for variable type parameter");
+        }
+
+        internal virtual void SetType(VariableType type)
+        {
+            throw new InternalCompilerError("Invalid node type for variable type parameter");
         }
     }
 }

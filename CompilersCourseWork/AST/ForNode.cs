@@ -15,5 +15,10 @@
             Children.Add(stopExpression);
             Children.Add(statements);
         }
+
+        public override void Accept(NodeVisitor visitor)
+        {
+            visitor.Visit(this);
+        }
     }
 }

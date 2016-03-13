@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using CompilersCourseWork.Parsing;
 
 namespace CompilersCourseWork.AST
 {
     public class IdentifierNode : Node
     {
         private readonly string name;
+        private VariableType type;
+
 
         public IdentifierNode(int line, int column, string name) : base(line, column)
         {
@@ -47,6 +45,21 @@ namespace CompilersCourseWork.AST
         public override string ToString()
         {
             return "IdentifierNode - " + name;
+        }
+
+        public override void Accept(NodeVisitor visitor)
+        {
+            visitor.Visit(this);
+        }
+
+        internal override void SetType(VariableType type)
+        {
+            this.type = type;
+        }
+
+        public override VariableType NodeType()
+        {
+            return type;
         }
     }
 }

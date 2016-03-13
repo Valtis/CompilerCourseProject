@@ -52,6 +52,7 @@ namespace CompilersCourseWork.Lexing
             if (arrayPos != 0)
             {
                 --arrayPos;
+                --Column;
             }
             else if (Line != 0)
             {

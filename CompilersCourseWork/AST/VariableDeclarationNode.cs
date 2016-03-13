@@ -49,5 +49,15 @@ namespace CompilersCourseWork.AST
         {
             return 3*Name.GetHashCode() + 7*Type.GetHashCode();
         }
+
+        public override void Accept(NodeVisitor visitor)
+        {
+            visitor.Visit(this);
+        }
+
+       public override VariableType NodeType()
+        {
+            return Type;
+        }
     }
 }
