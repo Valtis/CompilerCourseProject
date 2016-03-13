@@ -13,3 +13,6 @@ var l : bool := "hello" < "world";
 var m : bool := i < j;
 var n : bool := "hello" = "world";
 var o : bool := (4 < 5) = (3 < 6);
+var p : int;
+var q : string;
+var r : bool;

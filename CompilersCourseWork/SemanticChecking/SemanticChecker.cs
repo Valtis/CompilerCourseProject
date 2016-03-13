@@ -121,27 +121,7 @@ namespace CompilersCourseWork.SemanticChecking
 
 
             node.Children[0].Accept(this);
-
-            var type = node.Children[0].NodeType();
-
-            // if type is error type, the error has already been reported
-            if (node.Type != type && type != VariableType.ERROR_TYPE)
-            {
-                reporter.ReportError(
-                    Error.SEMANTIC_ERROR,
-                    "Expression has invalid type '" +
-                        type.Name() + "' while variable has type '" + node.Type.Name() + "'",
-                    node.Children[0].Line,
-                    node.Children[0].Column);
-
-                reporter.ReportError(
-                    Error.NOTE,
-                    "Variable was declared here",
-                    node.Line,
-                    node.Column);
-            }
-
-
+            TypeCheckVariableAssignment(node, node);
 
             Node n = null;
             if ((n = HasSelfAssignment(node)) != null)
@@ -152,13 +132,45 @@ namespace CompilersCourseWork.SemanticChecking
                     n.Line,
                     n.Column);
             }
-
         }
 
         public void Visit(VariableAssignmentNode node)
         {
-            throw new NotImplementedException();
+            if (node.Children.Count != 1)
+            {
+                throw new InternalCompilerError("Variable assignment node has no children");
+            }
+
+            if (!symbolTable.ContainsKey(node.Name))
+            {
+                reporter.ReportError(
+                    Error.SEMANTIC_ERROR,
+                    "Variable '" + node.Name + "' has not been declared at this point",
+                    node.Line,
+                    node.Column);
+                return;
+            }
+
+            node.Children[0].Accept(this);
+
+            var variableNode = symbolTable[node.Name].node;
+            TypeCheckVariableAssignment(node, variableNode);
+
+            // warn on self assignment. This could be improved by also warning, if there are operations
+            // that do not change the outcome (like c := c + 0;) but for now we just warn on the specific 
+            // case of var c := c;
+
+            if (node.Children[0] is IdentifierNode && ((IdentifierNode)node.Children[0]).Name == node.Name)
+            {
+                reporter.ReportError(
+                    Error.WARNING,
+                    "Self assignment has no effect",
+                    node.Children[0].Line,
+                    node.Children[0].Column);
+            }
         }
+
+        
 
         public void Visit(StringNode node)
         {
@@ -369,6 +381,27 @@ namespace CompilersCourseWork.SemanticChecking
                 }
             }
             return null;
+        }
+
+        private void TypeCheckVariableAssignment(Node assignmentNode, VariableDeclarationNode declarationNode)
+        {
+            var childType = assignmentNode.Children[0].NodeType();
+            // if type is error type, the error has already been reported
+            if (declarationNode.Type != childType && childType != VariableType.ERROR_TYPE)
+            {
+                reporter.ReportError(
+                    Error.SEMANTIC_ERROR,
+                    "Expression has invalid type '" +
+                        childType.Name() + "' while variable has type '" + declarationNode.Type.Name() + "'",
+                    assignmentNode.Children[0].Line,
+                    assignmentNode.Children[0].Column);
+
+                reporter.ReportError(
+                    Error.NOTE,
+                    "Variable was declared here",
+                    declarationNode.Line,
+                    declarationNode.Column);
+            }
         }
     }
 }

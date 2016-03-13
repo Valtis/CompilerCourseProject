@@ -1,0 +1,16 @@
+﻿var a : int;
+a := 4;
+a := 24 +4;
+a := (23 * 1) / 2;
+a := a + 2;
+a := (2 + 2);
+a := a;
+var b : string;
+b := "hello";
+b := "hello " + "world";
+b := (b + ".") + b;
+var c : bool;
+c := 4 < 2;
+c := c & (a < 2);
+c := !c;
+c := b = "test";
