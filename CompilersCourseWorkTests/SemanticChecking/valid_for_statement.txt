@@ -1,0 +1,24 @@
+﻿var i : int;
+var a : int := 4;
+
+for i in 0..5 do
+	a := 4;
+end for;
+
+
+
+for i in 3*a..5 do
+	a := 4;
+end for;
+
+for i in 3*a..5+9 do
+	a := 4;
+end for;
+	
+var b : int := 2;
+
+for i in 3*(a-2)..(5+9)/b do
+	a := 4;
+end for;
+
+i := 4; // can reassign counter outside loop
