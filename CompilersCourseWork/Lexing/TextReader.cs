@@ -96,7 +96,11 @@ namespace CompilersCourseWork.Lexing
 
             if (value.HasValue && value.Value == '\t')
             {
-                Column += spacesPerTab;
+                // move to next tab stop
+
+                var distanceFromPreviousStop = Column % spacesPerTab;
+
+                Column += (spacesPerTab - distanceFromPreviousStop);
             }
             else
             {

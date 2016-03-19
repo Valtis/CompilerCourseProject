@@ -253,6 +253,16 @@ namespace CompilersCourseWork.Tests
             token = lexer.NextToken();
             Assert.AreEqual(5, token.Line);
             Assert.AreEqual(8, token.Column);
+
+
+            token = lexer.NextToken();
+            Assert.AreEqual(7, token.Line);
+            Assert.AreEqual(4, token.Column);
+
+            token = lexer.NextToken();
+            Assert.AreEqual(8, token.Line);
+            Assert.AreEqual(8, token.Column);
+
             Assert.AreEqual(0, reporter.Errors.Count);
         }
 
@@ -283,6 +293,14 @@ namespace CompilersCourseWork.Tests
             token = lexer.NextToken();
             Assert.AreEqual(5, token.Line);
             Assert.AreEqual(16, token.Column);
+
+            token = lexer.NextToken();
+            Assert.AreEqual(7, token.Line);
+            Assert.AreEqual(8, token.Column);
+
+            token = lexer.NextToken();
+            Assert.AreEqual(8, token.Line);
+            Assert.AreEqual(8, token.Column);
             Assert.AreEqual(0, reporter.Errors.Count);
         }
 
