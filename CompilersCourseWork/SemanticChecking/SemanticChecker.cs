@@ -35,7 +35,12 @@ namespace CompilersCourseWork.SemanticChecking
 
         public void Visit(AssertNode node)
         {
-            throw new NotImplementedException();
+            if (node.Children.Count != 1)
+            {
+                throw new InternalCompilerError("Invalid child count for assert node");
+            }
+
+            HandleExpression(node.Children[0], new List<VariableType> { VariableType.BOOLEAN });
         }
 
         public void Visit(DivideNode node)

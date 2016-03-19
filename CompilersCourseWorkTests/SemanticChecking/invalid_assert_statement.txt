@@ -1,0 +1,9 @@
+﻿assert(undeclared);
+assert(3);
+assert("str");
+var integer : int;
+var str : string;
+assert(integer);
+assert(str);
+assert(4 < "hsd");
+

@@ -1,0 +1,5 @@
+﻿assert(4 < 5);
+var a : int;
+assert (a = a);
+var b : bool := "hello " = "world";
+assert(b);

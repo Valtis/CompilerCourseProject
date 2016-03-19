@@ -464,6 +464,73 @@ namespace CompilersCourseWork.SemanticChecking.Tests
         }
 
         [TestMethod()]
+        public void SemanticCheckerAcceptsValidAssertStatement()
+        {
+            var reporter = new ErrorReporter();
+            var parser = new Parser(
+                new Lexer("../../SemanticChecking/valid_assert_statement.txt", reporter),
+                reporter);
+
+            var node = parser.Parse();
+
+            var semanticChecker = new SemanticChecker(reporter);
+            node.Accept(semanticChecker);
+
+            Assert.AreEqual(0, reporter.Errors.Count);
+        }
+
+        [TestMethod()]
+        public void SemanticCheckerRejectsInvalidAssertStatement()
+        {
+            var reporter = new ErrorReporter();
+            var parser = new Parser(
+                new Lexer("../../SemanticChecking/invalid_assert_statement.txt", reporter),
+                reporter);
+
+            var node = parser.Parse();
+
+            var semanticChecker = new SemanticChecker(reporter);
+            node.Accept(semanticChecker);
+
+            Assert.AreEqual(6, reporter.Errors.Count);
+
+            Assert.AreEqual(Error.SEMANTIC_ERROR, reporter.Errors[0].Type);
+            Assert.AreEqual(0, reporter.Errors[0].Line);
+            Assert.AreEqual(7, reporter.Errors[0].Column);
+            Assert.IsTrue(reporter.Errors[0].Message.ToLower().Contains("variable 'undeclared' has not been"));
+
+            Assert.AreEqual(Error.SEMANTIC_ERROR, reporter.Errors[1].Type);
+            Assert.AreEqual(1, reporter.Errors[1].Line);
+            Assert.AreEqual(7, reporter.Errors[1].Column);
+            Assert.IsTrue(reporter.Errors[1].Message.ToLower().Contains("expression must have type 'boolean'"));
+            Assert.IsTrue(reporter.Errors[1].Message.ToLower().Contains("has type 'integer'"));
+
+            Assert.AreEqual(Error.SEMANTIC_ERROR, reporter.Errors[2].Type);
+            Assert.AreEqual(2, reporter.Errors[2].Line);
+            Assert.AreEqual(7, reporter.Errors[2].Column);
+            Assert.IsTrue(reporter.Errors[2].Message.ToLower().Contains("expression must have type 'boolean'"));
+            Assert.IsTrue(reporter.Errors[2].Message.ToLower().Contains("has type 'string'"));
+
+
+            Assert.AreEqual(Error.SEMANTIC_ERROR, reporter.Errors[3].Type);
+            Assert.AreEqual(5, reporter.Errors[3].Line);
+            Assert.AreEqual(7, reporter.Errors[3].Column);
+            Assert.IsTrue(reporter.Errors[3].Message.ToLower().Contains("expression must have type 'boolean'"));
+            Assert.IsTrue(reporter.Errors[3].Message.ToLower().Contains("has type 'integer'"));
+
+            Assert.AreEqual(Error.SEMANTIC_ERROR, reporter.Errors[4].Type);
+            Assert.AreEqual(6, reporter.Errors[4].Line);
+            Assert.AreEqual(7, reporter.Errors[4].Column);
+            Assert.IsTrue(reporter.Errors[4].Message.ToLower().Contains("expression must have type 'boolean'"));
+            Assert.IsTrue(reporter.Errors[4].Message.ToLower().Contains("has type 'string'"));
+
+            Assert.AreEqual(Error.SEMANTIC_ERROR, reporter.Errors[5].Type);
+            Assert.AreEqual(7, reporter.Errors[5].Line);
+            Assert.AreEqual(9, reporter.Errors[5].Column);
+            Assert.IsTrue(reporter.Errors[5].Message.ToLower().Contains("incompatible types for operator '<'"));
+        }
+
+        [TestMethod()]
         public void SemanticCheckerAcceptsExampleProgram()
         {
             var reporter = new ErrorReporter();
