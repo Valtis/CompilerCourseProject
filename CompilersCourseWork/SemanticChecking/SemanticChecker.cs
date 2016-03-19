@@ -71,13 +71,7 @@ namespace CompilersCourseWork.SemanticChecking
                     " but has type '" + loopVariable.NodeType().Name() + "'",
                     loopVariable.Line,
                     loopVariable.Column);
-
-                var varNode = symbolTable[loopVariable.Name].node;
-                reporter.ReportError(
-                    Error.NOTE,
-                    "Variable was declared here",
-                    varNode.Line,
-                    varNode.Column);
+                NoteVariableWasDeclaredHere(loopVariable.Name);
             }
 
             var acceptableTypes = new List<VariableType> { VariableType.INTEGER };
@@ -142,12 +136,7 @@ namespace CompilersCourseWork.SemanticChecking
 
                 if (expression is IdentifierNode)
                 {
-                    var varNode = symbolTable[((IdentifierNode)expression).Name].node;
-                    reporter.ReportError(
-                        Error.NOTE,
-                        "Variable was declared here",
-                        varNode.Line,
-                        varNode.Column);
+                    NoteVariableWasDeclaredHere(((IdentifierNode)expression).Name);
                 }
             }
         }
@@ -198,11 +187,8 @@ namespace CompilersCourseWork.SemanticChecking
                     node.Line,
                     node.Column);
 
-                reporter.ReportError(
-                    Error.NOTE,
-                    "Previous declaration here",
-                    symbolTable[node.Name].node.Line,
-                    symbolTable[node.Name].node.Column);
+                var name = node.Name;
+                NoteVariableWasDeclaredHere(name);
             }
             else
             {
@@ -233,6 +219,8 @@ namespace CompilersCourseWork.SemanticChecking
                     n.Column);
             }
         }
+
+        
 
         public void Visit(VariableAssignmentNode node)
         {
@@ -275,7 +263,37 @@ namespace CompilersCourseWork.SemanticChecking
 
         public void Visit(ReadNode node)
         {
-            throw new NotImplementedException();
+            if (node.Children.Count != 1)
+            {
+                throw new InternalCompilerError("Invalid node count for read node");
+            }
+
+            if (!(node.Children[0] is IdentifierNode))
+            {
+                throw new InternalCompilerError("Invalid node type for read node");
+            }
+
+            var identifier = (IdentifierNode)node.Children[0];
+            if (!symbolTable.ContainsKey(identifier.Name))
+            {
+                ReportUndeclaredVariable(identifier);
+                return;
+            }
+
+
+            if (symbolTable[identifier.Name].node.Type == VariableType.BOOLEAN)
+            {
+                reporter.ReportError(
+                    Error.SEMANTIC_ERROR,
+                    "Variable has invalid type '" + VariableType.BOOLEAN.Name() + "'" +
+                    " when '" + VariableType.INTEGER.Name() + "' or '" + 
+                    VariableType.STRING.Name() + "' were expected",
+                    identifier.Line,
+                    identifier.Column
+                    );
+
+                NoteVariableWasDeclaredHere(identifier.Name);
+            }
         }
 
         public void Visit(NotNode node)
@@ -505,6 +523,7 @@ namespace CompilersCourseWork.SemanticChecking
                     assignmentNode.Children[0].Line,
                     assignmentNode.Children[0].Column);
 
+                
                 reporter.ReportError(
                     Error.NOTE,
                     "Variable was declared here",
@@ -532,6 +551,15 @@ namespace CompilersCourseWork.SemanticChecking
                             "Variable '" + name + "' has not been declared at this point",
                             node.Line,
                             node.Column);
+        }
+
+        private void NoteVariableWasDeclaredHere(string name)
+        {
+            reporter.ReportError(
+                                Error.NOTE,
+                                "Variable was declared here",
+                                symbolTable[name].node.Line,
+                                symbolTable[name].node.Column);
         }
     }   
 }

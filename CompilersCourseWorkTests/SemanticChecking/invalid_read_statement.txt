@@ -1,0 +1,4 @@
+﻿var a : bool;
+
+read undeclared;
+read a;
