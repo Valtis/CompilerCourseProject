@@ -331,25 +331,25 @@ namespace CompilersCourseWork.SemanticChecking.Tests
             Assert.AreEqual(Error.SEMANTIC_ERROR, reporter.Errors[3].Type);
             Assert.AreEqual(16, reporter.Errors[3].Line);
             Assert.AreEqual(9, reporter.Errors[3].Column);
-            Assert.IsTrue(reporter.Errors[3].Message.ToLower().Contains("expression expects type 'integer'"));
+            Assert.IsTrue(reporter.Errors[3].Message.ToLower().Contains("expression must have type 'integer'"));
             Assert.IsTrue(reporter.Errors[3].Message.ToLower().Contains("but has type 'string'"));
 
             Assert.AreEqual(Error.SEMANTIC_ERROR, reporter.Errors[4].Type);
             Assert.AreEqual(21, reporter.Errors[4].Line);
             Assert.AreEqual(9, reporter.Errors[4].Column);
-            Assert.IsTrue(reporter.Errors[4].Message.ToLower().Contains("expression expects type 'integer'"));
+            Assert.IsTrue(reporter.Errors[4].Message.ToLower().Contains("expression must have type 'integer'"));
             Assert.IsTrue(reporter.Errors[4].Message.ToLower().Contains("but has type 'string'"));
 
             Assert.AreEqual(Error.SEMANTIC_ERROR, reporter.Errors[5].Type);
             Assert.AreEqual(25, reporter.Errors[5].Line);
             Assert.AreEqual(14, reporter.Errors[5].Column);
-            Assert.IsTrue(reporter.Errors[5].Message.ToLower().Contains("expression expects type 'integer'"));
+            Assert.IsTrue(reporter.Errors[5].Message.ToLower().Contains("expression must have type 'integer'"));
             Assert.IsTrue(reporter.Errors[5].Message.ToLower().Contains("but has type 'boolean'"));
 
             Assert.AreEqual(Error.SEMANTIC_ERROR, reporter.Errors[6].Type);
             Assert.AreEqual(31, reporter.Errors[6].Line);
             Assert.AreEqual(12, reporter.Errors[6].Column);
-            Assert.IsTrue(reporter.Errors[6].Message.ToLower().Contains("expression expects type 'integer'"));
+            Assert.IsTrue(reporter.Errors[6].Message.ToLower().Contains("expression must have type 'integer'"));
             Assert.IsTrue(reporter.Errors[6].Message.ToLower().Contains("but has type 'boolean'"));
 
             Assert.AreEqual(Error.SEMANTIC_ERROR, reporter.Errors[7].Type);
@@ -414,6 +414,53 @@ namespace CompilersCourseWork.SemanticChecking.Tests
             Assert.AreEqual(3, reporter.Errors[1].Line);
             Assert.AreEqual(5, reporter.Errors[1].Column);
             Assert.IsTrue(reporter.Errors[1].Message.ToLower().Contains("variable has invalid type 'boolean'"));
+        }
+
+        [TestMethod()]
+        public void SemanticCheckerAcceptsValidPrintStatement()
+        {
+            var reporter = new ErrorReporter();
+            var parser = new Parser(
+                new Lexer("../../SemanticChecking/valid_print_statement.txt", reporter),
+                reporter);
+
+            var node = parser.Parse();
+
+            var semanticChecker = new SemanticChecker(reporter);
+            node.Accept(semanticChecker);
+
+            Assert.AreEqual(0, reporter.Errors.Count);
+        }
+
+        [TestMethod()]
+        public void SemanticCheckerRejectsInvalidPrintStatement()
+        {
+            var reporter = new ErrorReporter();
+            var parser = new Parser(
+                new Lexer("../../SemanticChecking/invalid_print_statement.txt", reporter),
+                reporter);
+
+            var node = parser.Parse();
+
+            var semanticChecker = new SemanticChecker(reporter);
+            node.Accept(semanticChecker);
+
+            Assert.AreEqual(3, reporter.Errors.Count);
+
+            Assert.AreEqual(Error.SEMANTIC_ERROR, reporter.Errors[0].Type);
+            Assert.AreEqual(0, reporter.Errors[0].Line);
+            Assert.AreEqual(6, reporter.Errors[0].Column);
+            Assert.IsTrue(reporter.Errors[0].Message.ToLower().Contains("variable 'undeclared' has not been"));
+
+            Assert.AreEqual(Error.SEMANTIC_ERROR, reporter.Errors[1].Type);
+            Assert.AreEqual(2, reporter.Errors[1].Line);
+            Assert.AreEqual(8, reporter.Errors[1].Column);
+            Assert.IsTrue(reporter.Errors[1].Message.ToLower().Contains("expression must have one of types 'integer', 'string'"));
+
+            Assert.AreEqual(Error.SEMANTIC_ERROR, reporter.Errors[2].Type);
+            Assert.AreEqual(3, reporter.Errors[2].Line);
+            Assert.AreEqual(14, reporter.Errors[2].Column);
+            Assert.IsTrue(reporter.Errors[2].Message.ToLower().Contains("incompatible types for operator '+'"));
         }
 
         [TestMethod()]

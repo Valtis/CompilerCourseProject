@@ -1,0 +1,13 @@
+﻿print 5;
+print "hello";
+print (2 * 3) + (2 / 3);
+print "hello " + "world";
+
+var a : int;
+var b : string;
+
+print a;
+print b;
+print a - 32;
+print b + " asdasd";
+

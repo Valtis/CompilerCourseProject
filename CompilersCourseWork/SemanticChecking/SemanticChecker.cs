@@ -129,7 +129,7 @@ namespace CompilersCourseWork.SemanticChecking
                 var typeStr = BuildTypeErrorString(acceptableTypes);
                 reporter.ReportError(
                     Error.SEMANTIC_ERROR,
-                    "Expression expects " + typeStr +
+                    "Expression must have " + typeStr +
                     " but has type '" + expression.NodeType().Name() + "'",
                     expression.Line,
                     expression.Column);
@@ -157,7 +157,12 @@ namespace CompilersCourseWork.SemanticChecking
 
         public void Visit(PrintNode node)
         {
-            throw new NotImplementedException();
+            if (node.Children.Count != 1)
+            {
+                throw new InternalCompilerError("Invalid child count for print node");
+            }
+
+            HandleExpression(node.Children[0], new List<VariableType> { VariableType.INTEGER, VariableType.STRING });
         }
 
         public void Visit(StatementsNode node)

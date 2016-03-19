@@ -1,0 +1,4 @@
+﻿print undeclared;
+var a : int;
+print a < 4;
+print "hello" + 4;
