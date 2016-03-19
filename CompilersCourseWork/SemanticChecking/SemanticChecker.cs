@@ -49,7 +49,107 @@ namespace CompilersCourseWork.SemanticChecking
 
         public void Visit(ForNode node)
         {
-            throw new NotImplementedException();
+            if (node.Children.Count != 4)
+            {
+                throw new InternalCompilerError("Invalid child count for ForNode");
+            }
+
+            if (!(node.Children[0] is IdentifierNode))
+            {
+                throw new InternalCompilerError("Invalid node type for loop variable");
+            }
+
+            var loopVariable = (IdentifierNode)node.Children[0];
+            loopVariable.Accept(this);
+
+            if (loopVariable.NodeType() != VariableType.INTEGER && 
+                loopVariable.NodeType() != VariableType.ERROR_TYPE)
+            {
+                reporter.ReportError(
+                    Error.SEMANTIC_ERROR,
+                    "Loop control variable must have type '" + VariableType.INTEGER.Name() + "'" +
+                    " but has type '" + loopVariable.NodeType().Name() + "'",
+                    loopVariable.Line,
+                    loopVariable.Column);
+
+                var varNode = symbolTable[loopVariable.Name].node;
+                reporter.ReportError(
+                    Error.NOTE,
+                    "Variable was declared here",
+                    varNode.Line,
+                    varNode.Column);
+            }
+
+            var acceptableTypes = new List<VariableType> { VariableType.INTEGER };
+
+            var startExpression = node.Children[1];
+            HandleExpression(startExpression, acceptableTypes);
+
+            var endExpression = node.Children[2];
+            HandleExpression(endExpression, acceptableTypes);
+
+            var loopBody = node.Children[3];
+            loopBody.Accept(this);
+
+            // check that loop variable is not reassigned in the loop body
+
+            var stack = new Stack<Node>();
+          
+            stack.Push(loopBody);
+           
+            while (stack.Count != 0)
+            {
+                var current = stack.Pop();
+
+                if (current is VariableAssignmentNode && ((VariableAssignmentNode)current).Name == loopVariable.Name)
+                {
+                    reporter.ReportError(
+                        Error.SEMANTIC_ERROR,
+                        "Cannot reassign control variable '" + loopVariable.Name + "'",
+                        current.Line,
+                        current.Column);
+
+                    reporter.ReportError(
+                        Error.NOTE,
+                        "Loop is here at",
+                        node.Line,
+                        node.Column);
+                    break;
+                }
+
+                foreach (var child in current.Children)
+                {
+                    stack.Push(child);
+                }
+            }
+        }
+
+        private void HandleExpression(Node expression, List<VariableType> acceptableTypes)
+        {
+            expression.Accept(this);
+
+            if (!acceptableTypes.Contains(expression.NodeType()) &&
+                expression.NodeType() != VariableType.ERROR_TYPE)
+            {
+
+                var typeStr = BuildTypeErrorString(acceptableTypes);
+                reporter.ReportError(
+                    Error.SEMANTIC_ERROR,
+                    "Expression expects " + typeStr +
+                    " but has type '" + expression.NodeType().Name() + "'",
+                    expression.Line,
+                    expression.Column);
+
+                if (expression is IdentifierNode)
+                {
+                    var varNode = symbolTable[((IdentifierNode)expression).Name].node;
+                    reporter.ReportError(
+                        Error.NOTE,
+                        "Variable was declared here",
+                        varNode.Line,
+                        varNode.Column);
+                }
+            }
         }
 
         public void Visit(IntegerNode node)
@@ -143,11 +243,7 @@ namespace CompilersCourseWork.SemanticChecking
 
             if (!symbolTable.ContainsKey(node.Name))
             {
-                reporter.ReportError(
-                    Error.SEMANTIC_ERROR,
-                    "Variable '" + node.Name + "' has not been declared at this point",
-                    node.Line,
-                    node.Column);
+                ReportUndeclaredVariable(node);
                 return;
             }
 
@@ -170,8 +266,8 @@ namespace CompilersCourseWork.SemanticChecking
             }
         }
 
-        
 
+   
         public void Visit(StringNode node)
         {
             // do nothing
@@ -232,6 +328,11 @@ namespace CompilersCourseWork.SemanticChecking
             if (symbolTable.ContainsKey(node.Name))
             {
                 node.SetType(symbolTable[node.Name].node.NodeType());
+            }
+            else
+            {
+                node.SetType(VariableType.ERROR_TYPE);
+                ReportUndeclaredVariable(node);
             }
         }
 
@@ -313,24 +414,32 @@ namespace CompilersCourseWork.SemanticChecking
 
         private void ReportUnacceptableTypes(Node node, string op, IList<VariableType> acceptableOperandTypes)
         {
-            string types = "'" + acceptableOperandTypes[0].Name()  + "'";
+            var typeStr = BuildTypeErrorString(acceptableOperandTypes);
+
+            reporter.ReportError(
+                            Error.SEMANTIC_ERROR,
+                            "Operator '" + op + "' expects operands to have " + typeStr,
+                            node.Line,
+                            node.Column);
+            LeftRightTypeNote(node);
+        }
+
+        private static string BuildTypeErrorString(IList<VariableType> acceptableOperandTypes)
+        {
+            var types = "'" + acceptableOperandTypes[0].Name() + "'";
             for (int i = 1; i < acceptableOperandTypes.Count; ++i)
             {
-                types += ", '" + acceptableOperandTypes[i].Name() + "'"; 
+                types += ", '" + acceptableOperandTypes[i].Name() + "'";
             }
 
-            string typeStr = "type";
+            var typeStr = "type";
             if (acceptableOperandTypes.Count > 1)
             {
                 typeStr = "one of types";
             }
 
-            reporter.ReportError(
-                            Error.SEMANTIC_ERROR,
-                            "Operator '" + op + "' expects operands to have " + typeStr + " " + types,
-                            node.Line,
-                            node.Column);
-            LeftRightTypeNote(node);
+            typeStr += " " + types;
+            return typeStr;
         }
 
         private void ReportInvalidTypes(Node node, string op)
@@ -403,5 +512,26 @@ namespace CompilersCourseWork.SemanticChecking
                     declarationNode.Column);
             }
         }
-    }
+
+        private void ReportUndeclaredVariable(VariableAssignmentNode node)
+        {
+            var name = node.Name;
+            ReportUndeclaredVariable(node, node.Name);
+        }
+
+        private void ReportUndeclaredVariable(IdentifierNode node)
+        {
+            ReportUndeclaredVariable(node, node.Name);
+        }
+
+
+        private void ReportUndeclaredVariable(Node node, string name)
+        {
+            reporter.ReportError(
+                            Error.SEMANTIC_ERROR,
+                            "Variable '" + name + "' has not been declared at this point",
+                            node.Line,
+                            node.Column);
+        }
+    }   
 }

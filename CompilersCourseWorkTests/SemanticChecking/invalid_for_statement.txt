@@ -1,0 +1,56 @@
+﻿for undeclared in 0..5 do
+	var foo : int;
+end for;
+
+var i : int;
+
+for i in undeclared..5 do
+	var a : int; 
+end for;
+
+var str : string;
+
+for str in 0 .. 2 do
+	var c : int;
+end for;
+
+for i in "foo"..0 do
+	 str := "";
+end for;
+
+
+for i in str..0 do
+	 str := "";
+end for;
+
+for i in 0..5 < 2 do
+	 str := "";
+end for;
+
+var boolean : bool;
+
+for i in 0..boolean do
+	 str := "";
+end for;
+
+for i in 0..34 do
+	var e : int := "dasd";
+end for;
+
+for i in 0..5 do
+	var a : int; // redeclaration
+end for;
+
+
+for i in 0..5 do
+	i := 4; // reassignment
+end for;
+
+
+
+var j : int;
+for i in 0..23 do
+	for j in 2..5 do
+		i := 20; // reassigning control varialble in deeper scope
+	end for;
+end for;

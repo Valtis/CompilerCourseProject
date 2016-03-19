@@ -16,3 +16,5 @@ var o : bool := (4 < 5) = (3 < 6);
 var p : int;
 var q : string;
 var r : bool;
+var case_test : int;
+var CASE_TEST : int;

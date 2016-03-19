@@ -194,7 +194,7 @@ namespace CompilersCourseWork.SemanticChecking.Tests
         }
 
         [TestMethod()]
-        public void SemanticCheckerAcceptsValidValidVariableAssignment()
+        public void SemanticCheckerAcceptsValidVariableAssignment()
         {
             var reporter = new ErrorReporter();
             var parser = new Parser(
@@ -279,6 +279,99 @@ namespace CompilersCourseWork.SemanticChecking.Tests
             Assert.AreEqual(13, reporter.Errors[10].Line);
             Assert.AreEqual(13, reporter.Errors[10].Column);
             Assert.IsTrue(reporter.Errors[10].Message.ToLower().Contains("operator '-' expects operands to have type 'integer'"));
+        }
+
+        [TestMethod()]
+        public void SemanticCheckerAcceptsValidForStatement()
+        {
+            var reporter = new ErrorReporter();
+            var parser = new Parser(
+                new Lexer("../../SemanticChecking/valid_for_statement.txt", reporter),
+                reporter);
+
+            var node = parser.Parse();
+
+            var semanticChecker = new SemanticChecker(reporter);
+            node.Accept(semanticChecker);
+
+            Assert.AreEqual(0, reporter.Errors.Count);
+        }
+
+        [TestMethod()]
+        public void SemanticCheckerRejectsInvalidForStatement()
+        {
+            var reporter = new ErrorReporter();
+            var parser = new Parser(
+                new Lexer("../../SemanticChecking/invalid_for_statement.txt", reporter),
+                reporter);
+
+            var node = parser.Parse();
+
+            var semanticChecker = new SemanticChecker(reporter);
+            node.Accept(semanticChecker);
+
+            Assert.AreEqual(11, reporter.Errors.Count);
+
+            Assert.AreEqual(Error.SEMANTIC_ERROR, reporter.Errors[0].Type);
+            Assert.AreEqual(0, reporter.Errors[0].Line);
+            Assert.AreEqual(4, reporter.Errors[0].Column);
+            Assert.IsTrue(reporter.Errors[0].Message.ToLower().Contains("variable 'undeclared' has not been"));
+
+            Assert.AreEqual(Error.SEMANTIC_ERROR, reporter.Errors[1].Type);
+            Assert.AreEqual(6, reporter.Errors[1].Line);
+            Assert.AreEqual(9, reporter.Errors[1].Column);
+            Assert.IsTrue(reporter.Errors[1].Message.ToLower().Contains("variable 'undeclared' has not been"));
+
+            Assert.AreEqual(Error.SEMANTIC_ERROR, reporter.Errors[2].Type);
+            Assert.AreEqual(12, reporter.Errors[2].Line);
+            Assert.AreEqual(4, reporter.Errors[2].Column);
+            Assert.IsTrue(reporter.Errors[2].Message.ToLower().Contains("loop control variable must have type 'integer'")); Assert.AreEqual(Error.SEMANTIC_ERROR, reporter.Errors[1].Type);
+            Assert.IsTrue(reporter.Errors[2].Message.ToLower().Contains("has type 'string'"));
+
+            Assert.AreEqual(Error.SEMANTIC_ERROR, reporter.Errors[3].Type);
+            Assert.AreEqual(16, reporter.Errors[3].Line);
+            Assert.AreEqual(9, reporter.Errors[3].Column);
+            Assert.IsTrue(reporter.Errors[3].Message.ToLower().Contains("expression expects type 'integer'"));
+            Assert.IsTrue(reporter.Errors[3].Message.ToLower().Contains("but has type 'string'"));
+
+            Assert.AreEqual(Error.SEMANTIC_ERROR, reporter.Errors[4].Type);
+            Assert.AreEqual(21, reporter.Errors[4].Line);
+            Assert.AreEqual(9, reporter.Errors[4].Column);
+            Assert.IsTrue(reporter.Errors[4].Message.ToLower().Contains("expression expects type 'integer'"));
+            Assert.IsTrue(reporter.Errors[4].Message.ToLower().Contains("but has type 'string'"));
+
+            Assert.AreEqual(Error.SEMANTIC_ERROR, reporter.Errors[5].Type);
+            Assert.AreEqual(25, reporter.Errors[5].Line);
+            Assert.AreEqual(14, reporter.Errors[5].Column);
+            Assert.IsTrue(reporter.Errors[5].Message.ToLower().Contains("expression expects type 'integer'"));
+            Assert.IsTrue(reporter.Errors[5].Message.ToLower().Contains("but has type 'boolean'"));
+
+            Assert.AreEqual(Error.SEMANTIC_ERROR, reporter.Errors[6].Type);
+            Assert.AreEqual(31, reporter.Errors[6].Line);
+            Assert.AreEqual(12, reporter.Errors[6].Column);
+            Assert.IsTrue(reporter.Errors[6].Message.ToLower().Contains("expression expects type 'integer'"));
+            Assert.IsTrue(reporter.Errors[6].Message.ToLower().Contains("but has type 'boolean'"));
+
+            Assert.AreEqual(Error.SEMANTIC_ERROR, reporter.Errors[7].Type);
+            Assert.AreEqual(36, reporter.Errors[7].Line);
+            Assert.AreEqual(23, reporter.Errors[7].Column);
+            Assert.IsTrue(reporter.Errors[7].Message.ToLower().Contains("expression has invalid type 'string'"));
+            Assert.IsTrue(reporter.Errors[7].Message.ToLower().Contains("while variable has type 'integer'"));
+
+            Assert.AreEqual(Error.SEMANTIC_ERROR, reporter.Errors[8].Type);
+            Assert.AreEqual(40, reporter.Errors[8].Line);
+            Assert.AreEqual(12, reporter.Errors[8].Column);
+            Assert.IsTrue(reporter.Errors[8].Message.ToLower().Contains("redeclaration of variable 'a'"));
+
+            Assert.AreEqual(Error.SEMANTIC_ERROR, reporter.Errors[9].Type);
+            Assert.AreEqual(45, reporter.Errors[9].Line);
+            Assert.AreEqual(8, reporter.Errors[9].Column);
+            Assert.IsTrue(reporter.Errors[9].Message.ToLower().Contains("cannot reassign control variable 'i'"));
+
+            Assert.AreEqual(Error.SEMANTIC_ERROR, reporter.Errors[10].Type);
+            Assert.AreEqual(53, reporter.Errors[10].Line);
+            Assert.AreEqual(16, reporter.Errors[10].Column);
+            Assert.IsTrue(reporter.Errors[10].Message.ToLower().Contains("cannot reassign control variable 'i'"));
         }
 
         [TestMethod()]

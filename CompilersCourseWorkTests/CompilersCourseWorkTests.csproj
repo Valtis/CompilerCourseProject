@@ -100,8 +100,10 @@
     <Content Include="Parsing\valid_variable_assignment.txt" />
     <Content Include="Parsing\variable_declaration_no_assignment.txt" />
     <Content Include="Parsing\variable_declaration_with_assignment.txt" />
+    <Content Include="SemanticChecking\invalid_for_statement.txt" />
     <Content Include="SemanticChecking\invalid_variable_assignment.txt" />
     <Content Include="SemanticChecking\invalid_variable_declaration.txt" />
+    <Content Include="SemanticChecking\valid_for_statement.txt" />
     <Content Include="SemanticChecking\valid_variable_assignment.txt" />
     <Content Include="SemanticChecking\valid_variable_declaration.txt" />
   </ItemGroup>
