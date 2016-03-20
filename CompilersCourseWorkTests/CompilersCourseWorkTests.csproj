@@ -74,6 +74,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="CodeGen\for_statement.txt" />
+    <Content Include="CodeGen\print_statement.txt" />
+    <Content Include="CodeGen\variable_assignment.txt" />
     <Content Include="CodeGen\variable_declaration.txt" />
     <Content Include="Lexing\comments.txt" />
     <Content Include="empty.txt" />

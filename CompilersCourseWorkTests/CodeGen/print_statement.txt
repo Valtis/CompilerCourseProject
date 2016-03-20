@@ -1,0 +1,11 @@
+﻿var a : int;
+var b : string;
+
+print 4;
+print "hello";
+print 4 + 9;
+print "foo" + " bar";
+b := "hello " + "world";
+print b;
+a := 2*3;
+print a - 1;

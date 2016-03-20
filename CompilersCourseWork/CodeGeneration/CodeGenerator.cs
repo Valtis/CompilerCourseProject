@@ -59,7 +59,18 @@ namespace CompilersCourseWork.CodeGeneration
 
         public void Visit(PrintNode node)
         {
-            throw new NotImplementedException();
+            node.Children[0].Accept(this);
+            switch (node.Children[0].NodeType())
+            {
+                case VariableType.INTEGER:
+                    Emit(Bytecode.PRINT_INT);
+                    break;
+                case VariableType.STRING:
+                    Emit(Bytecode.PRINT_STRING);
+                    break;
+                default:
+                    throw new InternalCompilerError("Invalid type for print statement");
+            }
         }
 
         public void Visit(StatementsNode node)
@@ -111,7 +122,9 @@ namespace CompilersCourseWork.CodeGeneration
 
         public void Visit(VariableAssignmentNode node)
         {
-            throw new NotImplementedException();
+            node.Children[0].Accept(this);
+            Emit(Bytecode.STORE_VARIABLE);
+            Emit(symbolTable[node.Name].id);
         }
 
         public void Visit(StringNode node)

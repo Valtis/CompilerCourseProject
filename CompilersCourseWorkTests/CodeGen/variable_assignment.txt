@@ -1,0 +1,7 @@
+﻿var a : int;
+var b : string;
+var c : bool;
+
+a := 4*a;
+b := b + " hello";
+c := (!(a < 9876543210)) & (b = "world");

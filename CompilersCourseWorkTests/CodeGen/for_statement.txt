@@ -1,0 +1,19 @@
+﻿var i : int;
+var j : int;
+
+for i in 0..5 do
+	j := i + j;
+end for;
+
+for i in j..3*j do
+	j := i + j;
+	var foo : bool = i < j;
+end for;
+
+
+for i in 0..20 do
+	for j in 20..40 do
+		var k : int := 20;
+	end for;
+end for;
+		

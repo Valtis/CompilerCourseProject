@@ -28,6 +28,9 @@ namespace CompilersCourseWork.Interpreter
         public static readonly byte NOT = 66;
         public static readonly byte AND = 67;
 
+        public static readonly byte PRINT_INT = 70;
+        public static readonly byte PRINT_STRING = 71;
+
         public static readonly byte ADD = 80;
         public static readonly byte SUB = 81;
         public static readonly byte MUL = 82;
