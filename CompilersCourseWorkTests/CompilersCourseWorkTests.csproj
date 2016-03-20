@@ -57,6 +57,7 @@
     <Compile Include="AST\StringNodeTests.cs" />
     <Compile Include="AST\VariableAssignmentNodeTests.cs" />
     <Compile Include="AST\VariableNodeTests.cs" />
+    <Compile Include="CodeGen\CodeGenTests.cs" />
     <Compile Include="Lexing\LexerTests.cs" />
     <Compile Include="Parsing\ParserTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -73,6 +74,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="CodeGen\variable_declaration.txt" />
     <Content Include="Lexing\comments.txt" />
     <Content Include="empty.txt" />
     <Content Include="example_program.txt" />

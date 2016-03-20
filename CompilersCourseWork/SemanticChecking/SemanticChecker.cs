@@ -8,22 +8,17 @@ namespace CompilersCourseWork.SemanticChecking
 {
     public class SemanticChecker : NodeVisitor
     {
-        class VariableData
-        {
-            public readonly int id;
-            public readonly VariableDeclarationNode node;
-
-            public VariableData(int id, VariableDeclarationNode node)
-            {
-                this.id = id;
-                this.node = node;
-            }
-
-        }
-
-        private IDictionary<string, VariableData> symbolTable;
+        private readonly IDictionary<string, VariableData> symbolTable;
         private int variableId;
         private ErrorReporter reporter;
+
+        public IDictionary<string, VariableData> SymbolTable
+        {
+            get
+            {
+                return symbolTable;
+            }
+        }
 
         public SemanticChecker(ErrorReporter reporter)
         {
@@ -189,7 +184,7 @@ namespace CompilersCourseWork.SemanticChecking
 
         public void Visit(VariableDeclarationNode node)
         {
-            if (symbolTable.ContainsKey(node.Name))
+            if (SymbolTable.ContainsKey(node.Name))
             {
                 reporter.ReportError(
                     Error.SEMANTIC_ERROR,
@@ -202,7 +197,7 @@ namespace CompilersCourseWork.SemanticChecking
             }
             else
             {
-                symbolTable[node.Name] = new VariableData(variableId++, node);
+                SymbolTable[node.Name] = new VariableData(variableId++, node);
             }
 
             if (node.Children.Count == 0)
@@ -239,7 +234,7 @@ namespace CompilersCourseWork.SemanticChecking
                 throw new InternalCompilerError("Variable assignment node has no children");
             }
 
-            if (!symbolTable.ContainsKey(node.Name))
+            if (!SymbolTable.ContainsKey(node.Name))
             {
                 ReportUndeclaredVariable(node);
                 return;
@@ -247,7 +242,7 @@ namespace CompilersCourseWork.SemanticChecking
 
             node.Children[0].Accept(this);
 
-            var variableNode = symbolTable[node.Name].node;
+            var variableNode = SymbolTable[node.Name].node;
             TypeCheckVariableAssignment(node, variableNode);
 
             // warn on self assignment. This could be improved by also warning, if there are operations
@@ -284,14 +279,14 @@ namespace CompilersCourseWork.SemanticChecking
             }
 
             var identifier = (IdentifierNode)node.Children[0];
-            if (!symbolTable.ContainsKey(identifier.Name))
+            if (!SymbolTable.ContainsKey(identifier.Name))
             {
                 ReportUndeclaredVariable(identifier);
                 return;
             }
 
 
-            if (symbolTable[identifier.Name].node.Type == VariableType.BOOLEAN)
+            if (SymbolTable[identifier.Name].node.Type == VariableType.BOOLEAN)
             {
                 reporter.ReportError(
                     Error.SEMANTIC_ERROR,
@@ -353,9 +348,9 @@ namespace CompilersCourseWork.SemanticChecking
 
         public void Visit(IdentifierNode node)
         {
-            if (symbolTable.ContainsKey(node.Name))
+            if (SymbolTable.ContainsKey(node.Name))
             {
-                node.SetType(symbolTable[node.Name].node.NodeType());
+                node.SetType(SymbolTable[node.Name].node.NodeType());
             }
             else
             {
@@ -568,8 +563,8 @@ namespace CompilersCourseWork.SemanticChecking
             reporter.ReportError(
                                 Error.NOTE,
                                 "Variable was declared here",
-                                symbolTable[name].node.Line,
-                                symbolTable[name].node.Column);
+                                SymbolTable[name].node.Line,
+                                SymbolTable[name].node.Column);
         }
     }   
 }
