@@ -20,6 +20,14 @@ namespace CompilersCourseWork.SemanticChecking
             }
         }
 
+        public int Variables
+        {
+            get
+            {
+                return variableId;
+            }
+        }
+
         public SemanticChecker(ErrorReporter reporter)
         {
             symbolTable = new Dictionary<string, VariableData>();

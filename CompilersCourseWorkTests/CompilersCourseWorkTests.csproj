@@ -58,6 +58,7 @@
     <Compile Include="AST\VariableAssignmentNodeTests.cs" />
     <Compile Include="AST\VariableNodeTests.cs" />
     <Compile Include="CodeGen\CodeGenTests.cs" />
+    <Compile Include="Interpreting\InterpreterTests.cs" />
     <Compile Include="Lexing\LexerTests.cs" />
     <Compile Include="Parsing\ParserTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

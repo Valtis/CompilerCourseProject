@@ -3,7 +3,7 @@ using CompilersCourseWork.ErrorHandling;
 using CompilersCourseWork.Parsing;
 using CompilersCourseWork.SemanticChecking;
 using CompilersCourseWork.Lexing;
-using CompilersCourseWork.Interpreter;
+using CompilersCourseWork.Interpreting;
 using System.Collections.Generic;
 using System;
 
@@ -32,7 +32,7 @@ namespace CompilersCourseWork.CodeGeneration.Tests
             node.Accept(codeGenerator);
 
             var bytecode = codeGenerator.Bytecodes;
-            Assert.AreEqual(Bytecode.PUSH_INTEGER, bytecode[0]);
+            Assert.AreEqual(Bytecode.PUSH_INT, bytecode[0]);
             Assert.AreEqual(0, GetLongValue(bytecode, 1));
             Assert.AreEqual(Bytecode.STORE_VARIABLE, bytecode[9]);
             Assert.AreEqual(0, GetIntValue(bytecode, 10));
@@ -47,7 +47,7 @@ namespace CompilersCourseWork.CodeGeneration.Tests
             Assert.AreEqual(Bytecode.STORE_VARIABLE, bytecode[25]);
             Assert.AreEqual(2, GetIntValue(bytecode, 26));
 
-            Assert.AreEqual(Bytecode.PUSH_INTEGER, bytecode[30]);
+            Assert.AreEqual(Bytecode.PUSH_INT, bytecode[30]);
             Assert.AreEqual(323981, GetLongValue(bytecode, 31));
             Assert.AreEqual(Bytecode.STORE_VARIABLE, bytecode[39]);
             Assert.AreEqual(3, GetIntValue(bytecode, 40));
@@ -61,7 +61,7 @@ namespace CompilersCourseWork.CodeGeneration.Tests
 
             Assert.AreEqual(Bytecode.PUSH_INT_VAR, bytecode[54]);
             Assert.AreEqual(0, GetIntValue(bytecode, 55));
-            Assert.AreEqual(Bytecode.PUSH_INTEGER, bytecode[59]);
+            Assert.AreEqual(Bytecode.PUSH_INT, bytecode[59]);
             Assert.AreEqual(4, GetLongValue(bytecode, 60));
             Assert.AreEqual(Bytecode.IS_LESS_INT, bytecode[68]);
             Assert.AreEqual(Bytecode.STORE_VARIABLE, bytecode[69]);
@@ -70,7 +70,7 @@ namespace CompilersCourseWork.CodeGeneration.Tests
 
             Assert.AreEqual(Bytecode.PUSH_INT_VAR, bytecode[74]);
             Assert.AreEqual(3, GetIntValue(bytecode, 75));
-            Assert.AreEqual(Bytecode.PUSH_INTEGER, bytecode[79]);
+            Assert.AreEqual(Bytecode.PUSH_INT, bytecode[79]);
             Assert.AreEqual(298, GetLongValue(bytecode, 80));
             Assert.AreEqual(Bytecode.IS_EQUAL_INT, bytecode[88]);
             Assert.AreEqual(Bytecode.STORE_VARIABLE, bytecode[89]);
@@ -86,9 +86,9 @@ namespace CompilersCourseWork.CodeGeneration.Tests
             Assert.AreEqual(Bytecode.STORE_VARIABLE, bytecode[106]);
             Assert.AreEqual(7, GetIntValue(bytecode, 107));
 
-            Assert.AreEqual(Bytecode.PUSH_INTEGER, bytecode[111]);
+            Assert.AreEqual(Bytecode.PUSH_INT, bytecode[111]);
             Assert.AreEqual(2, GetLongValue(bytecode, 112));
-            Assert.AreEqual(Bytecode.PUSH_INTEGER, bytecode[120]);
+            Assert.AreEqual(Bytecode.PUSH_INT, bytecode[120]);
             Assert.AreEqual(3, GetLongValue(bytecode, 121));
             Assert.AreEqual(Bytecode.ADD, bytecode[129]);
             Assert.AreEqual(Bytecode.STORE_VARIABLE, bytecode[130]);
@@ -118,14 +118,14 @@ namespace CompilersCourseWork.CodeGeneration.Tests
             Assert.AreEqual(Bytecode.STORE_VARIABLE, bytecode[178]);
             Assert.AreEqual(11, GetIntValue(bytecode, 179));
             
-            Assert.AreEqual(Bytecode.PUSH_INTEGER, bytecode[183]);
+            Assert.AreEqual(Bytecode.PUSH_INT, bytecode[183]);
             Assert.AreEqual(2, GetLongValue(bytecode, 184));
-            Assert.AreEqual(Bytecode.PUSH_INTEGER, bytecode[192]);
+            Assert.AreEqual(Bytecode.PUSH_INT, bytecode[192]);
             Assert.AreEqual(3, GetIntValue(bytecode, 193));
             Assert.AreEqual(Bytecode.MUL, bytecode[201]);
-            Assert.AreEqual(Bytecode.PUSH_INTEGER, bytecode[202]);
+            Assert.AreEqual(Bytecode.PUSH_INT, bytecode[202]);
             Assert.AreEqual(4, GetLongValue(bytecode, 203));
-            Assert.AreEqual(Bytecode.PUSH_INTEGER, bytecode[211]);
+            Assert.AreEqual(Bytecode.PUSH_INT, bytecode[211]);
             Assert.AreEqual(2, GetLongValue(bytecode, 212));
             Assert.AreEqual(Bytecode.DIV, bytecode[220]);
             Assert.AreEqual(Bytecode.SUB, bytecode[221]);
@@ -203,7 +203,7 @@ namespace CompilersCourseWork.CodeGeneration.Tests
 
             var bytecode = codeGenerator.Bytecodes;
 
-            Assert.AreEqual(Bytecode.PUSH_INTEGER, bytecode[0]);
+            Assert.AreEqual(Bytecode.PUSH_INT, bytecode[0]);
             Assert.AreEqual(0, GetLongValue(bytecode, 1));
             Assert.AreEqual(Bytecode.STORE_VARIABLE, bytecode[9]);
             Assert.AreEqual(0, GetIntValue(bytecode, 10));
@@ -217,7 +217,7 @@ namespace CompilersCourseWork.CodeGeneration.Tests
             Assert.AreEqual(Bytecode.STORE_VARIABLE, bytecode[25]);
             Assert.AreEqual(2, GetIntValue(bytecode, 26));
 
-            Assert.AreEqual(Bytecode.PUSH_INTEGER, bytecode[30]);
+            Assert.AreEqual(Bytecode.PUSH_INT, bytecode[30]);
             Assert.AreEqual(4, GetLongValue(bytecode, 31));
             Assert.AreEqual(Bytecode.PUSH_INT_VAR, bytecode[39]);
             Assert.AreEqual(0, GetIntValue(bytecode, 40));
@@ -235,7 +235,7 @@ namespace CompilersCourseWork.CodeGeneration.Tests
 
             Assert.AreEqual(Bytecode.PUSH_INT_VAR, bytecode[66]);
             Assert.AreEqual(0, GetIntValue(bytecode, 67));
-            Assert.AreEqual(Bytecode.PUSH_INTEGER, bytecode[71]);
+            Assert.AreEqual(Bytecode.PUSH_INT, bytecode[71]);
             Assert.AreEqual(9876543210, GetLongValue(bytecode, 72));
             Assert.AreEqual(Bytecode.IS_LESS_INT, bytecode[80]);
             Assert.AreEqual(Bytecode.NOT, bytecode[81]);
@@ -271,7 +271,7 @@ namespace CompilersCourseWork.CodeGeneration.Tests
 
             var bytecode = codeGenerator.Bytecodes;
 
-            Assert.AreEqual(Bytecode.PUSH_INTEGER, bytecode[0]);
+            Assert.AreEqual(Bytecode.PUSH_INT, bytecode[0]);
             Assert.AreEqual(0, GetLongValue(bytecode, 1));
             Assert.AreEqual(Bytecode.STORE_VARIABLE, bytecode[9]);
             Assert.AreEqual(0, GetIntValue(bytecode, 10));
@@ -281,7 +281,7 @@ namespace CompilersCourseWork.CodeGeneration.Tests
             Assert.AreEqual(Bytecode.STORE_VARIABLE, bytecode[19]);
             Assert.AreEqual(1, GetIntValue(bytecode, 20));
 
-            Assert.AreEqual(Bytecode.PUSH_INTEGER, bytecode[24]);
+            Assert.AreEqual(Bytecode.PUSH_INT, bytecode[24]);
             Assert.AreEqual(4, GetLongValue(bytecode, 25));
             Assert.AreEqual(Bytecode.PRINT_INT, bytecode[33]);
 
@@ -289,9 +289,9 @@ namespace CompilersCourseWork.CodeGeneration.Tests
             Assert.AreEqual(1, GetIntValue(bytecode, 35));
             Assert.AreEqual(Bytecode.PRINT_STRING, bytecode[39]);
 
-            Assert.AreEqual(Bytecode.PUSH_INTEGER, bytecode[40]);
+            Assert.AreEqual(Bytecode.PUSH_INT, bytecode[40]);
             Assert.AreEqual(4, GetLongValue(bytecode, 41));
-            Assert.AreEqual(Bytecode.PUSH_INTEGER, bytecode[49]);
+            Assert.AreEqual(Bytecode.PUSH_INT, bytecode[49]);
             Assert.AreEqual(9, GetLongValue(bytecode, 50));
             Assert.AreEqual(Bytecode.ADD, bytecode[58]);
             Assert.AreEqual(Bytecode.PRINT_INT, bytecode[59]);
@@ -314,16 +314,16 @@ namespace CompilersCourseWork.CodeGeneration.Tests
             Assert.AreEqual(1, GetIntValue(bytecode, 89));
             Assert.AreEqual(Bytecode.PRINT_STRING, bytecode[93]);
 
-            Assert.AreEqual(Bytecode.PUSH_INTEGER, bytecode[94]);
+            Assert.AreEqual(Bytecode.PUSH_INT, bytecode[94]);
             Assert.AreEqual(2, GetLongValue(bytecode, 95));
-            Assert.AreEqual(Bytecode.PUSH_INTEGER, bytecode[103]);
+            Assert.AreEqual(Bytecode.PUSH_INT, bytecode[103]);
             Assert.AreEqual(3, GetLongValue(bytecode, 104));
             Assert.AreEqual(Bytecode.MUL, bytecode[112]);
             Assert.AreEqual(Bytecode.STORE_VARIABLE, bytecode[113]);
             Assert.AreEqual(0, GetIntValue(bytecode, 114));
             Assert.AreEqual(Bytecode.PUSH_INT_VAR, bytecode[118]);
             Assert.AreEqual(0, GetIntValue(bytecode, 119));
-            Assert.AreEqual(Bytecode.PUSH_INTEGER, bytecode[123]);
+            Assert.AreEqual(Bytecode.PUSH_INT, bytecode[123]);
             Assert.AreEqual(1, GetLongValue(bytecode, 124));
             Assert.AreEqual(Bytecode.SUB, bytecode[132]);
             Assert.AreEqual(Bytecode.PRINT_INT, bytecode[133]);            

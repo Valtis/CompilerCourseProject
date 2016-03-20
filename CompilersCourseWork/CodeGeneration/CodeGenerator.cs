@@ -3,7 +3,7 @@ using CompilersCourseWork.AST;
 using System.Collections.Generic;
 using CompilersCourseWork.SemanticChecking;
 using CompilersCourseWork.Parsing;
-using CompilersCourseWork.Interpreter;
+using CompilersCourseWork.Interpreting;
 
 namespace CompilersCourseWork.CodeGeneration
 {
@@ -11,7 +11,7 @@ namespace CompilersCourseWork.CodeGeneration
     {
 
         private IDictionary<string, VariableData> symbolTable;
-        private IList<string> strings;
+        private readonly IList<string> strings;
 
         private readonly List<byte> bytecode;
 
@@ -20,6 +20,14 @@ namespace CompilersCourseWork.CodeGeneration
             get
             {
                 return bytecode.ToArray();
+            }
+        }
+
+        public IList<string> Strings
+        {
+            get
+            {
+                return strings;
             }
         }
 
@@ -48,7 +56,7 @@ namespace CompilersCourseWork.CodeGeneration
 
         public void Visit(IntegerNode node)
         {
-            Emit(Bytecode.PUSH_INTEGER);
+            Emit(Bytecode.PUSH_INT);
             Emit(node.Value);
         }
 
@@ -94,7 +102,7 @@ namespace CompilersCourseWork.CodeGeneration
                 // default initialize
                 if (node.Type == VariableType.INTEGER)
                 {
-                    Emit(Bytecode.PUSH_INTEGER);
+                    Emit(Bytecode.PUSH_INT);
                     Emit(0L);
                 }
                 else if (node.Type == VariableType.STRING)
@@ -130,14 +138,14 @@ namespace CompilersCourseWork.CodeGeneration
         public void Visit(StringNode node)
         {
             Emit(Bytecode.PUSH_STRING);
-            if (strings.Contains(node.Value))
+            if (Strings.Contains(node.Value))
             {
-                Emit(strings.IndexOf(node.Value));
+                Emit(Strings.IndexOf(node.Value));
             }
             else
             {
-                Emit(strings.Count);
-                strings.Add(node.Value);
+                Emit(Strings.Count);
+                Strings.Add(node.Value);
             }
 
         }

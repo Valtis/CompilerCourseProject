@@ -67,12 +67,14 @@
     <Compile Include="AST\VariableAssignmentNode.cs" />
     <Compile Include="AST\VariableDeclarationNode.cs" />
     <Compile Include="CodeGeneration\CodeGenerator.cs" />
+    <Compile Include="Interpreting\Interpreter.cs" />
+    <Compile Include="Interpreting\InterpreterError.cs" />
     <Compile Include="SemanticChecking\VariableData.cs" />
     <Compile Include="ErrorHandling\ErrorData.cs" />
     <Compile Include="ErrorHandling\ErrorReporter.cs" />
     <Compile Include="ErrorHandling\InternalCompilerErrorException.cs" />
     <Compile Include="InternalCompilerError.cs" />
-    <Compile Include="Interpreter\Bytecode.cs" />
+    <Compile Include="Interpreting\Bytecode.cs" />
     <Compile Include="Lexing\BacktrackBuffer.cs" />
     <Compile Include="Lexing\CommentParser.cs" />
     <Compile Include="Lexing\IdentifierAndKeywordParser.cs" />
