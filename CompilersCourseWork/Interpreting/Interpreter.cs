@@ -66,13 +66,55 @@ namespace CompilersCourseWork.Interpreting
                         stack.Push(BitConverter.ToInt64(bytecode, pc));
                         pc += 8;
                         break;
+                    case Bytecode.PUSH_STRING:
+                        stack.Push(BitConverter.ToInt32(bytecode, pc));
+                        pc += 4;
+                        break;
+                    case Bytecode.PUSH_FALSE:
+                        stack.Push(0);
+                        break;
                     case Bytecode.PUSH_INT_VAR:
+                    case Bytecode.PUSH_STRING_VAR:
+                    case Bytecode.PUSH_BOOLEAN_VAR:
                         stack.Push(variables[BitConverter.ToInt16(bytecode, pc)]);
                         pc += 4;
                         break;
                     case Bytecode.STORE_VARIABLE:
                         variables[BitConverter.ToInt32(bytecode, pc)] = stack.Pop();
                         pc += 4;
+                        break;
+                    case Bytecode.IS_LESS_INT:
+                    case Bytecode.IS_LESS_BOOLEAN:
+                        {
+                            var rhs = stack.Pop();
+                            var lhs = stack.Pop();
+                            stack.Push(lhs < rhs ? 1 : 0);
+                        }
+                        break;
+                    case Bytecode.IS_EQUAL_INT:
+                    case Bytecode.IS_EQUAL_BOOLEAN:
+                        {
+                            var rhs = stack.Pop();
+                            var lhs = stack.Pop();
+                            stack.Push(lhs == rhs ? 1 : 0);
+                        }
+                        break;
+                    case Bytecode.IS_LESS_STRING:
+                        {
+                            var rhs = strings[(int)stack.Pop()];
+                            var lhs = strings[(int)stack.Pop()];
+
+                            stack.Push(lhs.CompareTo(rhs) == -1 ? 1 : 0);
+                        }
+                        break;
+                    case Bytecode.IS_EQUAL_STRING:
+                        {
+                            var rhs = strings[(int)stack.Pop()];
+                            var lhs = strings[(int)stack.Pop()];
+
+                            stack.Push(lhs == rhs ? 1 : 0);
+                        }
+                        break;
                         break;
                     case Bytecode.PRINT_INT:
                         printer(stack.Pop().ToString());
