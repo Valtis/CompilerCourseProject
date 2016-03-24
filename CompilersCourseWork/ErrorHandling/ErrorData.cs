@@ -62,6 +62,8 @@ namespace CompilersCourseWork.ErrorHandling
             ConsoleColor color = Console.ForegroundColor;
             switch (Type)
             {
+
+                case Error.NOTE_GENERIC:
                 case Error.NOTE:
                     color = ConsoleColor.DarkCyan;
                     Console.ForegroundColor = color;
@@ -99,42 +101,48 @@ namespace CompilersCourseWork.ErrorHandling
 
             Console.ResetColor();
             // line, column are zero-based internally
-            Console.Write(msg + " at line " + (line + 1) + " column " + (column + 1));
-
+            Console.Write(msg);
+            if (type != Error.NOTE_GENERIC)
+            {
+                Console.Write(" at line " + (line + 1) + " column " + (column + 1));
+            }
             if (lines.Length == 0)
             {
                 return;
             }
 
-            Console.Write("\n\n" + lines[line]);
+            if (type != Error.NOTE_GENERIC)
+            { 
+                Console.Write("\n\n" + lines[line]);
 
-            Console.ForegroundColor = color;
-            if (column > 10)
-            {
-                for (int i = 0; i < column - 6; ++i)
+                Console.ForegroundColor = color;
+                if (column > 10)
                 {
-                    Console.Write(" ");
+                    for (int i = 0; i < column - 6; ++i)
+                    {
+                        Console.Write(" ");
+                    }
+
+                    for (int i = 0; i < 6; ++i)
+                    {
+                        Console.Write("~");
+                    }
+                    Console.Write("^");
+
                 }
-
-                for (int i = 0; i < 6; ++i)
+                else
                 {
-                    Console.Write("~");
-                }
-                Console.Write("^");
+                    for (int i = 0; i < column; ++i)
+                    {
+                        Console.Write(" ");
+                    }
 
-            }
-            else
-            {
-                for (int i = 0; i < column; ++i)
-                {
-                    Console.Write(" ");
-                }
+                    Console.Write("^");
 
-                Console.Write("^");
-
-                for (int i = 0; i < 6; ++i)
-                {
-                    Console.Write("~");
+                    for (int i = 0; i < 6; ++i)
+                    {
+                        Console.Write("~");
+                    }
                 }
             }
             Console.Write("\n");

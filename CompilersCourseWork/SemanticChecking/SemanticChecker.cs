@@ -70,7 +70,7 @@ namespace CompilersCourseWork.SemanticChecking
             var loopVariable = (IdentifierNode)node.Children[0];
             loopVariable.Accept(this);
 
-            if (loopVariable.NodeType() != VariableType.INTEGER && 
+            if (loopVariable.NodeType() != VariableType.INTEGER &&
                 loopVariable.NodeType() != VariableType.ERROR_TYPE)
             {
                 reporter.ReportError(
@@ -93,12 +93,118 @@ namespace CompilersCourseWork.SemanticChecking
             var loopBody = node.Children[3];
             loopBody.Accept(this);
 
-            // check that loop variable is not reassigned in the loop body
 
+            CheckLoopControlVariableUsageInStartEndExpression(node, loopVariable, startExpression, endExpression);
+            CheckVariableAssignmentUsedInStartEndExpression(loopVariable, startExpression, endExpression, loopBody);
+            CheckLoopControlVariableAssignmentInBody(node, loopVariable, loopBody);
+        }
+
+        private void CheckLoopControlVariableUsageInStartEndExpression(ForNode node, IdentifierNode loopVariable, Node startExpression, Node endExpression)
+        {
             var stack = new Stack<Node>();
-          
+            stack.Push(endExpression);
+            stack.Push(startExpression);
+
+            while (stack.Count != 0)
+            {
+                var current = stack.Pop();
+
+                if (current is IdentifierNode && ((IdentifierNode)current).Name == loopVariable.Name)
+                {
+                    reporter.ReportError(
+                        Error.WARNING,
+                        "Possibly incorrect or confusing usage of loop control variable '" + loopVariable.Name + "' in loop expression",
+                        current.Line,
+                        current.Column);
+
+                    reporter.ReportError(
+                        Error.NOTE,
+                        "Loop is here",
+                        node.Line,
+                        node.Column);
+
+                    reporter.ReportError(
+                        Error.NOTE_GENERIC,
+                        "Loop start and end expressions are evaluated only once before entering the loop",
+                        0,
+                        0);
+                    break;
+                }
+
+                foreach (var child in current.Children)
+                {
+                    stack.Push(child);
+                }
+            }
+        }
+
+        private void CheckVariableAssignmentUsedInStartEndExpression(IdentifierNode loopVariable, Node startExpression, Node endExpression, Node loopBody)
+        {
+            var stack = new Stack<Node>();
+            stack.Push(endExpression);
+            stack.Push(startExpression);
+
+            var loopExpressionVariables = new Dictionary<IdentifierNode, IdentifierNode>();
+
+            while (stack.Count != 0)
+            {
+                var current = stack.Pop();
+
+                if (current is IdentifierNode && ((IdentifierNode)current).Name != loopVariable.Name)
+                {
+                    var id = (IdentifierNode)current;
+                    loopExpressionVariables.Add(id, id);
+                }
+
+                foreach (var child in current.Children)
+                {
+                    stack.Push(child);
+                }
+            }
+
             stack.Push(loopBody);
-           
+            while (stack.Count != 0)
+            {
+                var current = stack.Pop();
+
+                if (current is VariableAssignmentNode &&
+                    loopExpressionVariables.ContainsKey(new IdentifierNode(0, 0, ((VariableAssignmentNode)current).Name)))
+                {
+                    reporter.ReportError(
+                        Error.WARNING,
+                        "Possibly incorrect or confusing assignment to a variable '" +
+                        ((VariableAssignmentNode)current).Name + "', used in loop expression,",
+                        current.Line,
+                        current.Column);
+
+                    var id = loopExpressionVariables[new IdentifierNode(0, 0, ((VariableAssignmentNode)current).Name)];
+
+                    reporter.ReportError(
+                        Error.NOTE,
+                        "Previous usage here",
+                        id.Line,
+                        id.Column);
+
+                    reporter.ReportError(
+                        Error.NOTE_GENERIC,
+                        "Loop start and end expressions are evaluated only once before entering the loop",
+                        0,
+                        0);
+                    break;
+                }
+
+                foreach (var child in current.Children)
+                {
+                    stack.Push(child);
+                }
+            }
+        }
+
+        private void CheckLoopControlVariableAssignmentInBody(ForNode node, IdentifierNode loopVariable, Node loopBody)
+        {
+            var stack = new Stack<Node>();
+            stack.Push(loopBody);
+
             while (stack.Count != 0)
             {
                 var current = stack.Pop();
@@ -113,7 +219,7 @@ namespace CompilersCourseWork.SemanticChecking
 
                     reporter.ReportError(
                         Error.NOTE,
-                        "Loop is here at",
+                        "Loop is here",
                         node.Line,
                         node.Column);
                     break;
@@ -157,9 +263,9 @@ namespace CompilersCourseWork.SemanticChecking
         public void Visit(MultiplyNode node)
         {
             BinaryOperator(
-                node, 
+                node,
                 "*",
-                () => VariableType.INTEGER, 
+                () => VariableType.INTEGER,
                 new List<VariableType> { VariableType.INTEGER });
         }
 
@@ -233,7 +339,7 @@ namespace CompilersCourseWork.SemanticChecking
             }
         }
 
-        
+
 
         public void Visit(VariableAssignmentNode node)
         {
@@ -268,7 +374,7 @@ namespace CompilersCourseWork.SemanticChecking
         }
 
 
-   
+
         public void Visit(StringNode node)
         {
             // do nothing
@@ -299,7 +405,7 @@ namespace CompilersCourseWork.SemanticChecking
                 reporter.ReportError(
                     Error.SEMANTIC_ERROR,
                     "Variable has invalid type '" + VariableType.BOOLEAN.Name() + "'" +
-                    " when '" + VariableType.INTEGER.Name() + "' or '" + 
+                    " when '" + VariableType.INTEGER.Name() + "' or '" +
                     VariableType.STRING.Name() + "' were expected",
                     identifier.Line,
                     identifier.Column
@@ -349,8 +455,8 @@ namespace CompilersCourseWork.SemanticChecking
         public void Visit(LessThanNode node)
         {
             BinaryOperator(
-                node, "<", 
-                () => VariableType.BOOLEAN, 
+                node, "<",
+                () => VariableType.BOOLEAN,
                 new List<VariableType> { VariableType.INTEGER, VariableType.STRING, VariableType.BOOLEAN });
         }
 
@@ -383,8 +489,8 @@ namespace CompilersCourseWork.SemanticChecking
         public void Visit(AndNode node)
         {
             BinaryOperator(
-                node, 
-                "&", 
+                node,
+                "&",
                 () => node.Children[0].NodeType(),
                 new List<VariableType> { VariableType.BOOLEAN });
         }
@@ -392,8 +498,8 @@ namespace CompilersCourseWork.SemanticChecking
         public void Visit(AddNode node)
         {
             BinaryOperator(
-                node, 
-                "+", 
+                node,
+                "+",
                 () => node.Children[0].NodeType(),
                 new List<VariableType> { VariableType.INTEGER, VariableType.STRING });
         }
@@ -536,7 +642,7 @@ namespace CompilersCourseWork.SemanticChecking
                     assignmentNode.Children[0].Line,
                     assignmentNode.Children[0].Column);
 
-                
+
                 reporter.ReportError(
                     Error.NOTE,
                     "Variable was declared here",
@@ -574,5 +680,5 @@ namespace CompilersCourseWork.SemanticChecking
                                 SymbolTable[name].node.Line,
                                 SymbolTable[name].node.Column);
         }
-    }   
+    }
 }

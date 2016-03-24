@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace CompilersCourseWork.ErrorHandling
 {
     public enum Error { NOTE, WARNING, LEXICAL_ERROR, SYNTAX_ERROR,
-        SEMANTIC_ERROR
+        SEMANTIC_ERROR, NOTE_GENERIC,
     }
 
     public class ErrorReporter
@@ -21,8 +21,17 @@ namespace CompilersCourseWork.ErrorHandling
             get
             {
                 var filteredList = from e in errors
-                                    where (e.Type != Error.NOTE && e.Type != Error.WARNING)
+                                    where (e.Type == Error.LEXICAL_ERROR || e.Type == Error.SYNTAX_ERROR || e.Type == Error.SEMANTIC_ERROR)
                                     select e;
+                return new List<ErrorData>(filteredList);
+            }
+        }
+
+        public IList<ErrorData> Warnings
+        {
+            get
+            {
+                var filteredList = from e in errors where e.Type == Error.WARNING select e;
                 return new List<ErrorData>(filteredList);
             }
         }

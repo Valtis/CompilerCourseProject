@@ -211,6 +211,27 @@ namespace CompilersCourseWork.SemanticChecking.Tests
 
 
         [TestMethod()]
+        public void SemanticCheckerWarnsOnSuspiciousValidVariableAssignment()
+        {
+            var reporter = new ErrorReporter();
+            var parser = new Parser(
+                new Lexer("../../SemanticChecking/valid_variable_assignment.txt", reporter),
+                reporter);
+
+            var node = parser.Parse();
+
+            var semanticChecker = new SemanticChecker(reporter);
+            node.Accept(semanticChecker);
+
+            Assert.AreEqual(1, reporter.Warnings.Count);
+            
+            Assert.AreEqual(Error.WARNING, reporter.Warnings[0].Type);
+            Assert.AreEqual(6, reporter.Warnings[0].Line);
+            Assert.AreEqual(5, reporter.Warnings[0].Column);
+            Assert.IsTrue(reporter.Warnings[0].Message.ToLower().Contains("self assignment has no effect"));
+        }
+
+        [TestMethod()]
         public void SemanticCheckerRejectsInalidValidVariableAssignment()
         {
             var reporter = new ErrorReporter();
@@ -295,6 +316,47 @@ namespace CompilersCourseWork.SemanticChecking.Tests
             node.Accept(semanticChecker);
 
             Assert.AreEqual(0, reporter.Errors.Count);
+        }
+
+        [TestMethod()]
+        public void SemanticCheckerWarnsOnSuspiciousValidForStatement()
+        {
+            var reporter = new ErrorReporter();
+            var parser = new Parser(
+                new Lexer("../../SemanticChecking/valid_for_statement.txt", reporter),
+                reporter);
+
+            var node = parser.Parse();
+
+            var semanticChecker = new SemanticChecker(reporter);
+            node.Accept(semanticChecker);
+
+            Assert.AreEqual(5, reporter.Warnings.Count);
+
+            Assert.AreEqual(Error.WARNING, reporter.Warnings[0].Type);
+            Assert.AreEqual(10, reporter.Warnings[0].Line);
+            Assert.AreEqual(8, reporter.Warnings[0].Column);
+            Assert.IsTrue(reporter.Warnings[0].Message.ToLower().Contains("used in loop expression"));
+
+            Assert.AreEqual(Error.WARNING, reporter.Warnings[1].Type);
+            Assert.AreEqual(14, reporter.Warnings[1].Line);
+            Assert.AreEqual(8, reporter.Warnings[1].Column);
+            Assert.IsTrue(reporter.Warnings[1].Message.ToLower().Contains("used in loop expression"));
+
+            Assert.AreEqual(Error.WARNING, reporter.Warnings[2].Type);
+            Assert.AreEqual(20, reporter.Warnings[2].Line);
+            Assert.AreEqual(8, reporter.Warnings[2].Column);
+            Assert.IsTrue(reporter.Warnings[2].Message.ToLower().Contains("used in loop expression"));
+            
+            Assert.AreEqual(Error.WARNING, reporter.Warnings[3].Type);
+            Assert.AreEqual(25, reporter.Warnings[3].Line);
+            Assert.AreEqual(13, reporter.Warnings[3].Column);
+            Assert.IsTrue(reporter.Warnings[3].Message.ToLower().Contains("usage of loop control variable"));
+            
+            Assert.AreEqual(Error.WARNING, reporter.Warnings[4].Type);
+            Assert.AreEqual(26, reporter.Warnings[4].Line);
+            Assert.AreEqual(8, reporter.Warnings[4].Column);
+            Assert.IsTrue(reporter.Warnings[4].Message.ToLower().Contains("used in loop expression"));
         }
 
         [TestMethod()]

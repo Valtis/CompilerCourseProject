@@ -22,3 +22,8 @@ for i in 3*(a-2)..(5+9)/b do
 end for;
 
 i := 4; // can reassign counter outside loop
+
+for i in 2..(i*2)*a do
+	a := 4;
+
+end for;
