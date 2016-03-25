@@ -40,6 +40,14 @@ namespace CompilersCourseWork.Interpreting
             }
         }
 
+        public IList<string> Strings
+        {
+            get
+            {
+                return strings;
+            }
+        }
+
         public Interpreter(byte[] bytecode, IList<string> strings, int variableCnt)
         {
             this.bytecode = bytecode;
@@ -101,23 +109,41 @@ namespace CompilersCourseWork.Interpreting
                         break;
                     case Bytecode.IS_LESS_STRING:
                         {
-                            var rhs = strings[(int)stack.Pop()];
-                            var lhs = strings[(int)stack.Pop()];
+                            var rhs = Strings[(int)stack.Pop()];
+                            var lhs = Strings[(int)stack.Pop()];
 
                             stack.Push(lhs.CompareTo(rhs) == -1 ? 1 : 0);
                         }
                         break;
                     case Bytecode.IS_EQUAL_STRING:
                         {
-                            var rhs = strings[(int)stack.Pop()];
-                            var lhs = strings[(int)stack.Pop()];
+                            var rhs = Strings[(int)stack.Pop()];
+                            var lhs = Strings[(int)stack.Pop()];
 
                             stack.Push(lhs == rhs ? 1 : 0);
                         }
                         break;
+                    case Bytecode.NOT:
+                        {
+                            var value = stack.Pop();
+                            stack.Push(value == 0 ? 1 : 0);
+                        }
+                        break;
+                    case Bytecode.AND:
+                        {
+                            var rhs = stack.Pop();
+                            var lhs = stack.Pop();
+                            stack.Push(rhs == 1 && lhs == 1 ? 1 : 0);
+                        }
                         break;
                     case Bytecode.PRINT_INT:
                         printer(stack.Pop().ToString());
+                        break;
+                    case Bytecode.PRINT_STRING:
+                        {
+                            var index = (int)stack.Pop();
+                            printer(Strings[index]);
+                        }
                         break;
                     case Bytecode.ADD:
                         {
@@ -126,11 +152,42 @@ namespace CompilersCourseWork.Interpreting
                             stack.Push(lhs + rhs);
                         }
                         break;
+                    case Bytecode.SUB:
+                        {
+                            var rhs = stack.Pop();
+                            var lhs = stack.Pop();
+                            stack.Push(lhs - rhs);
+                        }
+                        break;
                     case Bytecode.MUL:
                         {
                             var rhs = stack.Pop();
                             var lhs = stack.Pop();
                             stack.Push(lhs * rhs);
+                        }
+                        break;
+                    case Bytecode.DIV:
+                        {
+                            var rhs = stack.Pop();
+                            var lhs = stack.Pop();
+                            stack.Push(lhs / rhs);
+                        }
+                        break;
+                    case Bytecode.CONCAT:
+                        {
+                            var rhs = (int)stack.Pop();
+                            var lhs = (int)stack.Pop();
+                            var result = strings[lhs] + strings[rhs];
+                            var index = strings.IndexOf(result);
+                            if (index == -1)
+                            {
+                                stack.Push(strings.Count);
+                                strings.Add(result);
+                            }
+                            else
+                            {
+                                stack.Push(index);
+                            }
                         }
                         break;
                     default:

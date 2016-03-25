@@ -270,7 +270,7 @@ namespace CompilersCourseWork.Interpreting.Tests
         }
 
         [TestMethod()]
-        public void IsLessBooleanPushesFalseIfFirstValueIsLess()
+        public void IsEqualBooleanPushesFalseIfFirstValueIsLess()
         {
             var bytecode = new List<byte>();
             bytecode.Add(Bytecode.IS_EQUAL_BOOLEAN);
@@ -418,6 +418,101 @@ namespace CompilersCourseWork.Interpreting.Tests
             Assert.AreEqual(0, interpreter.Stack.Pop());
             Assert.AreEqual(1, interpreter.PC);
         }
+
+        [TestMethod()]
+        public void NotTurnsTrueIntoFalse()
+        {
+            var bytecode = new List<byte>();
+            bytecode.Add(Bytecode.NOT);
+
+            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> {}, 0);
+            interpreter.Stack.Push(1);
+            interpreter.Run();
+
+            Assert.AreEqual(1, interpreter.Stack.Count);
+            Assert.AreEqual(0, interpreter.Stack.Pop());
+            Assert.AreEqual(1, interpreter.PC);
+        }
+
+        [TestMethod()]
+        public void NotTurnsFalseIntoTrue()
+        {
+            var bytecode = new List<byte>();
+            bytecode.Add(Bytecode.NOT);
+
+            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { }, 0);
+            interpreter.Stack.Push(0);
+            interpreter.Run();
+
+            Assert.AreEqual(1, interpreter.Stack.Count);
+            Assert.AreEqual(1, interpreter.Stack.Pop());
+            Assert.AreEqual(1, interpreter.PC);
+        }
+
+        [TestMethod()]
+        public void AndPushesTrueIfStackContainsTrueAndTrue()
+        {
+            var bytecode = new List<byte>();
+            bytecode.Add(Bytecode.AND);
+
+            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { }, 0);
+            interpreter.Stack.Push(1);
+            interpreter.Stack.Push(1);
+            interpreter.Run();
+
+            Assert.AreEqual(1, interpreter.Stack.Count);
+            Assert.AreEqual(1, interpreter.Stack.Pop());
+            Assert.AreEqual(1, interpreter.PC);
+        }
+
+        [TestMethod()]
+        public void AndPushesFalseIfStackContainsTrueAndFalse()
+        {
+            var bytecode = new List<byte>();
+            bytecode.Add(Bytecode.AND);
+
+            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { }, 0);
+            interpreter.Stack.Push(1);
+            interpreter.Stack.Push(0);
+            interpreter.Run();
+
+            Assert.AreEqual(1, interpreter.Stack.Count);
+            Assert.AreEqual(0, interpreter.Stack.Pop());
+            Assert.AreEqual(1, interpreter.PC);
+        }
+
+        [TestMethod()]
+        public void AndPushesFalseIfStackContainsFalseAndTrue()
+        {
+            var bytecode = new List<byte>();
+            bytecode.Add(Bytecode.AND);
+
+            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { }, 0);
+            interpreter.Stack.Push(0);
+            interpreter.Stack.Push(1);
+            interpreter.Run();
+
+            Assert.AreEqual(1, interpreter.Stack.Count);
+            Assert.AreEqual(0, interpreter.Stack.Pop());
+            Assert.AreEqual(1, interpreter.PC);
+        }
+
+        [TestMethod()]
+        public void AndPushesFalseIfStackContainsFalseAndFalse()
+        {
+            var bytecode = new List<byte>();
+            bytecode.Add(Bytecode.AND);
+
+            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { }, 0);
+            interpreter.Stack.Push(0);
+            interpreter.Stack.Push(0);
+            interpreter.Run();
+
+            Assert.AreEqual(1, interpreter.Stack.Count);
+            Assert.AreEqual(0, interpreter.Stack.Pop());
+            Assert.AreEqual(1, interpreter.PC);
+        }
+
         [TestMethod()]
         public void PrintIntWorks()
         {
@@ -435,6 +530,25 @@ namespace CompilersCourseWork.Interpreting.Tests
             Assert.AreEqual(10, interpreter.PC);
             Assert.AreEqual(1, output.Count);
             Assert.AreEqual("23", output[0]);
+        }
+
+        [TestMethod()]
+        public void PrintStringWorks()
+        {
+            var bytecode = new List<byte>();
+            bytecode.Add(Bytecode.PUSH_STRING);
+            bytecode.AddRange(BitConverter.GetBytes(1));
+            bytecode.Add(Bytecode.PRINT_STRING);
+
+            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "hello", "world" }, 0);
+            var output = new List<string>();
+            interpreter.SetPrinter((string str) => output.Add(str));
+            interpreter.Run();
+
+            Assert.AreEqual(0, interpreter.Stack.Count);
+            Assert.AreEqual(6, interpreter.PC);
+            Assert.AreEqual(1, output.Count);
+            Assert.AreEqual("world", output[0]);
         }
 
         [TestMethod()]
@@ -456,6 +570,24 @@ namespace CompilersCourseWork.Interpreting.Tests
         }
 
         [TestMethod()]
+        public void SubWorks()
+        {
+            var bytecode = new List<byte>();
+            bytecode.Add(Bytecode.PUSH_INT);
+            bytecode.AddRange(BitConverter.GetBytes(23L));
+            bytecode.Add(Bytecode.PUSH_INT);
+            bytecode.AddRange(BitConverter.GetBytes(170L));
+            bytecode.Add(Bytecode.SUB);
+
+            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "" }, 0);
+            interpreter.Run();
+
+            Assert.AreEqual(1, interpreter.Stack.Count);
+            Assert.AreEqual(23 - 170, interpreter.Stack.Pop());
+            Assert.AreEqual(19, interpreter.PC);
+        }
+
+        [TestMethod()]
         public void MulWorks()
         {
             var bytecode = new List<byte>();
@@ -471,6 +603,76 @@ namespace CompilersCourseWork.Interpreting.Tests
             Assert.AreEqual(1, interpreter.Stack.Count);
             Assert.AreEqual(3910, interpreter.Stack.Pop());
             Assert.AreEqual(19, interpreter.PC);
+        }
+
+        [TestMethod()]
+        public void DivWorksWithNonZeroDivider()
+        {
+            var bytecode = new List<byte>();
+            bytecode.Add(Bytecode.PUSH_INT);
+            bytecode.AddRange(BitConverter.GetBytes(20L));
+            bytecode.Add(Bytecode.PUSH_INT);
+            bytecode.AddRange(BitConverter.GetBytes(5L));
+            bytecode.Add(Bytecode.DIV);
+
+            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "" }, 0);
+            interpreter.Run();
+
+            Assert.AreEqual(1, interpreter.Stack.Count);
+            Assert.AreEqual(20 / 5, interpreter.Stack.Pop());
+            Assert.AreEqual(19, interpreter.PC);
+        }
+
+        [TestMethod()]
+        [ExpectedException(typeof(DivideByZeroException))]
+        public void DivThrowsIfDividerIsZero()
+        {
+            var bytecode = new List<byte>();
+            bytecode.Add(Bytecode.PUSH_INT);
+            bytecode.AddRange(BitConverter.GetBytes(20L));
+            bytecode.Add(Bytecode.PUSH_INT);
+            bytecode.AddRange(BitConverter.GetBytes(0L));
+            bytecode.Add(Bytecode.DIV);
+
+            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "" }, 0);
+            interpreter.Run();
+        }
+
+        [TestMethod()]
+        public void ConcatWorksWhenResultIsNewUniqueString()
+        {
+            var bytecode = new List<byte>();
+            bytecode.Add(Bytecode.PUSH_STRING);
+            bytecode.AddRange(BitConverter.GetBytes(0));
+            bytecode.Add(Bytecode.PUSH_STRING);
+            bytecode.AddRange(BitConverter.GetBytes(1));
+            bytecode.Add(Bytecode.CONCAT);
+
+            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "hello ", "world" }, 0);
+            interpreter.Run();
+
+            Assert.AreEqual(1, interpreter.Stack.Count);
+            Assert.AreEqual(2, interpreter.Stack.Pop());
+            Assert.AreEqual(11, interpreter.PC);
+            Assert.AreEqual("hello world", interpreter.Strings[2]);
+        }
+
+        [TestMethod()]
+        public void ConcatWorksWhenResultIsNotNewUniqueString()
+        {
+            var bytecode = new List<byte>();
+            bytecode.Add(Bytecode.PUSH_STRING);
+            bytecode.AddRange(BitConverter.GetBytes(2));
+            bytecode.Add(Bytecode.PUSH_STRING);
+            bytecode.AddRange(BitConverter.GetBytes(3));
+            bytecode.Add(Bytecode.CONCAT);
+
+            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "hello ", "world", "foo", "bar", "foobar" }, 0);
+            interpreter.Run();
+
+            Assert.AreEqual(1, interpreter.Stack.Count);
+            Assert.AreEqual(4, interpreter.Stack.Pop());
+            Assert.AreEqual(11, interpreter.PC);
         }
 
     }
