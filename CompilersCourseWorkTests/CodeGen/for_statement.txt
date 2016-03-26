@@ -7,7 +7,7 @@ end for;
 
 for i in j..3*j do
 	j := i + j;
-	var foo : bool = i < j;
+	var foo : bool := i < j;
 end for;
 
 

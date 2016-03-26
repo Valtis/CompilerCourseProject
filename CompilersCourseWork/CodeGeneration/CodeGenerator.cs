@@ -12,8 +12,8 @@ namespace CompilersCourseWork.CodeGeneration
 
         private IDictionary<string, VariableData> symbolTable;
         private readonly IList<string> strings;
-
         private readonly List<byte> bytecode;
+        private int variableId;
 
         public byte[] Bytecodes
         {
@@ -31,8 +31,17 @@ namespace CompilersCourseWork.CodeGeneration
             }
         }
 
-        public CodeGenerator(IDictionary<string, VariableData> symbolTable)
+        public int Variables
         {
+            get
+            {
+                return variableId;
+            }
+        }
+
+        public CodeGenerator(IDictionary<string, VariableData> symbolTable, int variables)
+        {
+            variableId = variables;
             this.symbolTable = symbolTable;
             strings = new List<string>();
             strings.Add(""); // for default initialization
@@ -41,7 +50,9 @@ namespace CompilersCourseWork.CodeGeneration
 
         public void Visit(AssertNode node)
         {
-            throw new NotImplementedException();
+            node.Children[0].Accept(this);
+            Emit(Bytecode.ASSERT);
+            Emit(node.Children[0].Line);
         }
 
         public void Visit(DivideNode node)
@@ -51,7 +62,44 @@ namespace CompilersCourseWork.CodeGeneration
 
         public void Visit(ForNode node)
         {
-            throw new NotImplementedException();
+            // Extremely naive strategy: 
+            // Create new variable end condition, and never reuse it elsewhere
+            var loop_counter = symbolTable[((IdentifierNode)node.Children[0]).Name].id;
+            var endVariable = variableId++;
+
+            // Initialize loop counter
+            node.Children[1].Accept(this);
+            Emit(Bytecode.STORE_VARIABLE);
+            Emit(loop_counter);
+            
+            // initialize end varible
+            node.Children[2].Accept(this);
+            Emit(Bytecode.STORE_VARIABLE);
+            Emit(endVariable);
+
+            var jumpTarget = bytecode.Count;
+
+            node.Children[3].Accept(this);
+
+            // increase loop counter
+            Emit(Bytecode.PUSH_INT_VAR);
+            Emit(loop_counter);
+            Emit(Bytecode.PUSH_INT);
+            Emit(1L);
+            Emit(Bytecode.ADD);
+            Emit(Bytecode.STORE_VARIABLE);
+            Emit(loop_counter);          
+
+            // do start\end comparison
+            Emit(Bytecode.PUSH_INT_VAR);
+            Emit(loop_counter);
+            Emit(Bytecode.PUSH_INT_VAR);
+            Emit(endVariable);
+            Emit(Bytecode.IS_LESS_OR_EQUAL_INT);
+
+            // and jump, based on results
+            Emit(Bytecode.JUMP_IF_TRUE);
+            Emit(jumpTarget);
         }
 
         public void Visit(IntegerNode node)
@@ -96,7 +144,6 @@ namespace CompilersCourseWork.CodeGeneration
 
         public void Visit(VariableDeclarationNode node)
         {
-
             if (node.Children.Count == 0)
             {
                 // default initialize
@@ -152,7 +199,20 @@ namespace CompilersCourseWork.CodeGeneration
 
         public void Visit(ReadNode node)
         {
-            throw new NotImplementedException();
+            switch (node.Children[0].NodeType())
+            {
+                case VariableType.INTEGER:
+                    Emit(Bytecode.READ_INT);
+                    break;
+                case VariableType.STRING:
+                    Emit(Bytecode.READ_STRING);
+                    break;
+                default:
+                    throw new InternalCompilerError("Invalid type for readnode");
+            }
+
+            var name = ((IdentifierNode)node.Children[0]).Name;
+            Emit(symbolTable[name].id);
         }
 
         public void Visit(NotNode node)
@@ -206,7 +266,7 @@ namespace CompilersCourseWork.CodeGeneration
 
         public void Visit(ErrorNode node)
         {
-            throw new NotImplementedException();
+            throw new InternalCompilerError("AST contains error nodes when generating code");
         }
 
         public void Visit(ComparisonNode node)
@@ -228,7 +288,7 @@ namespace CompilersCourseWork.CodeGeneration
                 default:
                     throw new InternalCompilerError("Invalid comparison type");
 
-            }            
+            }
         }
 
         public void Visit(AndNode node)

@@ -1,0 +1,7 @@
+﻿var a : bool;
+var b : bool;
+
+assert(4 < 6);
+assert(a & b);
+assert(!a);
+assert((a = b) = (4 < 6));

@@ -20,16 +20,19 @@ namespace CompilersCourseWork.Interpreting
         public const byte STORE_VARIABLE = 40;
 
         public const byte IS_LESS_INT = 60;
-        public const byte IS_EQUAL_INT = 61;
-        public const byte IS_LESS_STRING = 62;
-        public const byte IS_EQUAL_STRING = 63;
-        public const byte IS_LESS_BOOLEAN = 64;
-        public const byte IS_EQUAL_BOOLEAN = 65;
-        public const byte NOT = 66;
-        public const byte AND = 67;
+        public const byte IS_LESS_OR_EQUAL_INT = 61;
+        public const byte IS_EQUAL_INT = 62;
+        public const byte IS_LESS_STRING = 63;
+        public const byte IS_EQUAL_STRING = 64;
+        public const byte IS_LESS_BOOLEAN = 65;
+        public const byte IS_EQUAL_BOOLEAN = 66;
+        public const byte NOT = 67;
+        public const byte AND = 68;
 
         public const byte PRINT_INT = 70;
         public const byte PRINT_STRING = 71;
+        public const byte READ_INT = 72;
+        public const byte READ_STRING = 73;
 
         public const byte ADD = 80;
         public const byte SUB = 81;
@@ -37,5 +40,9 @@ namespace CompilersCourseWork.Interpreting
         public const byte DIV = 83;
 
         public const byte CONCAT = 90;
+
+        public const byte JUMP_IF_TRUE = 100;
+
+        public const byte ASSERT = 110;
     }
 }

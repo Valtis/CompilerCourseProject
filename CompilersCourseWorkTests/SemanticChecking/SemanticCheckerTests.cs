@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using CompilersCourseWork.ErrorHandling;
 using CompilersCourseWork.Parsing;
 using CompilersCourseWork.Lexing;
+using CompilersCourseWork.AST;
 
 namespace CompilersCourseWork.SemanticChecking.Tests
 {
@@ -450,6 +451,26 @@ namespace CompilersCourseWork.SemanticChecking.Tests
             node.Accept(semanticChecker);
 
             Assert.AreEqual(0, reporter.Errors.Count);
+        }
+
+        [TestMethod()]
+        public void SemanticCheckerSetsTypesForReadNodeIdentifiers()
+        {
+            var reporter = new ErrorReporter();
+            var parser = new Parser(
+                new Lexer("../../SemanticChecking/valid_read_statement.txt", reporter),
+                reporter);
+
+            var node = parser.Parse();
+
+            var semanticChecker = new SemanticChecker(reporter);
+            node.Accept(semanticChecker);
+
+            Assert.IsTrue(node.Children[2] is ReadNode);
+            Assert.AreEqual(VariableType.INTEGER, node.Children[2].Children[0].NodeType());
+
+            Assert.IsTrue(node.Children[3] is ReadNode);
+            Assert.AreEqual(VariableType.STRING, node.Children[3].Children[0].NodeType());
         }
 
         [TestMethod()]

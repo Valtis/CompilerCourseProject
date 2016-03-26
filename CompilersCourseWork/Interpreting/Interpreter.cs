@@ -10,11 +10,13 @@ namespace CompilersCourseWork.Interpreting
         private int pc;
 
         private Action<String> printer;
+        private Func<String> reader;
 
 
         // could be optimized to not to always use 8 bytes, but simplicity is the goal here
         private readonly Stack<long> stack;
         private readonly long[] variables;
+        private readonly IList<String> lines;
 
         public Stack<long> Stack
         {
@@ -48,20 +50,27 @@ namespace CompilersCourseWork.Interpreting
             }
         }
 
-        public Interpreter(byte[] bytecode, IList<string> strings, int variableCnt)
+        public Interpreter(byte[] bytecode, IList<string> strings, IList<String> lines, int variableCnt)
         {
             this.bytecode = bytecode;
             this.strings = strings;
+            this.lines = lines;
             pc = 0;
             stack = new Stack<long>();
             variables = new long[variableCnt];
 
-            printer = (string str) => Console.Out.WriteLine(str);
+            printer = (string str) => Console.Out.Write(str);
+            reader = () => Console.In.ReadLine();
         }
 
         public void SetPrinter(Action<string> printer)
         {
             this.printer = printer;
+        }
+
+        public void SetReader(Func<string> reader)
+        {
+            this.reader = reader;
         }
 
         public void Run()
@@ -97,6 +106,13 @@ namespace CompilersCourseWork.Interpreting
                             var rhs = stack.Pop();
                             var lhs = stack.Pop();
                             stack.Push(lhs < rhs ? 1 : 0);
+                        }
+                        break;
+                    case Bytecode.IS_LESS_OR_EQUAL_INT:
+                        {
+                            var rhs = stack.Pop();
+                            var lhs = stack.Pop();
+                            stack.Push(lhs <= rhs ? 1 : 0);
                         }
                         break;
                     case Bytecode.IS_EQUAL_INT:
@@ -145,6 +161,41 @@ namespace CompilersCourseWork.Interpreting
                             printer(Strings[index]);
                         }
                         break;
+                    case Bytecode.READ_INT:
+                        {
+                            var input = reader().Split(null)[0];
+                            var variable = BitConverter.ToInt32(bytecode, pc);
+                            pc += 4;
+                            int result;
+                            if (int.TryParse(input, out result))
+                            {
+                                variables[variable] = result;
+                            }
+                            else
+                            {
+                                throw new InvalidInputException(
+                                    "Input must contain only numbers when reading to integer variable");
+                            }
+                        }
+                        break;
+                    case Bytecode.READ_STRING:
+                        {
+                            var input = reader().Split(null)[0];
+                            var variable = BitConverter.ToInt32(bytecode, pc);
+                            pc += 4;
+                            var index = strings.IndexOf(input);
+                            if (index == -1)
+                            {
+                                variables[variable] = strings.Count;
+                                strings.Add(input);
+                            }
+                            else
+                            {
+                                variables[variable] = index;
+                            }
+
+                        }
+                        break;
                     case Bytecode.ADD:
                         {
                             var rhs = stack.Pop();
@@ -190,6 +241,28 @@ namespace CompilersCourseWork.Interpreting
                             }
                         }
                         break;
+                    case Bytecode.JUMP_IF_TRUE:
+                        {
+                            var destination = BitConverter.ToInt32(bytecode, pc);
+                            pc += 4;
+                            if (!(stack.Pop() == 0))
+                            {
+                                pc = destination;
+                            }
+                        }
+                        break;
+                    case Bytecode.ASSERT:
+                        if (stack.Pop() == 0)
+                        {
+                            var line = BitConverter.ToInt32(bytecode, pc);
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            printer("Assert failed at line " + (line + 1));
+                            Console.ForegroundColor = ConsoleColor.Cyan;
+                            printer("\n\t" + lines[line]);
+                            Console.ResetColor();
+                        }
+                        pc += 4;
+                        break;                    
                     default:
                         throw new InterpreterError("Invalid bytecode " + bytecode[pc - 1]);
                 }

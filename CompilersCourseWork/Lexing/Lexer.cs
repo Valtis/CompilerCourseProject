@@ -14,6 +14,14 @@ namespace CompilersCourseWork.Lexing
 
         // maintain a list of previously read tokens in order to allow backtracking if needed
         private BacktrackBuffer backTrackBuffer;
+
+        public IList<string> Lines
+        {
+            get
+            {
+                return reader.Lines;
+            }
+        }
         
         public Lexer(string path, ErrorReporter reporter, int spacesPerTab=8)
         {

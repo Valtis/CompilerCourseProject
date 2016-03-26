@@ -65,7 +65,7 @@ namespace CompilersCourseWork.ErrorHandling
 
                 case Error.NOTE_GENERIC:
                 case Error.NOTE:
-                    color = ConsoleColor.DarkCyan;
+                    color = ConsoleColor.Cyan;
                     Console.ForegroundColor = color;
                     Console.Write("Note: ");
                     break;
@@ -146,6 +146,7 @@ namespace CompilersCourseWork.ErrorHandling
                 }
             }
             Console.Write("\n");
+            Console.ResetColor();
 
         }
 

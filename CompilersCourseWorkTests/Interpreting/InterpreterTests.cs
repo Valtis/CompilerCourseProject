@@ -14,7 +14,7 @@ namespace CompilersCourseWork.Interpreting.Tests
             bytecode.Add(Bytecode.PUSH_INT);
             bytecode.AddRange(BitConverter.GetBytes(23L));
 
-            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "" }, 0);
+            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "" }, null, 0);
             interpreter.Run();
             Assert.AreEqual(1, interpreter.Stack.Count);
             Assert.AreEqual(23, interpreter.Stack.Pop());
@@ -28,7 +28,7 @@ namespace CompilersCourseWork.Interpreting.Tests
             bytecode.Add(Bytecode.PUSH_STRING);
             bytecode.AddRange(BitConverter.GetBytes(4568));
 
-            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "" }, 0);
+            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "" }, null, 0);
             interpreter.Run();
             Assert.AreEqual(1, interpreter.Stack.Count);
             Assert.AreEqual(4568, interpreter.Stack.Pop());
@@ -41,7 +41,7 @@ namespace CompilersCourseWork.Interpreting.Tests
             var bytecode = new List<byte>();
             bytecode.Add(Bytecode.PUSH_FALSE);
 
-            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "" }, 0);
+            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "" }, null, 0);
             interpreter.Run();
             Assert.AreEqual(1, interpreter.Stack.Count);
             Assert.AreEqual(0, interpreter.Stack.Pop());
@@ -55,7 +55,7 @@ namespace CompilersCourseWork.Interpreting.Tests
             bytecode.Add(Bytecode.PUSH_INT_VAR);
             bytecode.AddRange(BitConverter.GetBytes(2));
 
-            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "" }, 4);
+            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "" }, null, 4);
             interpreter.Variables[2] = 2324;
 
             interpreter.Run();
@@ -71,7 +71,7 @@ namespace CompilersCourseWork.Interpreting.Tests
             bytecode.Add(Bytecode.PUSH_STRING_VAR);
             bytecode.AddRange(BitConverter.GetBytes(3));
 
-            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "" }, 4);
+            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "" }, null, 4);
             interpreter.Variables[3] = 25;
 
             interpreter.Run();
@@ -87,7 +87,7 @@ namespace CompilersCourseWork.Interpreting.Tests
             bytecode.Add(Bytecode.PUSH_BOOLEAN_VAR);
             bytecode.AddRange(BitConverter.GetBytes(8));
 
-            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "" }, 9);
+            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "" }, null, 9);
             interpreter.Variables[8] = 1;
 
             interpreter.Run();
@@ -105,7 +105,7 @@ namespace CompilersCourseWork.Interpreting.Tests
             bytecode.Add(Bytecode.STORE_VARIABLE);
             bytecode.AddRange(BitConverter.GetBytes(14));
 
-            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "" }, 15);
+            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "" }, null, 15);
             interpreter.Run();
 
             Assert.AreEqual(0, interpreter.Stack.Count);
@@ -123,7 +123,7 @@ namespace CompilersCourseWork.Interpreting.Tests
             bytecode.AddRange(BitConverter.GetBytes(29L));
             bytecode.Add(Bytecode.IS_LESS_INT);
 
-            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "" }, 0);
+            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "" }, null, 0);
             interpreter.Run();
 
             Assert.AreEqual(1, interpreter.Stack.Count);
@@ -141,7 +141,7 @@ namespace CompilersCourseWork.Interpreting.Tests
             bytecode.AddRange(BitConverter.GetBytes(23L));
             bytecode.Add(Bytecode.IS_LESS_INT);
 
-            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "" }, 0);
+            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "" }, null, 0);
             interpreter.Run();
 
             Assert.AreEqual(1, interpreter.Stack.Count);
@@ -159,7 +159,61 @@ namespace CompilersCourseWork.Interpreting.Tests
             bytecode.AddRange(BitConverter.GetBytes(29L));
             bytecode.Add(Bytecode.IS_LESS_INT);
 
-            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "" }, 0);
+            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "" }, null, 0);
+            interpreter.Run();
+
+            Assert.AreEqual(1, interpreter.Stack.Count);
+            Assert.AreEqual(0, interpreter.Stack.Pop());
+            Assert.AreEqual(19, interpreter.PC);
+        }
+
+        [TestMethod()]
+        public void IsLessOrEqualIntPushesTrueIfFirstValueIsLess()
+        {
+            var bytecode = new List<byte>();
+            bytecode.Add(Bytecode.PUSH_INT);
+            bytecode.AddRange(BitConverter.GetBytes(23L));
+            bytecode.Add(Bytecode.PUSH_INT);
+            bytecode.AddRange(BitConverter.GetBytes(29L));
+            bytecode.Add(Bytecode.IS_LESS_OR_EQUAL_INT);
+
+            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "" }, null, 0);
+            interpreter.Run();
+
+            Assert.AreEqual(1, interpreter.Stack.Count);
+            Assert.AreEqual(1, interpreter.Stack.Pop());
+            Assert.AreEqual(19, interpreter.PC);
+        }
+
+        [TestMethod()]
+        public void IsLessOrEqualIntPushesTrueIfValuesAreEqual()
+        {
+            var bytecode = new List<byte>();
+            bytecode.Add(Bytecode.PUSH_INT);
+            bytecode.AddRange(BitConverter.GetBytes(23L));
+            bytecode.Add(Bytecode.PUSH_INT);
+            bytecode.AddRange(BitConverter.GetBytes(23L));
+            bytecode.Add(Bytecode.IS_LESS_OR_EQUAL_INT);
+
+            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "" }, null, 0);
+            interpreter.Run();
+
+            Assert.AreEqual(1, interpreter.Stack.Count);
+            Assert.AreEqual(1, interpreter.Stack.Pop());
+            Assert.AreEqual(19, interpreter.PC);
+        }
+
+        [TestMethod()]
+        public void IsLessOrEqualIntPushesFalseIfFirstValueIsLarger()
+        {
+            var bytecode = new List<byte>();
+            bytecode.Add(Bytecode.PUSH_INT);
+            bytecode.AddRange(BitConverter.GetBytes(53L));
+            bytecode.Add(Bytecode.PUSH_INT);
+            bytecode.AddRange(BitConverter.GetBytes(29L));
+            bytecode.Add(Bytecode.IS_LESS_OR_EQUAL_INT);
+
+            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "" }, null, 0);
             interpreter.Run();
 
             Assert.AreEqual(1, interpreter.Stack.Count);
@@ -173,7 +227,7 @@ namespace CompilersCourseWork.Interpreting.Tests
             var bytecode = new List<byte>();
             bytecode.Add(Bytecode.IS_LESS_BOOLEAN);
 
-            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "" }, 0);
+            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "" }, null, 0);
             interpreter.Stack.Push(0);
             interpreter.Stack.Push(1);
             interpreter.Run();
@@ -189,7 +243,7 @@ namespace CompilersCourseWork.Interpreting.Tests
             var bytecode = new List<byte>();
             bytecode.Add(Bytecode.IS_LESS_BOOLEAN);
 
-            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "" }, 0);
+            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "" }, null, 0);
             interpreter.Stack.Push(1);
             interpreter.Stack.Push(1);
             interpreter.Run();
@@ -205,7 +259,7 @@ namespace CompilersCourseWork.Interpreting.Tests
             var bytecode = new List<byte>();
             bytecode.Add(Bytecode.IS_LESS_BOOLEAN);
 
-            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "" }, 0);
+            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "" }, null, 0);
             interpreter.Stack.Push(1);
             interpreter.Stack.Push(0);
             interpreter.Run();
@@ -225,7 +279,7 @@ namespace CompilersCourseWork.Interpreting.Tests
             bytecode.AddRange(BitConverter.GetBytes(29L));
             bytecode.Add(Bytecode.IS_EQUAL_INT);
 
-            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "" }, 0);
+            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "" }, null, 0);
             interpreter.Run();
 
             Assert.AreEqual(1, interpreter.Stack.Count);
@@ -243,7 +297,7 @@ namespace CompilersCourseWork.Interpreting.Tests
             bytecode.AddRange(BitConverter.GetBytes(23L));
             bytecode.Add(Bytecode.IS_EQUAL_INT);
 
-            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "" }, 0);
+            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "" }, null, 0);
             interpreter.Run();
 
             Assert.AreEqual(1, interpreter.Stack.Count);
@@ -261,7 +315,7 @@ namespace CompilersCourseWork.Interpreting.Tests
             bytecode.AddRange(BitConverter.GetBytes(29L));
             bytecode.Add(Bytecode.IS_EQUAL_INT);
 
-            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "" }, 0);
+            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "" }, null, 0);
             interpreter.Run();
 
             Assert.AreEqual(1, interpreter.Stack.Count);
@@ -275,7 +329,7 @@ namespace CompilersCourseWork.Interpreting.Tests
             var bytecode = new List<byte>();
             bytecode.Add(Bytecode.IS_EQUAL_BOOLEAN);
 
-            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "" }, 0);
+            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "" }, null, 0);
             interpreter.Stack.Push(0);
             interpreter.Stack.Push(1);
             interpreter.Run();
@@ -291,7 +345,7 @@ namespace CompilersCourseWork.Interpreting.Tests
             var bytecode = new List<byte>();
             bytecode.Add(Bytecode.IS_EQUAL_BOOLEAN);
 
-            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "" }, 0);
+            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "" }, null, 0);
             interpreter.Stack.Push(1);
             interpreter.Stack.Push(1);
             interpreter.Run();
@@ -307,7 +361,7 @@ namespace CompilersCourseWork.Interpreting.Tests
             var bytecode = new List<byte>();
             bytecode.Add(Bytecode.IS_EQUAL_BOOLEAN);
 
-            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "" }, 0);
+            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "" }, null, 0);
             interpreter.Stack.Push(1);
             interpreter.Stack.Push(0);
             interpreter.Run();
@@ -324,7 +378,7 @@ namespace CompilersCourseWork.Interpreting.Tests
             var bytecode = new List<byte>();
             bytecode.Add(Bytecode.IS_LESS_STRING);
 
-            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "hello", "world" }, 0);
+            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "hello", "world" }, null, 0);
             interpreter.Stack.Push(0);
             interpreter.Stack.Push(1);
             interpreter.Run();
@@ -341,7 +395,7 @@ namespace CompilersCourseWork.Interpreting.Tests
             var bytecode = new List<byte>();
             bytecode.Add(Bytecode.IS_LESS_STRING);
 
-            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "hello", "hello" }, 0);
+            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "hello", "hello" }, null, 0);
             interpreter.Stack.Push(0);
             interpreter.Stack.Push(1);
             interpreter.Run();
@@ -358,7 +412,7 @@ namespace CompilersCourseWork.Interpreting.Tests
             var bytecode = new List<byte>();
             bytecode.Add(Bytecode.IS_LESS_STRING);
 
-            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "world", "hello" }, 0);
+            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "world", "hello" }, null, 0);
             interpreter.Stack.Push(0);
             interpreter.Stack.Push(1);
             interpreter.Run();
@@ -375,7 +429,7 @@ namespace CompilersCourseWork.Interpreting.Tests
             var bytecode = new List<byte>();
             bytecode.Add(Bytecode.IS_EQUAL_STRING);
 
-            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "hello", "world" }, 0);
+            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "hello", "world" }, null, 0);
             interpreter.Stack.Push(0);
             interpreter.Stack.Push(1);
             interpreter.Run();
@@ -392,7 +446,7 @@ namespace CompilersCourseWork.Interpreting.Tests
             var bytecode = new List<byte>();
             bytecode.Add(Bytecode.IS_EQUAL_STRING);
 
-            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "hello", "hello" }, 0);
+            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "hello", "hello" }, null, 0);
             interpreter.Stack.Push(0);
             interpreter.Stack.Push(1);
             interpreter.Run();
@@ -409,7 +463,7 @@ namespace CompilersCourseWork.Interpreting.Tests
             var bytecode = new List<byte>();
             bytecode.Add(Bytecode.IS_EQUAL_STRING);
 
-            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "world", "hello" }, 0);
+            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "world", "hello" }, null, 0);
             interpreter.Stack.Push(0);
             interpreter.Stack.Push(1);
             interpreter.Run();
@@ -425,7 +479,7 @@ namespace CompilersCourseWork.Interpreting.Tests
             var bytecode = new List<byte>();
             bytecode.Add(Bytecode.NOT);
 
-            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> {}, 0);
+            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> {}, null, 0);
             interpreter.Stack.Push(1);
             interpreter.Run();
 
@@ -440,7 +494,7 @@ namespace CompilersCourseWork.Interpreting.Tests
             var bytecode = new List<byte>();
             bytecode.Add(Bytecode.NOT);
 
-            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { }, 0);
+            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { }, null, 0);
             interpreter.Stack.Push(0);
             interpreter.Run();
 
@@ -455,7 +509,7 @@ namespace CompilersCourseWork.Interpreting.Tests
             var bytecode = new List<byte>();
             bytecode.Add(Bytecode.AND);
 
-            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { }, 0);
+            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { }, null, 0);
             interpreter.Stack.Push(1);
             interpreter.Stack.Push(1);
             interpreter.Run();
@@ -471,7 +525,7 @@ namespace CompilersCourseWork.Interpreting.Tests
             var bytecode = new List<byte>();
             bytecode.Add(Bytecode.AND);
 
-            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { }, 0);
+            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { }, null, 0);
             interpreter.Stack.Push(1);
             interpreter.Stack.Push(0);
             interpreter.Run();
@@ -487,7 +541,7 @@ namespace CompilersCourseWork.Interpreting.Tests
             var bytecode = new List<byte>();
             bytecode.Add(Bytecode.AND);
 
-            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { }, 0);
+            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { }, null, 0);
             interpreter.Stack.Push(0);
             interpreter.Stack.Push(1);
             interpreter.Run();
@@ -503,7 +557,7 @@ namespace CompilersCourseWork.Interpreting.Tests
             var bytecode = new List<byte>();
             bytecode.Add(Bytecode.AND);
 
-            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { }, 0);
+            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { }, null, 0);
             interpreter.Stack.Push(0);
             interpreter.Stack.Push(0);
             interpreter.Run();
@@ -521,7 +575,7 @@ namespace CompilersCourseWork.Interpreting.Tests
             bytecode.AddRange(BitConverter.GetBytes(23L));
             bytecode.Add(Bytecode.PRINT_INT);
 
-            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "" }, 0);
+            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "" }, null, 0);
             var output = new List<string>();
             interpreter.SetPrinter((string str) => output.Add(str));
             interpreter.Run();
@@ -540,7 +594,7 @@ namespace CompilersCourseWork.Interpreting.Tests
             bytecode.AddRange(BitConverter.GetBytes(1));
             bytecode.Add(Bytecode.PRINT_STRING);
 
-            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "hello", "world" }, 0);
+            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "hello", "world" }, null, 0);
             var output = new List<string>();
             interpreter.SetPrinter((string str) => output.Add(str));
             interpreter.Run();
@@ -549,6 +603,129 @@ namespace CompilersCourseWork.Interpreting.Tests
             Assert.AreEqual(6, interpreter.PC);
             Assert.AreEqual(1, output.Count);
             Assert.AreEqual("world", output[0]);
+        }
+
+        [TestMethod()]
+        public void ReadIntWorks()
+        {
+            var bytecode = new List<byte>();
+            bytecode.Add(Bytecode.READ_INT);
+            bytecode.AddRange(BitConverter.GetBytes(4));
+            bytecode.Add(Bytecode.READ_INT);
+            bytecode.AddRange(BitConverter.GetBytes(1));
+            bytecode.Add(Bytecode.READ_INT);
+            bytecode.AddRange(BitConverter.GetBytes(2));
+
+            var input = new List<string> { "4", "9", "12345" };
+            int pos = 0;
+            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> {}, null, 5);
+            interpreter.SetReader(() => input[pos++]);
+            interpreter.Run();
+
+            Assert.AreEqual(0, interpreter.Stack.Count);
+            Assert.AreEqual(15, interpreter.PC);
+            Assert.AreEqual(4, interpreter.Variables[4]);
+            Assert.AreEqual(9, interpreter.Variables[1]);
+            Assert.AreEqual(12345, interpreter.Variables[2]);
+        }
+
+        [TestMethod()]
+        public void ReadIntHandlesWhitespaceCorrectly()
+        {
+            var bytecode = new List<byte>();
+            bytecode.Add(Bytecode.READ_INT);
+            bytecode.AddRange(BitConverter.GetBytes(4));
+            bytecode.Add(Bytecode.READ_INT);
+            bytecode.AddRange(BitConverter.GetBytes(1));
+            bytecode.Add(Bytecode.READ_INT);
+            bytecode.AddRange(BitConverter.GetBytes(2));
+
+            var input = new List<string> { "4 abc", "9\n2145", "12345\t23123" };
+            int pos = 0;
+            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { }, null, 5);
+            interpreter.SetReader(() => input[pos++]);
+            interpreter.Run();
+
+            Assert.AreEqual(0, interpreter.Stack.Count);
+            Assert.AreEqual(15, interpreter.PC);
+            Assert.AreEqual(4, interpreter.Variables[4]);
+            Assert.AreEqual(9, interpreter.Variables[1]);
+            Assert.AreEqual(12345, interpreter.Variables[2]);
+        }
+
+        [TestMethod()]
+        public void ReadStringWorks()
+        {
+            var bytecode = new List<byte>();
+            bytecode.Add(Bytecode.READ_STRING);
+            bytecode.AddRange(BitConverter.GetBytes(4));
+            bytecode.Add(Bytecode.READ_STRING);
+            bytecode.AddRange(BitConverter.GetBytes(1));
+            bytecode.Add(Bytecode.READ_STRING);
+            bytecode.AddRange(BitConverter.GetBytes(2));
+
+            var input = new List<string> { "abc112", "hello", "abababababa" };
+            int pos = 0;
+            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "hello", "world" }, null, 5);
+            interpreter.SetReader(() => input[pos++]);
+            interpreter.Run();
+
+            Assert.AreEqual(0, interpreter.Stack.Count);
+            Assert.AreEqual(15, interpreter.PC);
+            Assert.AreEqual(2, interpreter.Variables[4]);
+            Assert.AreEqual(0, interpreter.Variables[1]);
+            Assert.AreEqual(3, interpreter.Variables[2]);
+
+            Assert.AreEqual("abc112", interpreter.Strings[2]);
+            Assert.AreEqual("abababababa", interpreter.Strings[3]);
+        }
+
+        [TestMethod()]
+        public void ReadStringHandlesWhitespaceCorrectly()
+        {
+            var bytecode = new List<byte>();
+            bytecode.Add(Bytecode.READ_STRING);
+            bytecode.AddRange(BitConverter.GetBytes(4));
+            bytecode.Add(Bytecode.READ_STRING);
+            bytecode.AddRange(BitConverter.GetBytes(1));
+            bytecode.Add(Bytecode.READ_STRING);
+            bytecode.AddRange(BitConverter.GetBytes(2));
+
+            var input = new List<string> { "abc112 pasjdf", "hello\n2233434", "abababababa\t2343223" };
+            int pos = 0;
+            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "hello", "world" }, null, 5);
+            interpreter.SetReader(() => input[pos++]);
+            interpreter.Run();
+
+            Assert.AreEqual(0, interpreter.Stack.Count);
+            Assert.AreEqual(15, interpreter.PC);
+            Assert.AreEqual(2, interpreter.Variables[4]);
+            Assert.AreEqual(0, interpreter.Variables[1]);
+            Assert.AreEqual(3, interpreter.Variables[2]);
+
+            Assert.AreEqual("abc112", interpreter.Strings[2]);
+            Assert.AreEqual("abababababa", interpreter.Strings[3]);
+        }
+        [TestMethod()]
+        [ExpectedException(typeof(InvalidInputException))]
+        public void ReadIntThrowsIfInputIsNotNumeric()
+        {
+            var bytecode = new List<byte>();
+            bytecode.Add(Bytecode.READ_INT);
+            bytecode.AddRange(BitConverter.GetBytes(4));
+            bytecode.Add(Bytecode.READ_INT);
+            bytecode.AddRange(BitConverter.GetBytes(1));
+            bytecode.Add(Bytecode.READ_INT);
+            bytecode.AddRange(BitConverter.GetBytes(2));
+
+            var input = new List<string> { "abcdef", };
+            int pos = 0;
+            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { }, null, 5);
+            interpreter.SetReader(() => input[pos++]);
+            interpreter.Stack.Push(4);
+            interpreter.Stack.Push(1);
+            interpreter.Stack.Push(2);
+            interpreter.Run();
         }
 
         [TestMethod()]
@@ -561,7 +738,7 @@ namespace CompilersCourseWork.Interpreting.Tests
             bytecode.AddRange(BitConverter.GetBytes(170L));
             bytecode.Add(Bytecode.ADD);
 
-            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "" }, 0);
+            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "" }, null, 0);
             interpreter.Run();
 
             Assert.AreEqual(1, interpreter.Stack.Count);
@@ -579,7 +756,7 @@ namespace CompilersCourseWork.Interpreting.Tests
             bytecode.AddRange(BitConverter.GetBytes(170L));
             bytecode.Add(Bytecode.SUB);
 
-            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "" }, 0);
+            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "" }, null, 0);
             interpreter.Run();
 
             Assert.AreEqual(1, interpreter.Stack.Count);
@@ -597,7 +774,7 @@ namespace CompilersCourseWork.Interpreting.Tests
             bytecode.AddRange(BitConverter.GetBytes(170L));
             bytecode.Add(Bytecode.MUL);
 
-            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "" }, 0);
+            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "" }, null, 0);
             interpreter.Run();
 
             Assert.AreEqual(1, interpreter.Stack.Count);
@@ -615,7 +792,7 @@ namespace CompilersCourseWork.Interpreting.Tests
             bytecode.AddRange(BitConverter.GetBytes(5L));
             bytecode.Add(Bytecode.DIV);
 
-            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "" }, 0);
+            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "" }, null, 0);
             interpreter.Run();
 
             Assert.AreEqual(1, interpreter.Stack.Count);
@@ -634,7 +811,7 @@ namespace CompilersCourseWork.Interpreting.Tests
             bytecode.AddRange(BitConverter.GetBytes(0L));
             bytecode.Add(Bytecode.DIV);
 
-            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "" }, 0);
+            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "" }, null, 0);
             interpreter.Run();
         }
 
@@ -648,7 +825,7 @@ namespace CompilersCourseWork.Interpreting.Tests
             bytecode.AddRange(BitConverter.GetBytes(1));
             bytecode.Add(Bytecode.CONCAT);
 
-            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "hello ", "world" }, 0);
+            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "hello ", "world" }, null, 0);
             interpreter.Run();
 
             Assert.AreEqual(1, interpreter.Stack.Count);
@@ -667,7 +844,7 @@ namespace CompilersCourseWork.Interpreting.Tests
             bytecode.AddRange(BitConverter.GetBytes(3));
             bytecode.Add(Bytecode.CONCAT);
 
-            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "hello ", "world", "foo", "bar", "foobar" }, 0);
+            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "hello ", "world", "foo", "bar", "foobar" }, null, 0);
             interpreter.Run();
 
             Assert.AreEqual(1, interpreter.Stack.Count);
@@ -675,5 +852,86 @@ namespace CompilersCourseWork.Interpreting.Tests
             Assert.AreEqual(11, interpreter.PC);
         }
 
+        [TestMethod]
+        public void JumpIfTrueJumpsIfStackContainsTrue()
+        {
+            var bytecode = new List<byte>();
+            bytecode.Add(Bytecode.JUMP_IF_TRUE);
+            bytecode.AddRange(BitConverter.GetBytes(654));
+
+            var interpreter = new Interpreter(bytecode.ToArray(), new List<string> { "hello ", "world", "foo", "bar", "foobar" }, null, 0);
+            interpreter.Stack.Push(1);
+            interpreter.Run();
+
+            Assert.AreEqual(0, interpreter.Stack.Count);
+            Assert.AreEqual(654, interpreter.PC);
+        }
+
+        [TestMethod]
+        public void JumpIfTrueDoesNotJumpIfStackContainsFalse()
+        {
+            var bytecode = new List<byte>();
+            bytecode.Add(Bytecode.JUMP_IF_TRUE);
+            bytecode.AddRange(BitConverter.GetBytes(654));
+
+            var interpreter = new Interpreter(
+                bytecode.ToArray(), 
+                new List<string> { "hello ", "world", "foo", "bar", "foobar" }, 
+                null, 
+                0);
+
+            interpreter.Stack.Push(0);
+            interpreter.Run();
+
+            Assert.AreEqual(0, interpreter.Stack.Count);
+            Assert.AreEqual(5, interpreter.PC);
+        }
+
+        [TestMethod()]
+        public void AssertPrintsDiagnosticMessageIfAssertFails()
+        {
+            var bytecode = new List<byte>();
+            bytecode.Add(Bytecode.ASSERT);
+            bytecode.AddRange(BitConverter.GetBytes(1));
+
+            var interpreter = new Interpreter(
+                bytecode.ToArray(), 
+                new List<string> { "hello", "world" }, 
+                new List<string> { "line 1", "line 2" },
+                0);
+            interpreter.Stack.Push(0);
+            var output = new List<string>();
+            interpreter.SetPrinter((string str) => output.Add(str));
+            interpreter.Run();
+
+            Assert.AreEqual(0, interpreter.Stack.Count);
+            Assert.AreEqual(5, interpreter.PC);
+            Assert.AreEqual(2, output.Count);
+            Assert.AreEqual("Assert failed at line 2", output[0]);
+            Assert.AreEqual("\n\tline 2", output[1]);
+        }
+
+        [TestMethod()]
+        public void AssertDoesNothingIfAssertSucceeds()
+        {
+            var bytecode = new List<byte>();
+            bytecode.Add(Bytecode.ASSERT);
+            bytecode.AddRange(BitConverter.GetBytes(1));
+
+            var interpreter = new Interpreter(
+                bytecode.ToArray(), 
+                new List<string> { "hello", "world" }, 
+                new List<string> { "line 1", "line 2" }, 
+                0);
+
+            interpreter.Stack.Push(1);
+            var output = new List<string>();
+            interpreter.SetPrinter((string str) => output.Add(str));
+            interpreter.Run();
+
+            Assert.AreEqual(0, interpreter.Stack.Count);
+            Assert.AreEqual(5, interpreter.PC);
+            Assert.AreEqual(0, output.Count);
+        }
     }
 }

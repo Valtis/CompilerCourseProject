@@ -69,6 +69,7 @@
     <Compile Include="CodeGeneration\CodeGenerator.cs" />
     <Compile Include="Interpreting\Interpreter.cs" />
     <Compile Include="Interpreting\InterpreterError.cs" />
+    <Compile Include="Interpreting\InvalidInputException.cs" />
     <Compile Include="SemanticChecking\VariableData.cs" />
     <Compile Include="ErrorHandling\ErrorData.cs" />
     <Compile Include="ErrorHandling\ErrorReporter.cs" />

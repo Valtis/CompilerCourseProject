@@ -153,7 +153,10 @@ namespace CompilersCourseWork.SemanticChecking
                 if (current is IdentifierNode && ((IdentifierNode)current).Name != loopVariable.Name)
                 {
                     var id = (IdentifierNode)current;
-                    loopExpressionVariables.Add(id, id);
+                    if (!loopExpressionVariables.ContainsKey(id))
+                    {
+                        loopExpressionVariables.Add(id, id);
+                    }
                 }
 
                 foreach (var child in current.Children)
@@ -399,8 +402,9 @@ namespace CompilersCourseWork.SemanticChecking
                 return;
             }
 
+            identifier.Accept(this);
 
-            if (SymbolTable[identifier.Name].node.Type == VariableType.BOOLEAN)
+            if (identifier.NodeType() == VariableType.BOOLEAN)
             {
                 reporter.ReportError(
                     Error.SEMANTIC_ERROR,
