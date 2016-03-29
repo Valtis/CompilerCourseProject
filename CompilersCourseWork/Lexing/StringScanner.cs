@@ -4,11 +4,11 @@ using CompilersCourseWork.ErrorHandling;
 
 namespace CompilersCourseWork.Lexing
 {
-    internal class StringParser : TokenParser
+    internal class StringScanner : TokenScanner
     {
 
 
-		internal StringParser(TextReader reader, ErrorReporter reporter) : base(reader, reporter)
+		internal StringScanner(TextReader reader, ErrorReporter reporter) : base(reader, reporter)
         {
         }
 

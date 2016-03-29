@@ -4,12 +4,12 @@ using CompilersCourseWork.ErrorHandling;
 
 namespace CompilersCourseWork.Lexing
 {
-    class CommentParser : TokenParser
+    class CommentScanner : TokenScanner
     {
         private bool isMultilineComment;
         private int nesting;
 
-        internal CommentParser(TextReader reader, ErrorReporter reporter) : base(reader, reporter)
+        internal CommentScanner(TextReader reader, ErrorReporter reporter) : base(reader, reporter)
         {
             isMultilineComment = false;
         }

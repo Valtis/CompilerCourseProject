@@ -10,7 +10,7 @@ namespace CompilersCourseWork.Lexing
 
         private TextReader reader;
         private ErrorReporter reporter;
-        private IList<TokenParser> parsers;
+        private IList<TokenScanner> parsers;
 
         // maintain a list of previously read tokens in order to allow backtracking if needed
         private BacktrackBuffer backTrackBuffer;
@@ -32,13 +32,13 @@ namespace CompilersCourseWork.Lexing
 
             backTrackBuffer = new BacktrackBuffer(BACKTRACK_BUFFER_SIZE);
            
-            parsers = new List<TokenParser>();
-            parsers.Add(new WhitespaceParser(reader, reporter));
-            parsers.Add(new CommentParser(reader, reporter));
-            parsers.Add(new IdentifierAndKeywordParser(reader, reporter));
-            parsers.Add(new IntegerParser(reader, reporter));
-            parsers.Add(new StringParser(reader, reporter));
-            parsers.Add(new OperatorParser(reader, reporter));
+            parsers = new List<TokenScanner>();
+            parsers.Add(new WhitespaceScanner(reader, reporter));
+            parsers.Add(new CommentScanner(reader, reporter));
+            parsers.Add(new IdentifierAndKeywordScanner(reader, reporter));
+            parsers.Add(new IntegerScanner(reader, reporter));
+            parsers.Add(new StringScanner(reader, reporter));
+            parsers.Add(new OperatorScanner(reader, reporter));
         }
 
         

@@ -77,14 +77,14 @@
     <Compile Include="InternalCompilerError.cs" />
     <Compile Include="Interpreting\Bytecode.cs" />
     <Compile Include="Lexing\BacktrackBuffer.cs" />
-    <Compile Include="Lexing\CommentParser.cs" />
-    <Compile Include="Lexing\IdentifierAndKeywordParser.cs" />
-    <Compile Include="Lexing\IntegerParser.cs" />
-    <Compile Include="Lexing\OperatorParser.cs" />
-    <Compile Include="Lexing\TokenParser.cs" />
+    <Compile Include="Lexing\CommentScanner.cs" />
+    <Compile Include="Lexing\IdentifierAndKeywordScanner.cs" />
+    <Compile Include="Lexing\IntegerScanner.cs" />
+    <Compile Include="Lexing\OperatorScanner.cs" />
+    <Compile Include="Lexing\TokenScanner.cs" />
     <Compile Include="Lexing\TextReader.cs" />
     <Compile Include="Lexing\Lexer.cs" />
-    <Compile Include="Lexing\WhitespaceParser.cs" />
+    <Compile Include="Lexing\WhitespaceScanner.cs" />
     <Compile Include="Parsing\InvalidParseException.cs" />
     <Compile Include="Parsing\Parser.cs" />
     <Compile Include="Parsing\VariableType.cs" />
@@ -128,7 +128,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <Compile Include="Lexing\StringParser.cs" />
+    <Compile Include="Lexing\StringScanner.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -3,7 +3,7 @@ using CompilersCourseWork.Tokens;
 
 namespace CompilersCourseWork.Lexing
 {
-    internal abstract class TokenParser
+    internal abstract class TokenScanner
     {
         private readonly TextReader reader;
         private ErrorReporter reporter;
@@ -29,7 +29,7 @@ namespace CompilersCourseWork.Lexing
             }
         }
 
-        internal TokenParser(TextReader reader, ErrorReporter reporter)
+        internal TokenScanner(TextReader reader, ErrorReporter reporter)
         {
             this.reader = reader;
             this.Reporter = reporter;

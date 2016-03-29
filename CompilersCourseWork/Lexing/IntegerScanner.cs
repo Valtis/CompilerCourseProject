@@ -5,11 +5,11 @@ using System;
 
 namespace CompilersCourseWork.Lexing
 {
-    internal class IntegerParser : TokenParser
+    internal class IntegerScanner : TokenScanner
     {
         
 
-        internal IntegerParser(TextReader reader, ErrorReporter reporter) : base(reader, reporter)
+        internal IntegerScanner(TextReader reader, ErrorReporter reporter) : base(reader, reporter)
         {
         }
 

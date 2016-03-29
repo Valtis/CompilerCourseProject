@@ -5,12 +5,12 @@ using CompilersCourseWork.ErrorHandling;
 
 namespace CompilersCourseWork.Lexing
 {
-    internal class WhitespaceParser : TokenParser
+    internal class WhitespaceScanner : TokenScanner
     {
         private ISet<char> whitespace;
 
 
-        internal WhitespaceParser(TextReader reader, ErrorReporter reporter) : base(reader, reporter)
+        internal WhitespaceScanner(TextReader reader, ErrorReporter reporter) : base(reader, reporter)
         {
             whitespace = new HashSet<char>();
             whitespace.Add(' ');

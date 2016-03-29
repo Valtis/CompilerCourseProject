@@ -8,12 +8,12 @@ using CompilersCourseWork.Tokens;
 
 namespace CompilersCourseWork.Lexing
 {
-    internal class OperatorParser : TokenParser
+    internal class OperatorScanner : TokenScanner
     {
         private IDictionary<char, Type> operators;
         private IDictionary<char, IDictionary<char, Type>> twoCharacterOperators; 
 
-        internal OperatorParser(TextReader reader, ErrorReporter reporter) : base(reader, reporter)
+        internal OperatorScanner(TextReader reader, ErrorReporter reporter) : base(reader, reporter)
         {
 
             twoCharacterOperators = new Dictionary<char, IDictionary<char, Type>>();

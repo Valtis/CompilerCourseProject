@@ -8,12 +8,12 @@ using CompilersCourseWork.ErrorHandling;
 
 namespace CompilersCourseWork.Lexing
 {
-    internal class IdentifierAndKeywordParser : TokenParser
+    internal class IdentifierAndKeywordScanner : TokenScanner
     {
 
         private IDictionary<string, Type> keywords;
 
-        internal IdentifierAndKeywordParser(TextReader reader, ErrorReporter reporter) : base(reader, reporter)
+        internal IdentifierAndKeywordScanner(TextReader reader, ErrorReporter reporter) : base(reader, reporter)
         {
             keywords = new Dictionary<string, Type>();
 
