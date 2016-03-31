@@ -1,9 +1,13 @@
-﻿using CompilersCourseWork.ErrorHandling;
-using CompilersCourseWork.Tokens;
+﻿using CompilersCourseWork.Tokens;
 using System.Collections.Generic;
 
 namespace CompilersCourseWork.Lexing
 {
+    /*
+    Token backtrack buffer. 
+    
+    Maintains a queue of tokens, which allows backtracking up to queue size
+    */
     internal class BacktrackBuffer
     {
         private readonly int bufferSize;
@@ -14,6 +18,7 @@ namespace CompilersCourseWork.Lexing
         {
             backtrackBuffer = new List<Token>();
             bufferSize = size;
+            // used to index the backtrack buffer. -1 means empty
             backtrackPosition = -1;
         }
 
@@ -24,12 +29,11 @@ namespace CompilersCourseWork.Lexing
 
         internal void Backtrack()
         {
-
             ++backtrackPosition;
             if (backtrackPosition >= bufferSize ||
                 backtrackPosition >= backtrackBuffer.Count)
             {
-                throw new InternalCompilerErrorException("Attempted to backtrack too many times");
+                throw new InternalCompilerError("Attempted to backtrack too many times");
             }
         }
 

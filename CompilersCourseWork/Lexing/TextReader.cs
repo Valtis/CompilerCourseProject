@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace CompilersCourseWork.Lexing
 {
+    /*
+    Class abstracting reading characters from a file. Supports backtracking
+    */
     internal class TextReader
     {
         // reading and keeping all lines in memory makes implementation easier, but can be expensive
@@ -15,7 +18,7 @@ namespace CompilersCourseWork.Lexing
         private int line;
 
         // column is meant for human-readable notifications, where tab character gets converted
-        // into a given number of spaces. array_pos tracks the position at given line, used internally
+        // into spaces. array_pos tracks the position at given line, used internally
         private int column;
         private int arrayPos;
         
@@ -47,6 +50,7 @@ namespace CompilersCourseWork.Lexing
             }
         }
 
+        // backtrack a character. Move back a line if necessary
         internal void Backtrack()
         {
             if (arrayPos != 0)
@@ -79,7 +83,7 @@ namespace CompilersCourseWork.Lexing
 
             lines = System.IO.File.ReadAllLines(path);
 
-            // append newlines to every line, as ReadAllLines strips them but parsers
+            // append newlines to every line, as ReadAllLines strips them but scanners
             // assume they are present
             for (int i = 0; i < Lines.Length; ++i)
             {
@@ -89,7 +93,6 @@ namespace CompilersCourseWork.Lexing
 
         internal char? NextCharacter()
         {
-
             var value = PeekCharacter();
 
             ++arrayPos;
@@ -97,7 +100,6 @@ namespace CompilersCourseWork.Lexing
             if (value.HasValue && value.Value == '\t')
             {
                 // move to next tab stop
-
                 var distanceFromPreviousStop = Column % spacesPerTab;
 
                 Column += (spacesPerTab - distanceFromPreviousStop);

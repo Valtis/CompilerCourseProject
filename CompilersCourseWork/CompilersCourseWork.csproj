@@ -73,7 +73,6 @@
     <Compile Include="SemanticChecking\VariableData.cs" />
     <Compile Include="ErrorHandling\ErrorData.cs" />
     <Compile Include="ErrorHandling\ErrorReporter.cs" />
-    <Compile Include="ErrorHandling\InternalCompilerErrorException.cs" />
     <Compile Include="InternalCompilerError.cs" />
     <Compile Include="Interpreting\Bytecode.cs" />
     <Compile Include="Lexing\BacktrackBuffer.cs" />

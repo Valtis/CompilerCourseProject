@@ -8,6 +8,10 @@ using CompilersCourseWork.ErrorHandling;
 
 namespace CompilersCourseWork.Lexing
 {
+
+    /*
+    Scans identifers and keywords. Uses screening for keywords
+    */
     internal class IdentifierAndKeywordScanner : TokenScanner
     {
 

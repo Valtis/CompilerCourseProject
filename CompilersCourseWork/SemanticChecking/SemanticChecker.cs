@@ -6,6 +6,9 @@ using CompilersCourseWork.ErrorHandling;
 
 namespace CompilersCourseWork.SemanticChecking
 {
+    /*
+    Semantic checks using visitor pattern. Also builds symboltable
+    */
     public class SemanticChecker : NodeVisitor
     {
         private readonly IDictionary<string, VariableData> symbolTable;
@@ -507,8 +510,7 @@ namespace CompilersCourseWork.SemanticChecking
                 () => node.Children[0].NodeType(),
                 new List<VariableType> { VariableType.INTEGER, VariableType.STRING });
         }
-
-
+        
         private void BinaryOperator(Node node, string name, Func<VariableType> nodeType, IList<VariableType> acceptableOperandTypes)
         {
             if (node.Children.Count != 2)

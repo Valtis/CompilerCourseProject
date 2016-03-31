@@ -6,13 +6,17 @@ using System.Threading.Tasks;
 
 namespace CompilersCourseWork.ErrorHandling
 {
+    // NOTE_GENERIC does not print the 'at <line> <column>' part of the message. Used for generic notes, not related 
+    // to any particular line of code
     public enum Error { NOTE, WARNING, LEXICAL_ERROR, SYNTAX_ERROR,
         SEMANTIC_ERROR, NOTE_GENERIC,
     }
 
+    /*
+    Error reporter class. Allows reporting various errors, warnings and notes
+    */
     public class ErrorReporter
     {
-
         private string[] lines;
         private IList<ErrorData> errors;
 
@@ -20,6 +24,7 @@ namespace CompilersCourseWork.ErrorHandling
         {
             get
             {
+                // only select errors
                 var filteredList = from e in errors
                                     where (e.Type == Error.LEXICAL_ERROR || e.Type == Error.SYNTAX_ERROR || e.Type == Error.SEMANTIC_ERROR)
                                     select e;

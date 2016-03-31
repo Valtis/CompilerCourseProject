@@ -6,9 +6,13 @@ namespace CompilersCourseWork.Interpreting
     public class Interpreter
     {
         private readonly byte[] bytecode;
+        // list of the strings, used by the program
         private readonly IList<string> strings;
+
+        // program counter
         private int pc;
 
+        // printer and reader. By default uses regular stdin and stdout, but tests override these
         private Action<String> printer;
         private Func<String> reader;
 
@@ -16,6 +20,8 @@ namespace CompilersCourseWork.Interpreting
         // could be optimized to not to always use 8 bytes, but simplicity is the goal here
         private readonly Stack<long> stack;
         private readonly long[] variables;
+
+        // program lines, used for error messages
         private readonly IList<String> lines;
 
         public Stack<long> Stack
@@ -73,6 +79,9 @@ namespace CompilersCourseWork.Interpreting
             this.reader = reader;
         }
 
+        /*
+        Stack machine bytecode interpreter
+        */
         public void Run()
         {
             while (pc < bytecode.Length)

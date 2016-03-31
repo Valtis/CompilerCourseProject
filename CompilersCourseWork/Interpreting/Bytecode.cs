@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace CompilersCourseWork.Interpreting
 {
+    /*
+    Bytecodes for interpreter
+    */
     public class Bytecode
     {
         public const byte NOP = 0;

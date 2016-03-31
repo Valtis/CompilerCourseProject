@@ -4,6 +4,9 @@ using CompilersCourseWork.ErrorHandling;
 
 namespace CompilersCourseWork.Lexing
 {
+    /*
+    Scans and removes comments
+    */
     class CommentScanner : TokenScanner
     {
         private bool isMultilineComment;
@@ -16,6 +19,7 @@ namespace CompilersCourseWork.Lexing
 
         internal override bool Parses(char character)
         {
+            // reset nesting value
             nesting = 0;
             if (character == '/')
             {
@@ -24,16 +28,19 @@ namespace CompilersCourseWork.Lexing
                 var next = Reader.PeekCharacter();
                 if (next.HasValue)
                 {
+                    // single line comment
                     if (next.Value == '/')
                     {
                         isMultilineComment = false;
                         return true;
                     }
+                    // multiline comment
                     else if (next.Value == '*')
                     {
                         isMultilineComment = true;
                         return true;
                     }
+                    // was something else; likely divide-symbol
                     else
                     {
                         Reader.Backtrack();
@@ -55,6 +62,7 @@ namespace CompilersCourseWork.Lexing
                                           
                     if (character.HasValue && character.Value == '/')
                     {
+                        // if we see a '/*', increase nesting
                         character = Reader.NextCharacter();
                         if (character.Value == '*')
                         {
@@ -70,6 +78,7 @@ namespace CompilersCourseWork.Lexing
                         {
                             Reader.NextCharacter();
                             --nesting;
+                            // only break out if every '/*' has a matching '*/'
                             if (nesting < 0)
                             {
                                 break;
@@ -81,12 +90,14 @@ namespace CompilersCourseWork.Lexing
             }
             else
             {
+                // single line comment - read and discard characters until the end of line
                 while (Reader.PeekCharacter().HasValue && Reader.PeekCharacter().Value != '\n')
                 {
                     Reader.NextCharacter();
                 }
             }
 
+            // Comment token could include the comment string, if needed.
             return new CommentToken();
         }
     }

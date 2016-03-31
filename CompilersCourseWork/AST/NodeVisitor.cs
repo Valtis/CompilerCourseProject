@@ -1,5 +1,8 @@
 ﻿namespace CompilersCourseWork.AST
 {
+    /*
+    Interface for visitors
+    */
     public interface NodeVisitor
     {
         void Visit(AddNode node);

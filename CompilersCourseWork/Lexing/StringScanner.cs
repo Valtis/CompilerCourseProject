@@ -4,10 +4,11 @@ using CompilersCourseWork.ErrorHandling;
 
 namespace CompilersCourseWork.Lexing
 {
+    /*
+    Scan strings
+    */
     internal class StringScanner : TokenScanner
     {
-
-
 		internal StringScanner(TextReader reader, ErrorReporter reporter) : base(reader, reporter)
         {
         }
@@ -28,6 +29,7 @@ namespace CompilersCourseWork.Lexing
                 var character = Reader.PeekCharacter().Value;
                 if (character == '"')
                 {
+                    // discard "
                     Reader.NextCharacter();
                     break;
                 }
@@ -59,6 +61,7 @@ namespace CompilersCourseWork.Lexing
 
 		private char HandleEscapeSequence()
         {
+            // discard '\'
             Reader.NextCharacter();
 			// there should be, at very least, a newline character remaining,
 			// so getting the value without a check should not cause issues
@@ -89,8 +92,7 @@ namespace CompilersCourseWork.Lexing
                 Reporter.ReportError(Error.LEXICAL_ERROR,
                     "Invalid escape sequence character '" + nextChar + "'",
                     Reader.Line,
-                    Reader.Column
-                    );
+                    Reader.Column);
 
                 return nextChar;
             }

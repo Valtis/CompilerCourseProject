@@ -7,9 +7,11 @@ using CompilersCourseWork.Interpreting;
 
 namespace CompilersCourseWork.CodeGeneration
 {
+    /*
+    Generates byte code from various AST nodes, using visitor pattern    
+    */
     public class CodeGenerator : NodeVisitor
     {
-
         private IDictionary<string, VariableData> symbolTable;
         private readonly IList<string> strings;
         private readonly List<byte> bytecode;
@@ -44,7 +46,7 @@ namespace CompilersCourseWork.CodeGeneration
             variableId = variables;
             this.symbolTable = symbolTable;
             strings = new List<string>();
-            strings.Add(""); // for default initialization
+            strings.Add(""); // push empty string, used for default initializing string variables if no other value is given
             bytecode = new List<byte>();
         }
 
@@ -63,7 +65,7 @@ namespace CompilersCourseWork.CodeGeneration
         public void Visit(ForNode node)
         {
             // Extremely naive strategy: 
-            // Create new variable end condition, and never reuse it elsewhere
+            // Create new variable for end condition, and never reuse it elsewhere
             var loop_counter = symbolTable[((IdentifierNode)node.Children[0]).Name].id;
             var endVariable = variableId++;
 

@@ -14,7 +14,9 @@ namespace CompilersCourseWork.Parsing
         BOOLEAN,
         ERROR_TYPE,
     }
-
+    /*
+    Add Name() method for the VariableType enum
+    */
     public static class Extensions
     {
         public static string Name(this VariableType type)

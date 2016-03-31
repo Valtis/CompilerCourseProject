@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace CompilersCourseWork.AST
 {
+    /*
+    Base class for AST nodes
+    */
     public abstract class Node
     {
         private IList<Node> children;
@@ -55,7 +58,8 @@ namespace CompilersCourseWork.AST
             Children.Add(node);
         }
 
-
+        // generic equality for nodes - checks if the two nodes have same type (in general we do not consider line or column
+        // when considering equality)
         public override bool Equals(object obj)
         {
             if (obj == null)
@@ -73,11 +77,13 @@ namespace CompilersCourseWork.AST
 
         public abstract void Accept(NodeVisitor visitor);
 
+        // Returns node type. Used for nodes like IdentifierNode (->integer) or AddNode (intger or string, based on operands)
+        // only nodes that need type info implement this, other nodes just throw
         public virtual VariableType NodeType()
         {
             throw new InternalCompilerError("Invalid node type for variable type parameter");
         }
-
+        // as above, but a setter
         internal virtual void SetType(VariableType type)
         {
             throw new InternalCompilerError("Invalid node type for variable type parameter");

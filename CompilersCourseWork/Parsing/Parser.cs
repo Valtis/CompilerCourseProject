@@ -7,11 +7,15 @@ using System.Collections.Generic;
 
 namespace CompilersCourseWork.Parsing
 {
+    /*
+    Recursive descent parser
+    */
     public class Parser
     {
         private Lexer lexer;
         private ErrorReporter reporter;
 
+        // Operators that have two operands
         IDictionary<Type, Type> binaryOperators;
 
         public Parser(Lexer lexer, ErrorReporter reporter)
@@ -111,7 +115,6 @@ namespace CompilersCourseWork.Parsing
             }
             catch (InvalidParseException e)
             {
-
                 SkipToToken<SemicolonToken>();
                 lexer.NextToken();
 
@@ -250,9 +253,7 @@ namespace CompilersCourseWork.Parsing
                     SkipToToken<EndToken>();
                     throw new InvalidParseException();
                 }
-
-
-
+                
                 StatementsNode statements;
                 if (lexer.PeekToken() is EndToken)
                 {
@@ -339,7 +340,7 @@ namespace CompilersCourseWork.Parsing
 
                     var b := 5;
 
-                    the parser fails during statement parsing, skips to the semicolon after for, 
+                    the parser fails during parsing the declaration of 'a', skips to the semicolon after 'for', 
                     and keeps parsing statements. This would lead to scenario, where the var b := 5
                     declaration would be considered to be part of the loop body.
 
@@ -665,8 +666,7 @@ namespace CompilersCourseWork.Parsing
                     Error.NOTE,
                     "Maybe you are missing ':='",
                     token.Line,
-                    token.Column
-                );
+                    token.Column);
             }
             else if (token is ComparisonToken)
             {
@@ -674,8 +674,7 @@ namespace CompilersCourseWork.Parsing
                     Error.NOTE,
                     "Maybe you meant to use assignment ':=' instead of comparison '='",
                     token.Line,
-                    token.Column
-                    );
+                    token.Column);
             }
         }
     }

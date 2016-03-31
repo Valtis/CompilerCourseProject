@@ -387,7 +387,7 @@ namespace CompilersCourseWork.Tests
             try
             {
                lexer.Backtrack();
-            } catch (InternalCompilerErrorException e)
+            } catch (InternalCompilerError e)
             {
                 throws = true;
             }
@@ -407,7 +407,7 @@ namespace CompilersCourseWork.Tests
             {
                lexer.Backtrack();
             }
-            catch (InternalCompilerErrorException e)
+            catch (InternalCompilerError e)
             {
                 throws = true;
             }

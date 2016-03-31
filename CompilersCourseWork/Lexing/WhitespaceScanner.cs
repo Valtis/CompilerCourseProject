@@ -5,6 +5,9 @@ using CompilersCourseWork.ErrorHandling;
 
 namespace CompilersCourseWork.Lexing
 {
+    /*
+    Scan and discard whitespace
+    */
     internal class WhitespaceScanner : TokenScanner
     {
         private ISet<char> whitespace;

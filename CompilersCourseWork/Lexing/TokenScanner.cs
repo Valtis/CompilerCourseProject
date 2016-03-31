@@ -3,6 +3,9 @@ using CompilersCourseWork.Tokens;
 
 namespace CompilersCourseWork.Lexing
 {
+    /*
+    Abstract base class for token scanners
+    */
     internal abstract class TokenScanner
     {
         private readonly TextReader reader;
@@ -35,11 +38,14 @@ namespace CompilersCourseWork.Lexing
             this.Reporter = reporter;
         }
 
+        /*
+        Invokes DoParse-method of the child class. Adds line and column number into the token
+        */
         internal Token Parse()
         {
             var line = reader.Line;
             var column = reader.Column;
-
+            
             var token = DoParse();
             if (token != null)
             {
@@ -50,7 +56,9 @@ namespace CompilersCourseWork.Lexing
             return token;
         }
 
+        // returns true if the scanner recognizes\scans the token
         internal abstract bool Parses(char character);
+        // actually scans the token
         protected abstract Token DoParse();
     }
 }

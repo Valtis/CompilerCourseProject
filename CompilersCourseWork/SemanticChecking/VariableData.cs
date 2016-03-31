@@ -2,6 +2,9 @@
 
 namespace CompilersCourseWork.SemanticChecking
 {
+    /*
+    Class storing the variable id and declaration node, which contains things like type and name
+    */
     public class VariableData
     {
         public readonly int id;

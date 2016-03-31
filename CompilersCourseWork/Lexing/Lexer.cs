@@ -4,6 +4,10 @@ using System.Collections.Generic;
 
 namespace CompilersCourseWork.Lexing
 {
+
+    /*
+    Lexer. Coordinates token scanning and backtracking
+    */
     public class Lexer
     {
         public const int BACKTRACK_BUFFER_SIZE = 4;
@@ -31,7 +35,7 @@ namespace CompilersCourseWork.Lexing
             reporter.Lines = reader.Lines;
 
             backTrackBuffer = new BacktrackBuffer(BACKTRACK_BUFFER_SIZE);
-           
+            
             parsers = new List<TokenScanner>();
             parsers.Add(new WhitespaceScanner(reader, reporter));
             parsers.Add(new CommentScanner(reader, reporter));
@@ -44,13 +48,15 @@ namespace CompilersCourseWork.Lexing
         
         public Token NextToken()
         {
-
+            // if backtrack buffer has a token (we have backtracked at least once previously), 
+            // use it instead
             if (!backTrackBuffer.Empty())
             {
                 return backTrackBuffer.GetToken();
             }
 
             Token token = null;
+            // discard whitespace and comment tokens
             while (token == null ||
                 token.GetType() == typeof(WhitespaceToken) ||
                 token.GetType() == typeof(CommentToken))
@@ -64,24 +70,25 @@ namespace CompilersCourseWork.Lexing
 
         public Token PeekToken()
         {
+            // if backtrack buffer has tokens (we have backtracked previously), use them instead
             if (!backTrackBuffer.Empty())
             {
                 return backTrackBuffer.PeekToken();
             }
-            else
-            {
-                Token token = null;
-                while (token == null ||
-                   token.GetType() == typeof(WhitespaceToken) ||
-                   token.GetType() == typeof(CommentToken))
-                {
-                    token = GetToken();
-                }
 
-                backTrackBuffer.AddToken(token);
-                backTrackBuffer.Backtrack();
-                return backTrackBuffer.PeekToken();
+            Token token = null;
+            while (token == null ||
+                token.GetType() == typeof(WhitespaceToken) ||
+                token.GetType() == typeof(CommentToken))
+            {
+                token = GetToken();
             }
+
+            // add the token to the backtrack buffer, then immediately backtrack and peek the next token.
+            // this means backtrack buffer is in valid state for next operation
+            backTrackBuffer.AddToken(token);
+            backTrackBuffer.Backtrack();
+            return backTrackBuffer.PeekToken();
         }
 
         public void Backtrack()
@@ -95,6 +102,7 @@ namespace CompilersCourseWork.Lexing
             var column = reader.Column;
             var character = reader.PeekCharacter();
 
+            // return EOF token, if text buffer is empty
             if (!character.HasValue)
             {
                 var eof = new EOFToken();
@@ -110,6 +118,7 @@ namespace CompilersCourseWork.Lexing
                 return eof;
             }
 
+            // check scanners one by one until we find a scanner that recognizes the token
             foreach (var parser in parsers)
             {
                 if (parser.Parses(character.Value))
@@ -118,6 +127,7 @@ namespace CompilersCourseWork.Lexing
                 }
             }
 
+            // ...or report error if no scanner recognizes the token
             reporter.ReportError(
                 Error.LEXICAL_ERROR,
                 "Invalid start for token: " + "'" + character.Value + "'",

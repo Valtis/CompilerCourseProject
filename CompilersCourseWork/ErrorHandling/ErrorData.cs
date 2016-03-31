@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 namespace CompilersCourseWork.ErrorHandling
 {
 
+    /*
+    Class representing a single error, warning or note 
+    */
     public class ErrorData
     {
         private readonly Error type;
@@ -62,7 +65,7 @@ namespace CompilersCourseWork.ErrorHandling
             ConsoleColor color = Console.ForegroundColor;
             switch (Type)
             {
-
+                
                 case Error.NOTE_GENERIC:
                 case Error.NOTE:
                     color = ConsoleColor.Cyan;
@@ -147,7 +150,6 @@ namespace CompilersCourseWork.ErrorHandling
             }
             Console.Write("\n");
             Console.ResetColor();
-
         }
 
     }

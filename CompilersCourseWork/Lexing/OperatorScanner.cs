@@ -51,6 +51,7 @@ namespace CompilersCourseWork.Lexing
             var column = Reader.Column;
             var character = Reader.NextCharacter().Value;
 
+            // if we can match a two character operator, do so. Otherwise match single character operator
             if (twoCharacterOperators.ContainsKey(character))
             {
                 var next = Reader.PeekCharacter();
@@ -71,12 +72,12 @@ namespace CompilersCourseWork.Lexing
             }
             catch (KeyNotFoundException e)
             {
+                // single '.' leads here
                 Reporter.ReportError(
                     Error.LEXICAL_ERROR,
                     "Invalid operator " + "'" + character + "'",
                     line,
-                    column
-                    );
+                    column);
 
                 // pretend we read whitespace to force lexer to get next token
                 return new WhitespaceToken();
