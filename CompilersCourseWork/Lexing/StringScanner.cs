@@ -13,12 +13,12 @@ namespace CompilersCourseWork.Lexing
         {
         }
 
-        internal override bool Parses(char character)
+        internal override bool Recognizes(char character)
         {
             return character == '"';
         }
         
-        protected override Token DoParse()
+        protected override Token DoScan()
         {
             var builder = new StringBuilder();
 

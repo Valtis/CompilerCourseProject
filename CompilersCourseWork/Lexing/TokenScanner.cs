@@ -41,12 +41,12 @@ namespace CompilersCourseWork.Lexing
         /*
         Invokes DoParse-method of the child class. Adds line and column number into the token
         */
-        internal Token Parse()
+        internal Token Scan()
         {
             var line = reader.Line;
             var column = reader.Column;
             
-            var token = DoParse();
+            var token = DoScan();
             if (token != null)
             {
                 token.Line = line;
@@ -57,8 +57,8 @@ namespace CompilersCourseWork.Lexing
         }
 
         // returns true if the scanner recognizes\scans the token
-        internal abstract bool Parses(char character);
+        internal abstract bool Recognizes(char character);
         // actually scans the token
-        protected abstract Token DoParse();
+        protected abstract Token DoScan();
     }
 }

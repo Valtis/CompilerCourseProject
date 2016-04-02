@@ -16,12 +16,12 @@ namespace CompilersCourseWork.Lexing
         {
         }
 
-        internal override bool Parses(char character)
+        internal override bool Recognizes(char character)
         {
             return char.IsDigit(character);
         }
 
-        protected override Token DoParse()
+        protected override Token DoScan()
         {
             var line = Reader.Line;
             var column = Reader.Column;

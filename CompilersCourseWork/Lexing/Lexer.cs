@@ -14,10 +14,10 @@ namespace CompilersCourseWork.Lexing
 
         private TextReader reader;
         private ErrorReporter reporter;
-        private IList<TokenScanner> parsers;
+        private IList<TokenScanner> scanners;
 
         // maintain a list of previously read tokens in order to allow backtracking if needed
-        private BacktrackBuffer backTrackBuffer;
+        private BacktrackBuffer backtrackBuffer;
 
         public IList<string> Lines
         {
@@ -34,15 +34,15 @@ namespace CompilersCourseWork.Lexing
             this.reporter = reporter;
             reporter.Lines = reader.Lines;
 
-            backTrackBuffer = new BacktrackBuffer(BACKTRACK_BUFFER_SIZE);
+            backtrackBuffer = new BacktrackBuffer(BACKTRACK_BUFFER_SIZE);
             
-            parsers = new List<TokenScanner>();
-            parsers.Add(new WhitespaceScanner(reader, reporter));
-            parsers.Add(new CommentScanner(reader, reporter));
-            parsers.Add(new IdentifierAndKeywordScanner(reader, reporter));
-            parsers.Add(new IntegerScanner(reader, reporter));
-            parsers.Add(new StringScanner(reader, reporter));
-            parsers.Add(new OperatorScanner(reader, reporter));
+            scanners = new List<TokenScanner>();
+            scanners.Add(new WhitespaceScanner(reader, reporter));
+            scanners.Add(new CommentScanner(reader, reporter));
+            scanners.Add(new IdentifierAndKeywordScanner(reader, reporter));
+            scanners.Add(new IntegerScanner(reader, reporter));
+            scanners.Add(new StringScanner(reader, reporter));
+            scanners.Add(new OperatorScanner(reader, reporter));
         }
 
         
@@ -50,9 +50,9 @@ namespace CompilersCourseWork.Lexing
         {
             // if backtrack buffer has a token (we have backtracked at least once previously), 
             // use it instead
-            if (!backTrackBuffer.Empty())
+            if (!backtrackBuffer.Empty())
             {
-                return backTrackBuffer.GetToken();
+                return backtrackBuffer.GetToken();
             }
 
             Token token = null;
@@ -64,16 +64,16 @@ namespace CompilersCourseWork.Lexing
                 token = GetToken();
             }
 
-            backTrackBuffer.AddToken(token);
+            backtrackBuffer.AddToken(token);
             return token;
         }
 
         public Token PeekToken()
         {
             // if backtrack buffer has tokens (we have backtracked previously), use them instead
-            if (!backTrackBuffer.Empty())
+            if (!backtrackBuffer.Empty())
             {
-                return backTrackBuffer.PeekToken();
+                return backtrackBuffer.PeekToken();
             }
 
             Token token = null;
@@ -86,14 +86,14 @@ namespace CompilersCourseWork.Lexing
 
             // add the token to the backtrack buffer, then immediately backtrack and peek the next token.
             // this means backtrack buffer is in valid state for next operation
-            backTrackBuffer.AddToken(token);
-            backTrackBuffer.Backtrack();
-            return backTrackBuffer.PeekToken();
+            backtrackBuffer.AddToken(token);
+            backtrackBuffer.Backtrack();
+            return backtrackBuffer.PeekToken();
         }
 
         public void Backtrack()
         {
-            backTrackBuffer.Backtrack();            
+            backtrackBuffer.Backtrack();            
         }
 
         private Token GetToken()
@@ -119,11 +119,11 @@ namespace CompilersCourseWork.Lexing
             }
 
             // check scanners one by one until we find a scanner that recognizes the token
-            foreach (var parser in parsers)
+            foreach (var parser in scanners)
             {
-                if (parser.Parses(character.Value))
+                if (parser.Recognizes(character.Value))
                 {
-                    return parser.Parse();
+                    return parser.Scan();
                 }
             }
 

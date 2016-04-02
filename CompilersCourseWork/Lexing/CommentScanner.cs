@@ -17,7 +17,7 @@ namespace CompilersCourseWork.Lexing
             isMultilineComment = false;
         }
 
-        internal override bool Parses(char character)
+        internal override bool Recognizes(char character)
         {
             // reset nesting value
             nesting = 0;
@@ -51,7 +51,7 @@ namespace CompilersCourseWork.Lexing
             return false;
         }
 
-        protected override Token DoParse()
+        protected override Token DoScan()
         {
             if (isMultilineComment)
             {

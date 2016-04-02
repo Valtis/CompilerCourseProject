@@ -34,12 +34,12 @@ namespace CompilersCourseWork.Lexing
             keywords.Add("assert", typeof(AssertToken));
         }
 
-        internal override bool Parses(char character)
+        internal override bool Recognizes(char character)
         {
             return char.IsLetter(character);
         }
 
-        protected override Token DoParse()
+        protected override Token DoScan()
         {
             var builder = new StringBuilder();
             

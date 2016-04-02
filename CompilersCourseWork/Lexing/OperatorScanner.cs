@@ -10,7 +10,7 @@ namespace CompilersCourseWork.Lexing
 {
     internal class OperatorScanner : TokenScanner
     {
-        private IDictionary<char, Type> operators;
+        private IDictionary<char, Type> singleCharacterOperators;
         private IDictionary<char, IDictionary<char, Type>> twoCharacterOperators; 
 
         internal OperatorScanner(TextReader reader, ErrorReporter reporter) : base(reader, reporter)
@@ -24,28 +24,28 @@ namespace CompilersCourseWork.Lexing
             twoCharacterOperators['.']['.'] = typeof(RangeToken);
 
 
-            operators = new Dictionary<char, Type>();
+            singleCharacterOperators = new Dictionary<char, Type>();
 
-            operators.Add('+', typeof(PlusToken));
-            operators.Add('-', typeof(MinusToken));
-            operators.Add('*', typeof(MultiplyToken));
-            operators.Add('/', typeof(DivideToken));
-            operators.Add('<', typeof(LessThanToken));
-            operators.Add('=', typeof(ComparisonToken));
-            operators.Add('&', typeof(AndToken));
-            operators.Add('!', typeof(NotToken));
-            operators.Add(';', typeof(SemicolonToken));
-            operators.Add(':', typeof(ColonToken));
-            operators.Add('(', typeof(LParenToken));
-            operators.Add(')', typeof(RParenToken));
+            singleCharacterOperators.Add('+', typeof(PlusToken));
+            singleCharacterOperators.Add('-', typeof(MinusToken));
+            singleCharacterOperators.Add('*', typeof(MultiplyToken));
+            singleCharacterOperators.Add('/', typeof(DivideToken));
+            singleCharacterOperators.Add('<', typeof(LessThanToken));
+            singleCharacterOperators.Add('=', typeof(ComparisonToken));
+            singleCharacterOperators.Add('&', typeof(AndToken));
+            singleCharacterOperators.Add('!', typeof(NotToken));
+            singleCharacterOperators.Add(';', typeof(SemicolonToken));
+            singleCharacterOperators.Add(':', typeof(ColonToken));
+            singleCharacterOperators.Add('(', typeof(LParenToken));
+            singleCharacterOperators.Add(')', typeof(RParenToken));
         }
 
-        internal override bool Parses(char character)
+        internal override bool Recognizes(char character)
         {
-            return operators.ContainsKey(character) || twoCharacterOperators.ContainsKey(character);
+            return singleCharacterOperators.ContainsKey(character) || twoCharacterOperators.ContainsKey(character);
         }
 
-        protected override Token DoParse()
+        protected override Token DoScan()
         {
             var line = Reader.Line;
             var column = Reader.Column;
@@ -68,7 +68,7 @@ namespace CompilersCourseWork.Lexing
 
             try
             {
-                return (Token)Activator.CreateInstance(operators[character]);
+                return (Token)Activator.CreateInstance(singleCharacterOperators[character]);
             }
             catch (KeyNotFoundException e)
             {

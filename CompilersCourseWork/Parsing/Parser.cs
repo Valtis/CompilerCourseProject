@@ -16,7 +16,7 @@ namespace CompilersCourseWork.Parsing
         private ErrorReporter reporter;
 
         // Operators that have two operands
-        IDictionary<Type, Type> binaryOperators;
+        private IDictionary<Type, Type> binaryOperators;
 
         public Parser(Lexer lexer, ErrorReporter reporter)
         {

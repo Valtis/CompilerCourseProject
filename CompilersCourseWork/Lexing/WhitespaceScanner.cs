@@ -21,12 +21,12 @@ namespace CompilersCourseWork.Lexing
             whitespace.Add('\n');
         }
 
-        internal override bool Parses(char character)
+        internal override bool Recognizes(char character)
         {
             return whitespace.Contains(character);
         }
 
-        protected override Token DoParse()
+        protected override Token DoScan()
         {
             while (Reader.PeekCharacter().HasValue &&
                 whitespace.Contains(Reader.PeekCharacter().Value))
