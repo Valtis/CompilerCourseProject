@@ -88,6 +88,9 @@ namespace CompilersCourseWork.Interpreting
             {
                 switch (bytecode[pc++])
                 {
+                    case Bytecode.NOP:
+                        // do nothing
+                        break;
                     case Bytecode.PUSH_INT:
                         stack.Push(BitConverter.ToInt64(bytecode, pc));
                         pc += 8;
@@ -102,7 +105,7 @@ namespace CompilersCourseWork.Interpreting
                     case Bytecode.PUSH_INT_VAR:
                     case Bytecode.PUSH_STRING_VAR:
                     case Bytecode.PUSH_BOOLEAN_VAR:
-                        stack.Push(variables[BitConverter.ToInt16(bytecode, pc)]);
+                        stack.Push(variables[BitConverter.ToInt32(bytecode, pc)]);
                         pc += 4;
                         break;
                     case Bytecode.STORE_VARIABLE:
@@ -175,8 +178,8 @@ namespace CompilersCourseWork.Interpreting
                             var input = reader().Split(null)[0];
                             var variable = BitConverter.ToInt32(bytecode, pc);
                             pc += 4;
-                            int result;
-                            if (int.TryParse(input, out result))
+                            long result;
+                            if (long.TryParse(input, out result))
                             {
                                 variables[variable] = result;
                             }
@@ -254,7 +257,7 @@ namespace CompilersCourseWork.Interpreting
                         {
                             var destination = BitConverter.ToInt32(bytecode, pc);
                             pc += 4;
-                            if (!(stack.Pop() == 0))
+                            if (stack.Pop() == 1) 
                             {
                                 pc = destination;
                             }
